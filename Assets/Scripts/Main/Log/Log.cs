@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 public enum ELogLevel
 {
@@ -26,6 +25,7 @@ public class Log
     private static ILog log = new UnityLog();
 
     private static ELogLevel CurLogLevel = ELogLevel.All;
+
     public static void Init(ELogLevel logLevel)
     {
         CurLogLevel = logLevel;
@@ -42,7 +42,7 @@ public class Log
     {
         if (CurLogLevel < ELogLevel.Debug)
             return;
-        message = string.Format(message, args);
+        message = GetString(message, args);
         message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
         log.Debug(message);
     }
@@ -58,7 +58,7 @@ public class Log
     {
         if (CurLogLevel < ELogLevel.Info)
             return;
-        message = string.Format(message, args);
+        message = GetString(message, args);
         message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
         log.Info(message, args);
     }
@@ -81,7 +81,7 @@ public class Log
     {
         if (CurLogLevel < ELogLevel.Warning)
             return;
-        message = string.Format(message, args);
+        message = GetString(message, args);
         message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
         log.Warning(message, args);
     }
@@ -97,7 +97,7 @@ public class Log
     {
         if (CurLogLevel < ELogLevel.Error)
             return;
-        message = string.Format(message, args);
+        message = GetString(message, args);
         message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
         log.Error(message, args);
     }
@@ -119,5 +119,19 @@ public class Log
             default:
                 return "#FFFFFF";
         }
+    }
+
+    private static string GetString(string message, params object[] args)
+    {
+        string ret;
+        try
+        {
+            ret = string.Format(message, args);
+        }
+        catch
+        {
+            ret = message;
+        }
+        return ret;
     }
 }
