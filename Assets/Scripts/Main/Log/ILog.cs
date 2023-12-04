@@ -2,9 +2,9 @@ using System;
 
 public interface ILog
 {
-    void Debug(string message, params object[] args);
-    void Info(string message, params object[] args);
+    void Debug(object message);
+    void Info(object message);
     void Exception(Exception e);
-    void Warning(string message, params object[] args);
-    void Error(string message, params object[] args);
+    void Warning(object message);
+    void Error(object message);
 }

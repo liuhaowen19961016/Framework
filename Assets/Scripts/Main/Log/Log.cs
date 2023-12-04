@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 public enum ELogLevel
 {
@@ -20,6 +21,9 @@ public enum ELogColor
     Yellow,
 }
 
+/// <summary>
+/// Logϵͳ
+/// </summary>
 public class Log
 {
     private static ILog log = new UnityLog();
@@ -31,14 +35,34 @@ public class Log
         CurLogLevel = logLevel;
     }
 
-    public static void Debug(string message, params object[] args)
+    #region Debug
+
+    public static void Debug(object message)
     {
         if (CurLogLevel < ELogLevel.Debug)
             return;
-        log.Debug(message, args);
+        message = GetString(message);
+        log.Debug(message);
     }
 
-    public static void Debug(string message, ELogColor logColor, params object[] args)
+    public static void Debug(object message, ELogColor logColor)
+    {
+        if (CurLogLevel < ELogLevel.Debug)
+            return;
+        message = GetString(message);
+        message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
+        log.Debug(message);
+    }
+
+    public static void DebugFormat(string message, params object[] args)
+    {
+        if (CurLogLevel < ELogLevel.Debug)
+            return;
+        message = GetString(message, args);
+        log.Debug(message);
+    }
+
+    public static void DebugFormat(string message, ELogColor logColor, params object[] args)
     {
         if (CurLogLevel < ELogLevel.Debug)
             return;
@@ -47,21 +71,47 @@ public class Log
         log.Debug(message);
     }
 
-    public static void Info(string message, params object[] args)
+    #endregion Debug
+
+    #region Info
+
+    public static void Info(object message)
     {
         if (CurLogLevel < ELogLevel.Info)
             return;
-        log.Info(message, args);
+        message = GetString(message);
+        log.Info(message);
     }
 
-    public static void Info(string message, ELogColor logColor, params object[] args)
+    public static void Info(object message, ELogColor logColor)
+    {
+        if (CurLogLevel < ELogLevel.Info)
+            return;
+        message = GetString(message);
+        message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
+        log.Info(message);
+    }
+
+    public static void InfoFormat(string message, params object[] args)
+    {
+        if (CurLogLevel < ELogLevel.Info)
+            return;
+        message = GetString(message, args);
+        log.Info(message);
+    }
+
+    public static void InfoFormat(string message, ELogColor logColor, params object[] args)
     {
         if (CurLogLevel < ELogLevel.Info)
             return;
         message = GetString(message, args);
         message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
-        log.Info(message, args);
+        log.Info(message);
     }
+
+    #endregion Debug
+
+    #region Exception
 
     public static void Exception(Exception e)
     {
@@ -70,37 +120,83 @@ public class Log
         log.Exception(e);
     }
 
-    public static void Warning(string message, params object[] args)
+    #endregion Exception
+
+    #region Warning
+
+    public static void Warning(object message)
     {
         if (CurLogLevel < ELogLevel.Warning)
             return;
-        log.Warning(message, args);
+        message = GetString(message);
+        log.Warning(message);
     }
 
-    public static void Warning(string message, ELogColor logColor, params object[] args)
+    public static void Warning(object message, ELogColor logColor)
+    {
+        if (CurLogLevel < ELogLevel.Warning)
+            return;
+        message = GetString(message);
+        message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
+        log.Warning(message);
+    }
+
+    public static void WarningFormat(string message, params object[] args)
+    {
+        if (CurLogLevel < ELogLevel.Info)
+            return;
+        message = GetString(message, args);
+        log.Warning(message);
+    }
+
+    public static void WarningFormat(string message, ELogColor logColor, params object[] args)
     {
         if (CurLogLevel < ELogLevel.Warning)
             return;
         message = GetString(message, args);
         message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
-        log.Warning(message, args);
+        log.Warning(message);
     }
 
-    public static void Error(string message, params object[] args)
+    #endregion Warning
+
+    #region Error
+
+    public static void Error(object message)
     {
         if (CurLogLevel < ELogLevel.Error)
             return;
-        log.Error(message, args);
+        message = GetString(message);
+        log.Error(message);
     }
 
-    public static void Error(string message, ELogColor logColor, params object[] args)
+    public static void Error(object message, ELogColor logColor)
+    {
+        if (CurLogLevel < ELogLevel.Error)
+            return;
+        message = GetString(message);
+        message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
+        log.Error(message);
+    }
+
+    public static void ErrorFormat(string message, params object[] args)
+    {
+        if (CurLogLevel < ELogLevel.Error)
+            return;
+        message = GetString(message, args);
+        log.Error(message);
+    }
+
+    public static void ErrorFormat(string message, ELogColor logColor, params object[] args)
     {
         if (CurLogLevel < ELogLevel.Error)
             return;
         message = GetString(message, args);
         message = string.Format("<color={0}>{1}</color>", GetHexColor(logColor), message);
-        log.Error(message, args);
+        log.Error(message);
     }
+
+    #endregion Error
 
     private static string GetHexColor(ELogColor logColor)
     {
@@ -121,17 +217,26 @@ public class Log
         }
     }
 
+    private static string GetString(object message)
+    {
+        string ret = "Null";
+        if (message == null)
+        {
+            return ret;
+        }
+        IFormattable formattable = message as IFormattable;
+        if (formattable != null)
+        {
+            ret = formattable.ToString(null, CultureInfo.InvariantCulture);
+            return ret;
+        }
+        ret = message.ToString();
+        return ret;
+    }
+
     private static string GetString(string message, params object[] args)
     {
-        string ret;
-        try
-        {
-            ret = string.Format(message, args);
-        }
-        catch
-        {
-            ret = message;
-        }
+        string ret = string.Format(message, args);
         return ret;
     }
 }

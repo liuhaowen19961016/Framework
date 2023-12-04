@@ -1,21 +1,18 @@
 using System;
 
+/// <summary>
+/// Unity Log
+/// </summary>
 public class UnityLog : ILog
 {
-    public void Debug(string message, params object[] args)
+    public void Debug(object message)
     {
-        if (args.Length == 0)
-            UnityEngine.Debug.Log(message);
-        else
-            UnityEngine.Debug.LogFormat(message, args);
+        UnityEngine.Debug.Log(message);
     }
 
-    public void Info(string message, params object[] args)
+    public void Info(object message)
     {
-        if (args.Length == 0)
-            UnityEngine.Debug.Log(message);
-        else
-            UnityEngine.Debug.LogFormat(message, args);
+        UnityEngine.Debug.Log(message);
     }
 
     public void Exception(Exception e)
@@ -23,19 +20,13 @@ public class UnityLog : ILog
         UnityEngine.Debug.LogException(e);
     }
 
-    public void Warning(string message, params object[] args)
+    public void Warning(object message)
     {
-        if (args.Length == 0)
-            UnityEngine.Debug.LogWarning(message);
-        else
-            UnityEngine.Debug.LogWarningFormat(message, args);
+        UnityEngine.Debug.LogWarning(message);
     }
 
-    public void Error(string message, params object[] args)
+    public void Error(object message)
     {
-        if (args.Length == 0)
-            UnityEngine.Debug.LogError(message);
-        else
-            UnityEngine.Debug.LogErrorFormat(message, args);
+        UnityEngine.Debug.LogError(message);
     }
 }
