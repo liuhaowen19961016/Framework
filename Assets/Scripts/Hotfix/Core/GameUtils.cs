@@ -7,6 +7,7 @@ public static class GameUtils
     /// 获取一个随机的枚举值
     /// </summary>
     public static T GetRandomEmum<T>(List<T> ignoreList = null)
+        where T : struct
     {
         Array values = Enum.GetValues(typeof(T));
         int randumNum = UnityEngine.Random.Range(0, values.Length);
@@ -23,6 +24,7 @@ public static class GameUtils
     /// 获取一个随机的枚举值列表
     /// </summary>
     public static List<T> GetRandomEnumList<T>(int getCount, bool excludeSame = false, List<T> ignoreList = null)
+            where T : struct
     {
         int ignoreCount = ignoreList == null ? 0 : ignoreList.Count;
         Array values = Enum.GetValues(typeof(T));
