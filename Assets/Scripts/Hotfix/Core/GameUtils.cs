@@ -44,14 +44,36 @@ public static class GameUtils
             return null;
         }
         List<T> enumList = new();
-        while (enumList.Count < getCount)
-        {
-            var value = GetRandomEmum<T>(ignoreList);
-            if (excludeSame || !enumList.Contains(value))
+        SafeWhile(
+            () =>
             {
-                enumList.Add(value);
-            }
-        }
+                return enumList.Count < getCount;
+            },
+            () =>
+            {
+                var value = GetRandomEmum<T>(ignoreList);
+                if (excludeSame || !enumList.Contains(value))
+                {
+                    enumList.Add(value);
+                }
+            });
         return enumList;
+    }
+
+    /// <summary>
+    /// while循环安全版
+    /// </summary>
+    public static void SafeWhile(Func<bool> loopCheck, Action loopBody)
+    {
+        if (loopCheck == null)
+            return;
+
+        int countLimit = 999;
+        int count = 0;
+        while (count <= countLimit && loopCheck())
+        {
+            loopBody?.Invoke();
+            count++;
+        }
     }
 }
