@@ -22,7 +22,7 @@ public enum ELogColor
 }
 
 /// <summary>
-/// Logϵͳ
+/// Log系统
 /// </summary>
 public class Log
 {

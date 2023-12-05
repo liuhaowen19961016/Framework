@@ -1,15 +1,25 @@
 using UnityEngine;
 
-public class GameInit : MonoBehaviour
+[System.Serializable]
+public class GameInitSetting
 {
     #region Log Setting
 
     public ELogLevel logLevel;
+    public bool enableCommonLog;
+    public bool enableNetworkLog;
 
     #endregion Log Setting
+}
+
+public class GameInit : MonoBehaviour
+{
+    public static GameInitSetting GameInitSetting;//外部获取用
+    public GameInitSetting gameInitSetting;//游戏启动设置
 
     private void Start()
     {
-        Log.Init(logLevel);
+        GameInitSetting = gameInitSetting;
+        Log.Init(gameInitSetting.logLevel);
     }
 }

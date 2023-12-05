@@ -389,4 +389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77e8fc18c5c704a549e39f009697ae07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logLevel: 5
+  gameInitSetting:
+    logLevel: 6
+    enableCommonLog: 1
+    enableNetworkLog: 0
