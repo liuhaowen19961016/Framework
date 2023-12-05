@@ -1,4 +1,3 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
 
@@ -7,30 +6,40 @@ public static class GameUtils
     /// <summary>
     /// 获取一个随机的枚举值
     /// </summary>
-    public static T GetRandomEmum<T>()
+    public static T GetRandomEmum<T>(List<T> ignoreList = null)
     {
         Array values = Enum.GetValues(typeof(T));
         int randumNum = UnityEngine.Random.Range(0, values.Length);
         T randomEnum = (T)values.GetValue(randumNum);
+        while (ignoreList != null && ignoreList.Contains(randomEnum))
+        {
+            randumNum = UnityEngine.Random.Range(0, values.Length);
+            randomEnum = (T)values.GetValue(randumNum);
+        }
         return randomEnum;
     }
 
     /// <summary>
     /// 获取一个随机的枚举值列表
     /// </summary>
-    public static List<T> GetRandomEnumList<T>(int getCount, bool excludeSame = false)
+    public static List<T> GetRandomEnumList<T>(int getCount, bool excludeSame = false, List<T> ignoreList = null)
     {
+        int ignoreCount = ignoreList == null ? 0 : ignoreList.Count;
         Array values = Enum.GetValues(typeof(T));
-        if (!excludeSame && values.Length < getCount)
+        int enumCount = values.Length - ignoreCount;
+        if (!excludeSame && enumCount < getCount)
         {
-            Log.Error("枚举类型数量小于要获取的数量");
+            CommonLog.Error("枚举类型数量小于要获取的数量");
             return null;
         }
         List<T> enumList = new();
         while (enumList.Count < getCount)
         {
-            var value = GetRandomEmum<T>();
-            enumList.Add(value);
+            var value = GetRandomEmum<T>(ignoreList);
+            if (excludeSame || !enumList.Contains(value))
+            {
+                enumList.Add(value);
+            }
         }
         return enumList;
     }
