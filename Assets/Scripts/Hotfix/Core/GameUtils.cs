@@ -1,8 +1,17 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class GameUtils
 {
+    /// <summary>
+    /// 是否在Unity编辑器环境下
+    /// </summary>
+    public static bool IsInEditorEnv()
+    {
+        return Application.isEditor;
+    }
+
     /// <summary>
     /// 获取一个随机的枚举值
     /// </summary>
