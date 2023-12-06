@@ -5,7 +5,6 @@ using UnityEngine;
 //整个游戏通过Component（继承ComponentBase）和Singleton（继承Singelton）两大模块控制
 //之所以有Component和Singleton两个，是因为Component和Singleton的概念不一致
 //Game类是注册全局Component和Singleton的入口
-
 public static class Game
 {
     #region 组件（Component）
