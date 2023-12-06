@@ -1,47 +1,29 @@
-using System;
-
-/// <summary>
-/// 单例模版
-/// </summary>
-public abstract class Singleton<T>
-    where T : class
+public class Singleton<T> : ISingleton
+    where T : Singleton<T>
 {
-    private static readonly object syncRoot = new object();
-    private static T _Ins;
-    public static T Ins
+    private static T ins;
+    public static T Ins => ins;
+
+    private bool isDisposed;
+
+    public void Register()
     {
-        get
+        if (ins != null)
+            return;
+        ins = (T)this;
+    }
+
+    public void UnRegister()
+    {
+        if (isDisposed)
         {
-            if (_Ins == null)
-            {
-                lock (syncRoot)
-                {
-                    if (_Ins == null)
-                    {
-                        _Ins = Activator.CreateInstance(typeof(T), true) as T;
-                    }
-                }
-            }
-            return _Ins;
+            return;
         }
+        isDisposed = true;
     }
 
-    protected Singleton()
+    public bool IsDisposed()
     {
-        Init();
-    }
-
-    public virtual void Init()
-    {
-
+        return isDisposed;
     }
 }
-
-////使用反射构造对象是为了每个子类都能够将构造函数私有化，防止外界通过new构造，如果在单例模版中通过new构造，那么T必须约束为new()，子类则不能定义私有构造函数
-//public class TestClass : Singleton<TestClass>
-//{
-//    private TestClass()
-//    {
-
-//    }
-//}
