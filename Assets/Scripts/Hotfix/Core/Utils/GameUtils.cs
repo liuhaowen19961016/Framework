@@ -63,17 +63,17 @@ public static class GameUtils
     /// <summary>
     /// while循环安全版
     /// </summary>
-    public static void SafeWhile(Func<bool> loopCheck, Action loopBody)
+    public static void SafeWhile(Func<bool> loopCondition, Action loopBody)
     {
-        if (loopCheck == null)
+        if (loopCondition == null)
         {
-            CommonLog.Error("循环判断不能为null");
+            CommonLog.Error("循环条件不能为null");
             return;
         }
 
         int countLimit = 999;
         int count = 0;
-        while (loopCheck())
+        while (loopCondition())
         {
             loopBody?.Invoke();
             count++;
