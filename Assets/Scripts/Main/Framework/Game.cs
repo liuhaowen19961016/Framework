@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 //整个游戏通过Component（继承ComponentBase）和Singleton（继承Singelton）两大模块控制
 //之所以有Component和Singleton两个，是因为Component和Singleton的概念不一致
@@ -34,21 +33,21 @@ public static class Game
         Type type = singleton.GetType();
         if (singletonDict.ContainsKey(type))
         {
-            Debug.LogError($"已经存在此单例，不能重复添加，单例类型：{type}");
+            CommonLog.Error($"已经存在此单例，不能重复添加，单例类型：{type}");
             return;
         }
         singletonDict.Add(type, singleton);
-        if (singleton is ISingletonFixedUpdate)
+        if (singleton is ISingletonFixedUpdate fixedUpdate)
         {
-            singletonFixedUpdates.Enqueue((ISingletonFixedUpdate)singleton);
+            singletonFixedUpdates.Enqueue(fixedUpdate);
         }
-        if (singleton is ISingletonUpdate)
+        if (singleton is ISingletonUpdate update)
         {
-            singletonUpdates.Enqueue((ISingletonUpdate)singleton);
+            singletonUpdates.Enqueue(update);
         }
-        if (singleton is ISingletonLateUpdate)
+        if (singleton is ISingletonLateUpdate lateUpdate)
         {
-            singletonLateUpdates.Enqueue((ISingletonLateUpdate)singleton);
+            singletonLateUpdates.Enqueue(lateUpdate);
         }
         singleton.Register();
     }

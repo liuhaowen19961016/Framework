@@ -7,7 +7,8 @@ namespace Hotfix
             CommonLog.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
 
             //Game.AddSingleton<Root>();
-            Game.AddSingleton<TestNew>();
+            //Game.AddSingleton<TestHotfix>();
+            TestHotfix.Ins.TestHotfixFun();
         }
     }
 }
