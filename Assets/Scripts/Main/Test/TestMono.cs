@@ -26,11 +26,6 @@ public class TestMono : MonoBehaviour
         //{
         //    CommonLog.Info(item.Key);
         //}
-        
-    }
 
-    private void Update()
-    {
-        
     }
 }

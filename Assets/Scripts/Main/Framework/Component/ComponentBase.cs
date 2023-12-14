@@ -34,13 +34,13 @@ public abstract class ComponentBase
             CommonLog.Error($"{GetType().Name}不能重复添加组件，{type.Name}");
             return;
         }
-        Parent = this;
-        T objectBase = Create<T>();
-        objectBase.instanceId = IdUtils.GenInstanceId();
-        objectBase.Awake(arg);
-        objectBase.Start();
-        GameComponent.Register(objectBase);
-        ComponentDict.Add(type, objectBase);
+        T componentBase = Create<T>();
+        componentBase.Parent = this;
+        componentBase.instanceId = IdUtils.GenInstanceId();
+        componentBase.Awake(arg);
+        componentBase.Start();
+        GameComponent.Register(componentBase);
+        ComponentDict.Add(type, componentBase);
     }
 
     public bool RemoveComponent(ComponentBase component)
@@ -90,13 +90,13 @@ public abstract class ComponentBase
     public void AddChild<T>(object arg = null)
         where T : ComponentBase, new()
     {
-        Parent = this;
-        T objectBase = Create<T>();
-        objectBase.instanceId = IdUtils.GenInstanceId();
-        objectBase.Awake(arg);
-        objectBase.Start();
-        GameComponent.Register(objectBase);
-        ChildDict.Add(objectBase.instanceId, objectBase);
+        T componentBase = Create<T>();
+        componentBase.Parent = this;
+        componentBase.instanceId = IdUtils.GenInstanceId();
+        componentBase.Awake(arg);
+        componentBase.Start();
+        GameComponent.Register(componentBase);
+        ChildDict.Add(componentBase.instanceId, componentBase);
     }
 
     public bool RemoveChild(ComponentBase component)
