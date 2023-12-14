@@ -22,12 +22,6 @@ public class TestHotfixCom : ComponentBase, IUpdate
         //C2 c2 = new C2();
         //CommonLog.Error(GameUtils.AllSame(c1, c1));
         //CommonLog.Error(GameUtils.AllSame(c2, c2));
-
-        //int v= GameUtils.GetRandomEmum<int>(new List<int>() { 1,2,3});
-        // CommonLog.Error(v);
-
-        ETest e = GameUtils.GetRandomEmum<ETest>();
-        Debug.LogError(e);
     }
 }
 
@@ -48,7 +42,7 @@ public struct C2
 
 public enum ETest
 {
-    Test1 = 2,
-    Test2 = 1,
-    Test3 = 22,
+    Test1 = 1,
+    Test2 = 2,
+    Test3 = 3,
 }

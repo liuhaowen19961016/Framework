@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting.YamlDotNet.Core;
 using UnityEngine;
 
 public static class GameUtils
@@ -13,51 +14,172 @@ public static class GameUtils
     }
 
     /// <summary>
+    /// 获取一个随机值
+    /// </summary>
+    public static T GetRandomValue<T>(List<T> list, List<T> ignoreList = null)
+    {
+        int randomNum = UnityEngine.Random.Range(0, list.Count);
+        T randomValue = list[randomNum];
+        SafeWhile(
+            () =>
+            {
+                return ignoreList != null && ignoreList.Contains(randomValue);
+            },
+            () =>
+            {
+                int randomNum = UnityEngine.Random.Range(0, list.Count);
+                randomValue = list[randomNum];
+            });
+        return randomValue;
+    }
+
+    /// <summary>
+    /// 获取一个随机值
+    /// </summary>
+    public static T GetRandomValue<T>(T[] list, List<T> ignoreList = null)
+    {
+        int randomNum = UnityEngine.Random.Range(0, list.Length);
+        T randomValue = list[randomNum];
+        SafeWhile(
+            () =>
+            {
+                return ignoreList != null && ignoreList.Contains(randomValue);
+            },
+            () =>
+            {
+                int randomNum = UnityEngine.Random.Range(0, list.Length);
+                randomValue = list[randomNum];
+            });
+        return randomValue;
+    }
+
+    /// <summary>
+    /// 获取一个随机值
+    /// </summary>
+    public static T GetRandomValue<T>(Array list, List<T> ignoreList = null)
+    {
+        int randomNum = UnityEngine.Random.Range(0, list.Length);
+        T randomValue = (T)list.GetValue(randomNum);
+        SafeWhile(
+            () =>
+            {
+                return ignoreList != null && ignoreList.Contains(randomValue);
+            },
+            () =>
+            {
+                int randomNum = UnityEngine.Random.Range(0, list.Length);
+                randomValue = (T)list.GetValue(randomNum);
+            });
+        return randomValue;
+    }
+
+    /// <summary>
     /// 获取一个随机的枚举值
     /// </summary>
     public static T GetRandomEmum<T>(List<T> ignoreList = null)
-        where T : struct
+        where T : Enum
     {
         Array values = Enum.GetValues(typeof(T));
-        int randumNum = UnityEngine.Random.Range(0, values.Length);
-        T randomEnum = (T)values.GetValue(randumNum);
-        while (ignoreList != null && ignoreList.Contains(randomEnum))
-        {
-            randumNum = UnityEngine.Random.Range(0, values.Length);
-            randomEnum = (T)values.GetValue(randumNum);
-        }
+        T randomEnum = GetRandomValue(values, ignoreList);
         return randomEnum;
+    }
+
+    /// <summary>
+    /// 获取一个随机值列表
+    /// </summary>
+    public static List<T> GetRandomValueList<T>(List<T> list, int getCount, bool excludeSame = false, List<T> ignoreList = null)
+    {
+        int ignoreCount = ignoreList == null ? 0 : ignoreList.Count;
+        int canRandomCount = list.Count - ignoreCount;
+        if (!excludeSame && canRandomCount < getCount)
+        {
+            CommonLog.Error("可随机的数量小于要获取的数量");
+            return null;
+        }
+        List<T> randomList = new();
+        SafeWhile(
+            () =>
+            {
+                return randomList.Count < getCount;
+            },
+            () =>
+            {
+                var value = GetRandomValue<T>(list, ignoreList);
+                if (excludeSame || !randomList.Contains(value))
+                {
+                    randomList.Add(value);
+                }
+            });
+        return randomList;
+    }
+
+    /// <summary>
+    /// 获取一个随机值列表
+    /// </summary>
+    public static List<T> GetRandomValueList<T>(T[] list, int getCount, bool excludeSame = false, List<T> ignoreList = null)
+    {
+        int ignoreCount = ignoreList == null ? 0 : ignoreList.Count;
+        int canRandomCount = list.Length - ignoreCount;
+        if (!excludeSame && canRandomCount < getCount)
+        {
+            CommonLog.Error("可随机的数量小于要获取的数量");
+            return null;
+        }
+        List<T> randomList = new();
+        SafeWhile(
+            () =>
+            {
+                return randomList.Count < getCount;
+            },
+            () =>
+            {
+                var value = GetRandomValue<T>(list, ignoreList);
+                if (excludeSame || !randomList.Contains(value))
+                {
+                    randomList.Add(value);
+                }
+            });
+        return randomList;
+    }
+
+    /// <summary>
+    /// 获取一个随机值列表
+    /// </summary>
+    public static List<T> GetRandomValueList<T>(Array list, int getCount, bool excludeSame = false, List<T> ignoreList = null)
+    {
+        int ignoreCount = ignoreList == null ? 0 : ignoreList.Count;
+        int canRandomCount = list.Length - ignoreCount;
+        if (!excludeSame && canRandomCount < getCount)
+        {
+            CommonLog.Error("可随机的数量小于要获取的数量");
+            return null;
+        }
+        List<T> randomList = new();
+        SafeWhile(
+            () =>
+            {
+                return randomList.Count < getCount;
+            },
+            () =>
+            {
+                var value = GetRandomValue<T>(list, ignoreList);
+                if (excludeSame || !randomList.Contains(value))
+                {
+                    randomList.Add(value);
+                }
+            });
+        return randomList;
     }
 
     /// <summary>
     /// 获取一个随机的枚举值列表
     /// </summary>
     public static List<T> GetRandomEnumList<T>(int getCount, bool excludeSame = false, List<T> ignoreList = null)
-            where T : struct
+            where T : Enum
     {
-        int ignoreCount = ignoreList == null ? 0 : ignoreList.Count;
         Array values = Enum.GetValues(typeof(T));
-        int enumCount = values.Length - ignoreCount;
-        if (!excludeSame && enumCount < getCount)
-        {
-            CommonLog.Error("枚举类型数量小于要获取的数量");
-            return null;
-        }
-        List<T> enumList = new();
-        SafeWhile(
-            () =>
-            {
-                return enumList.Count < getCount;
-            },
-            () =>
-            {
-                var value = GetRandomEmum<T>(ignoreList);
-                if (excludeSame || !enumList.Contains(value))
-                {
-                    enumList.Add(value);
-                }
-            });
-        return enumList;
+        List<T> randomEnumList = GetRandomValueList<T>(values, getCount, excludeSame, ignoreList);
+        return randomEnumList;
     }
 
     /// <summary>
@@ -83,5 +205,21 @@ public static class GameUtils
                 break;
             }
         }
+    }
+
+    /// <summary>
+    /// 是否全部相等
+    /// </summary>
+    public static bool AllSame<T>(params T[] array)
+    {
+        if (array == null || array.Length <= 0)
+            return true;
+        T compareValue = array[0];
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (!compareValue.Equals(array[i]))
+                return false;
+        }
+        return true;
     }
 }
