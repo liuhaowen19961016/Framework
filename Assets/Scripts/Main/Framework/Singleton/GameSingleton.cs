@@ -1,20 +1,11 @@
-using System;
 using System.Collections.Generic;
+using System;
 
-//整个游戏通过Component（继承ComponentBase）和Singleton（继承Singelton）两大模块控制
-//之所以有Component和Singleton两个，是因为Component和Singleton的概念不一致
-//Game类是注册全局Component和Singleton的入口
-public static class Game
+/// <summary>
+/// 管理Singleton
+/// </summary>
+public class GameSingleton
 {
-    #region 组件（Component）
-
-    public static ComponentRoot ComponentRoot => Root.Ins.ComponentRoot;//ComponentRoot，没实际作用，所有的Component都属于它的子Component
-    private static Queue<IUpdate> updates = new();
-
-    #endregion 组件（Component）
-
-    #region 单例（Singleton）
-
     private static Dictionary<Type, ISingleton> singletonDict = new();
 
     private static Queue<ISingletonFixedUpdate> singletonFixedUpdates = new();
@@ -92,16 +83,12 @@ public static class Game
         }
     }
 
-    #endregion 单例（Singleton）
-
     public static void Dispose()
     {
-        foreach (var singleton in singletonDict.Values)
+        foreach (var kvp in singletonDict)
         {
-            singleton?.UnRegister();
+            kvp.Value.UnRegister();
         }
         singletonDict.Clear();
-
-        //TODO 清ComponentRoot
     }
 }

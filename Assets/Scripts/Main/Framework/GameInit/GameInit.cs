@@ -27,25 +27,32 @@ namespace Main
             GameInitSetting = gameInitSetting;
             Log.Init(gameInitSetting.logLevel);
 
-            Game.AddSingleton<ComponentMgr>();
-
             // TODO：放在热更结束后调用
             Loader.Ins.StartLoader();
         }
 
         private void FixedUpdate()
         {
-            Game.FixedUpdate();
+            GameSingleton.FixedUpdate();
+            GameComponent.FixedUpdate();
         }
 
         private void Update()
         {
-            Game.Update();
+            GameSingleton.Update();
+            GameComponent.Update();
         }
 
         private void LateUpdate()
         {
-            Game.LateUpdate();
+            GameSingleton.LateUpdate();
+            GameComponent.LateUpdate();
+        }
+
+        private void OnApplicationQuit()
+        {
+            GameSingleton.Dispose();
+            GameComponent.Dispose();
         }
     }
 }

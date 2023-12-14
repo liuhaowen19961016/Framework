@@ -6,7 +6,7 @@ public class ComponentRoot : ComponentBase
 {
     public ComponentRoot()
     {
-        InstanceId = IdUtils.GenInstanceId();
+        instanceId = IdUtils.GenInstanceId();
         Root = this;
         Parent = null;
     }

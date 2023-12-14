@@ -33,7 +33,13 @@ public class Singleton<T> : ISingleton
         {
             return;
         }
+        OnDispose();
         isDisposed = true;
         ins = null;
+    }
+
+    protected virtual void OnDispose()
+    {
+
     }
 }

@@ -6,7 +6,11 @@ namespace Hotfix
         {
             CommonLog.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
 
-            ComponentMgr.ComponentRoot.AddComponent<TestHotfixCom>();
+            GameComponent.Init();
+
+            //TODO
+            GameSingleton.AddSingleton<TestSingletn>();
+            GameComponent.ComponentRoot.AddComponent<TestComP1>();
         }
     }
 }
