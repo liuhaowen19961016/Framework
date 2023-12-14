@@ -18,7 +18,7 @@ public class TestHotfix : Singleton<TestHotfix>, ISingletonUpdate
 
     public void Update()
     {
-        //CommonLog.Error(" TestHotfix Update");
+        CommonLog.Error(" TestHotfix Update");
     }
     
     public void TestHotfixFun()

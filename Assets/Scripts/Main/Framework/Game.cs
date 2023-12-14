@@ -9,6 +9,7 @@ public static class Game
     #region 组件（Component）
 
     public static ComponentRoot ComponentRoot => Root.Ins.ComponentRoot;//ComponentRoot，没实际作用，所有的Component都属于它的子Component
+    private static Queue<IUpdate> updates = new();
 
     #endregion 组件（Component）
 
@@ -92,4 +93,15 @@ public static class Game
     }
 
     #endregion 单例（Singleton）
+
+    public static void Dispose()
+    {
+        foreach (var singleton in singletonDict.Values)
+        {
+            singleton?.UnRegister();
+        }
+        singletonDict.Clear();
+
+        //TODO 清ComponentRoot
+    }
 }

@@ -27,6 +27,8 @@ namespace Main
             GameInitSetting = gameInitSetting;
             Log.Init(gameInitSetting.logLevel);
 
+            Game.AddSingleton<ComponentMgr>();
+
             // TODO：放在热更结束后调用
             Loader.Ins.StartLoader();
         }

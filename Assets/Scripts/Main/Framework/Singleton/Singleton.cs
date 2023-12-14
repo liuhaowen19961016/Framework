@@ -1,3 +1,6 @@
+/// <summary>
+/// 单例模版
+/// </summary>
 public class Singleton<T> : ISingleton
     where T : Singleton<T>
 {
@@ -8,7 +11,7 @@ public class Singleton<T> : ISingleton
         {
             if (ins == null)
             {
-                CommonLog.Error($"请先注册此单例，{typeof(T).Name}");
+                CommonLog.Error($"请先注册此单例，{typeof(T).FullName}");
             }
             return ins;
         }

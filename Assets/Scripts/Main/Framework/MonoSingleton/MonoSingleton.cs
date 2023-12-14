@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 /// <summary>
 /// Mono单例模版
@@ -16,6 +15,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour
         {
             if (!Application.isPlaying)
                 return null;
+
             if (root == null)
             {
                 root = GameObject.Find("MonoSingletonRoot");
@@ -28,7 +28,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour
             if (_Ins == null)
             {
                 _Ins = FindObjectOfType(typeof(T)) as T;
-                string name = typeof(T).FullName.ToString();
+                string name = typeof(T).FullName;
                 if (_Ins == null)
                 {
                     _Ins = new GameObject(name, typeof(T)).GetComponent<T>();
