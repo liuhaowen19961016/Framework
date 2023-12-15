@@ -10,7 +10,6 @@ namespace Hotfix
 
             //TODO
             GameSingleton.AddSingleton<TestSingletn>();
-            GameComponent.ComponentRoot.AddComponent<TestComP1>();
         }
     }
 }

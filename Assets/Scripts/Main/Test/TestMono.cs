@@ -28,4 +28,12 @@ public class TestMono : MonoBehaviour
         //}
 
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            
+        }
+    }
 }

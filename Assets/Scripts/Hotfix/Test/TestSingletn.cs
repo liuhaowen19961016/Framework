@@ -9,9 +9,4 @@ public class TestSingletn : Singleton<TestSingletn>
         base.OnDispose();
         CommonLog.Error("TestSingletn OnDispose");
     }
-
-    public void Test()
-    {
-        
-    }
 }

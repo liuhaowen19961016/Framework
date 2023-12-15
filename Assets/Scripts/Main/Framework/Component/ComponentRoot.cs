@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 
+/// <summary>
+/// 所有Component的根节点
+/// </summary>
 public class ComponentRoot : ComponentBase
 {
     public ComponentRoot()
