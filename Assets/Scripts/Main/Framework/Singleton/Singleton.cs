@@ -1,6 +1,8 @@
+using System;
 /// <summary>
 /// 单例模版
 /// </summary>
+[Obsolete]
 public class Singleton<T> : ISingleton
     where T : Singleton<T>
 {

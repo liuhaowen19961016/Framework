@@ -33,26 +33,22 @@ namespace Main
 
         private void FixedUpdate()
         {
-            GameSingleton.FixedUpdate();
-            GameComponent.FixedUpdate();
+
         }
 
         private void Update()
         {
-            GameSingleton.Update();
-            GameComponent.Update();
+           
         }
 
         private void LateUpdate()
         {
-            GameSingleton.LateUpdate();
-            GameComponent.LateUpdate();
+        
         }
 
         private void OnApplicationQuit()
         {
-            GameSingleton.Dispose();
-            GameComponent.Dispose();
+       
         }
     }
 }

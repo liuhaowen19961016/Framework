@@ -6,10 +6,6 @@ namespace Hotfix
         {
             CommonLog.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
 
-            GameComponent.Init();
-
-            //TODO
-            GameSingleton.AddSingleton<TestSingletn>();
         }
     }
 }

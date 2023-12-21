@@ -19,7 +19,7 @@ public class TestMono : MonoBehaviour
         //    CommonLog.Info(item.Key);
         //}
 
-        //dict=dict.OrderBy(k => k).ToDictionary(k=>k,v=>v);
+        //dict = dict.OrderBy(k => k.Key).ToDictionary(a => a.Key, a => a.Value);
         //CommonLog.Info("OrderBy");
 
         //foreach (var item in dict)
@@ -27,13 +27,31 @@ public class TestMono : MonoBehaviour
         //    CommonLog.Info(item.Key);
         //}
 
+
+        List<TestC> list = new List<TestC>();
+        list.Add(new TestC() { index = 1, v = 2 });
+        list.Add(new TestC() { index = 2, v = 3 });
+        list.Add(new TestC() { index = 5, v = 11 });
+
+        var dicts = list.ToDictionary(k => k.index, k => k.v);
+        foreach (var item in dicts)
+        {
+            CommonLog.Error(item.Key + " " + item.Value);
+        }
     }
+
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            
+
         }
     }
+}
+
+public class TestC
+{
+    public int index;
+    public int v;
 }

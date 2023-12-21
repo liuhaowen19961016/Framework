@@ -4,6 +4,7 @@ using System;
 /// <summary>
 /// 管理Singleton
 /// </summary>
+[Obsolete]
 public class GameSingleton
 {
     private static Dictionary<Type, ISingleton> singletonDict = new();
