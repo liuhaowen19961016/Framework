@@ -28,7 +28,7 @@ namespace Main
             Log.Init(gameInitSetting.logLevel);
 
             // TODO：放在热更结束后调用
-            Loader.Ins.StartLoader();
+            Loader.StartLoader();
         }
 
         private void FixedUpdate()

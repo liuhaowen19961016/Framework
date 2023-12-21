@@ -7,9 +7,9 @@ namespace Main
     /// 装载器
     /// </summary>
     /// 用于开启Hoxfix工程
-    public class Loader : MonoSingleton<Loader>
+    public class Loader
     {
-        public void StartLoader()
+        public static void StartLoader()
         {
             Assembly assembly = Assembly.Load("Hotfix");
             Type type = assembly.GetType("Hotfix.GameInit");
