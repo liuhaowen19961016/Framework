@@ -170,7 +170,7 @@ public class TimerManager
         }
     }
 
-    private void Update()
+    public void Update()
     {
         UpdateAll();
     }

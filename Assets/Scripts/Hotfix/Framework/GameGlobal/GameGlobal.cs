@@ -13,23 +13,41 @@ namespace Hotfix
             return ins;
         }
 
-        #region 
-
         private static TimerManager timerMgr;
         public TimerManager TimerMgr => timerMgr;
 
-        #endregion
+        private static bool initComplete;
 
         private static void Start()
         {
             CommonLog.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
-       
+
             timerMgr = new TimerManager();
+
+            initComplete = true;
         }
 
         private void Init()
         {
 
+        }
+
+        public void FixedUpdate()
+        {
+            if (!initComplete)
+                return;
+        }
+
+        public void Update()
+        {
+            if (!initComplete)
+                return;
+        }
+
+        public void LateUpdate()
+        {
+            if (!initComplete)
+                return;
         }
     }
 }
