@@ -69,7 +69,7 @@ public class GameObjectPool
         gameObjectCollections.Clear();
     }
 
-    private static GameObjectCollection GetGameObjectCollection(GameObject prefab)
+    public static GameObjectCollection GetGameObjectCollection(GameObject prefab)
     {
         if (prefab == null)
         {

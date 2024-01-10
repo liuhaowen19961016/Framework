@@ -60,7 +60,7 @@ public class ReferencePool
         referencelCollections.Clear();
     }
 
-    private static ReferenceCollection GetReferenceCollection(Type referenceType)
+    public static ReferenceCollection GetReferenceCollection(Type referenceType)
     {
         if (referenceType == null)
         {
