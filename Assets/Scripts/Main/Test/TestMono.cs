@@ -6,13 +6,10 @@ using System.Linq;
 
 public class TestMono : MonoBehaviour
 {
-    Dictionary<int, List<int>> dict = new Dictionary<int, List<int>>();
-
     public void Start()
     {
 
     }
-
 
     private void Update()
     {
@@ -21,10 +18,4 @@ public class TestMono : MonoBehaviour
 
         }
     }
-}
-
-public class TestC
-{
-    public int index;
-    public int v;
 }
