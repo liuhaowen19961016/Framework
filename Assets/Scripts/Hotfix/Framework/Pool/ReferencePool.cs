@@ -9,7 +9,7 @@ public class ReferencePool
 {
     private static Dictionary<Type, ReferenceCollection> referencelCollections = new();
 
-    public static void Set<T>(int count, int capacity = -1)
+    public static void PreLoad<T>(int count, int capacity = -1)
         where T : class, new()
     {
         var pool = GetReferenceCollection(typeof(T));
