@@ -11,7 +11,7 @@ public enum EGameEventType
     #endregion UI
 }
 
-public class GameEventData : IPoolObject
+public class GameEventDataBase : IPoolObject
 {
     public EGameEventType gameEventType;
 
@@ -29,15 +29,15 @@ public class GameEventData : IPoolObject
 public class GameEventDataPool
 {
     public static T Allocate<T>()
-        where T : GameEventData, new()
+        where T : GameEventDataBase, new()
     {
         T data = ReferencePool.Allocate<T>();
         return data;
     }
 
-    public static bool Recycle<T>(GameEventData data)
-        where T : GameEventData, new()
+    public static bool Recycle<T>(T data)
+        where T : GameEventDataBase, new()
     {
-        return ReferencePool.Recycle<T>(data as T);
+        return ReferencePool.Recycle<T>(data);
     }
 }

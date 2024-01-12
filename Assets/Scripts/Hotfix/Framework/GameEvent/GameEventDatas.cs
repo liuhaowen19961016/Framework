@@ -9,7 +9,7 @@ using UnityEngine;
 /// <summary>
 /// 添加飞奖励数据
 /// </summary>
-public class EvtEnqueueFlyRewardData : GameEventData
+public class EvtEnqueueFlyRewardData : GameEventDataBase
 {
     public List<int> itemIdList = new();
     public List<Vector3> fromWorldPosList = new();
@@ -36,7 +36,7 @@ public class EvtEnqueueFlyRewardData : GameEventData
 /// <summary>
 /// 本组飞奖励完成
 /// </summary>
-public class EvtFlyRewardGroupComplete : GameEventData
+public class EvtFlyRewardGroupComplete : GameEventDataBase
 {
     public int itemId;
 
@@ -55,7 +55,7 @@ public class EvtFlyRewardGroupComplete : GameEventData
 /// <summary>
 /// 单个飞奖励完成
 /// </summary>
-public class EvtFlyRewardSingleComplete : GameEventData
+public class EvtFlyRewardSingleComplete : GameEventDataBase
 {
     public int itemId;
     public float perRealCount;

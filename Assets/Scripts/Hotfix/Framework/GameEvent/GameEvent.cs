@@ -3,54 +3,56 @@ using System;
 
 public class GameEvent
 {
-    private static Dictionary<EGameEventType, Dictionary<int, List<Action<GameEventData>>>> gameEvents = new();
+    private static Dictionary<EGameEventType, Dictionary<int, List<Delegate>>> gameEvents = new();
 
-    public static void Register(EGameEventType gameEventType, Action<GameEventData> callback, int subId = -1)
+    public static void Register<T>(EGameEventType gameEventType, Action<T> callback, int subId = -1)
+        where T : GameEventDataBase
     {
-        if (!gameEvents.TryGetValue(gameEventType, out Dictionary<int, List<Action<GameEventData>>> gameEventDataDict))
+        if (!gameEvents.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> callbackDict))
         {
-            gameEventDataDict = new Dictionary<int, List<Action<GameEventData>>>();
-            gameEvents[gameEventType] = gameEventDataDict;
+            callbackDict = new Dictionary<int, List<Delegate>>();
+            gameEvents[gameEventType] = callbackDict;
         }
-        if (!gameEventDataDict.TryGetValue(subId, out List<Action<GameEventData>> gameEventDataList))
+        if (!callbackDict.TryGetValue(subId, out List<Delegate> callbackList))
         {
-            gameEventDataList = new List<Action<GameEventData>>();
-            gameEventDataDict[subId] = gameEventDataList;
+            callbackList = new List<Delegate>();
+            callbackDict[subId] = callbackList;
         }
-        gameEventDataList.Add(callback);
+        callbackList.Add(callback);
     }
 
-    public static void UnRegister(EGameEventType gameEventType, Action<GameEventData> callback, int subId = -1)
+    public static void UnRegister<T>(EGameEventType gameEventType, Action<T> callback, int subId = -1)
+        where T : GameEventDataBase
     {
-        if (gameEvents.TryGetValue(gameEventType, out Dictionary<int, List<Action<GameEventData>>> gameEventDataDict))
+        if (!gameEvents.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> callbackDict))
+            return;
+        if (!callbackDict.TryGetValue(subId, out List<Delegate> callbackList))
+            return;
+
+        callbackList.Remove(callback);
+
+        if (callbackList.Count <= 0)
         {
-            if (gameEventDataDict.TryGetValue(subId, out List<Action<GameEventData>> gameEventDataList))
+            callbackDict.Remove(subId);
+            if (callbackDict.Count <= 0)
             {
-                gameEventDataList.Remove(callback);
-                if (gameEventDataList.Count <= 0)
-                {
-                    gameEventDataDict.Remove(subId);
-                    if (gameEventDataDict.Count <= 0)
-                    {
-                        gameEvents.Remove(gameEventType);
-                    }
-                }
+                gameEvents.Remove(gameEventType);
             }
         }
     }
 
-    public static void Dispatch<T>(GameEventData gameEventData, int subId = -1)
-        where T : GameEventData, new()
+    public static void Dispatch<T>(T gameEventData, int subId = -1)
+        where T : GameEventDataBase, new()
     {
-        if (gameEvents.TryGetValue(gameEventData.gameEventType, out Dictionary<int, List<Action<GameEventData>>> gameEventDataDict))
+        if (!gameEvents.TryGetValue(gameEventData.gameEventType, out Dictionary<int, List<Delegate>> callbackDict))
+            return;
+        if (!callbackDict.TryGetValue(subId, out List<Delegate> callbackList))
+            return;
+
+        foreach (var callback in callbackList)
         {
-            if (gameEventDataDict.TryGetValue(subId, out List<Action<GameEventData>> gameEventDataList))
-            {
-                foreach (var callback in gameEventDataList)
-                {
-                    callback?.Invoke(gameEventData);
-                }
-            }
+            var cb = callback as Action<T>;
+            cb?.Invoke(gameEventData);
         }
 
         GameEventDataPool.Recycle<T>(gameEventData);
