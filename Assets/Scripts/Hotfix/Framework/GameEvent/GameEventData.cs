@@ -2,7 +2,13 @@ public enum EGameEventType
 {
     Invalid,
 
-    Test,
+    #region UI
+
+    EnqueueFlyRewardData,
+    FlyRewardGroupComplete,
+    FlyRewardSingleComplete
+
+    #endregion UI
 }
 
 public class GameEventData : IPoolObject
