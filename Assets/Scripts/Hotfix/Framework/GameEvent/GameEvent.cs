@@ -5,7 +5,7 @@ public class GameEvent
 {
     private static Dictionary<EGameEventType, Dictionary<int, List<Delegate>>> gameEvents = new();
 
-    public static void Register<T>(EGameEventType gameEventType, Action<T> callback, int subId = -1)
+    public static void AddListener<T>(EGameEventType gameEventType, Action<T> callback, int subId = -1)
         where T : GameEventDataBase
     {
         if (!gameEvents.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> callbackDict))
@@ -21,7 +21,7 @@ public class GameEvent
         callbackList.Add(callback);
     }
 
-    public static void UnRegister<T>(EGameEventType gameEventType, Action<T> callback, int subId = -1)
+    public static void RemoveListener<T>(EGameEventType gameEventType, Action<T> callback, int subId = -1)
         where T : GameEventDataBase
     {
         if (!gameEvents.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> callbackDict))
