@@ -19,7 +19,7 @@ public class GameObjectCollection
             {
                 root = new GameObject().transform;
                 root.name = poolKey;
-                root.transform.SetParent(GameObjectPool.GameObjectRoot, false);
+                root.transform.SetParent(GameObjectPool.GameObjectPoolRoot, false);
             }
             return root;
         }

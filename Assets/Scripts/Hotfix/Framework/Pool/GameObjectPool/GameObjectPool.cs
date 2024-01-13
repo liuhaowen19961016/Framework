@@ -6,18 +6,18 @@ using UnityEngine;
 /// </summary>
 public class GameObjectPool
 {
-    private static Transform gameObjectRoot;
-    public static Transform GameObjectRoot
+    private static Transform gameObjectPoolRoot;
+    public static Transform GameObjectPoolRoot
     {
         get
         {
-            if (gameObjectRoot == null)
+            if (gameObjectPoolRoot == null)
             {
                 GameObject rootGo = new GameObject("GameObjectPoolRoot");
                 GameObject.DontDestroyOnLoad(rootGo);
-                gameObjectRoot = rootGo.transform;
+                gameObjectPoolRoot = rootGo.transform;
             }
-            return gameObjectRoot;
+            return gameObjectPoolRoot;
         }
     }
 
