@@ -5,8 +5,9 @@ public enum EGameEventType
     #region UI
 
     EnqueueFlyRewardData,
-    FlyRewardGroupComplete,
-    FlyRewardSingleComplete
+    PlayFlyRewardGroupComplete,
+    PlayFlyRewardSingleTypeComplete,
+    PlayFlyRewardSingleOnceComplete,
 
     #endregion UI
 }
