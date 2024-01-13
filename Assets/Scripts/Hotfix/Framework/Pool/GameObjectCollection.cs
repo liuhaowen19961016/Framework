@@ -11,10 +11,10 @@ public class GameObjectCollection
     private Queue<GameObject> gameObjects = new();
     private int capacity = -1;//-1表示无限容量
 
-    public GameObjectCollection(GameObject prefab)
+    public GameObjectCollection(string poolKey)
     {
-        this.prefab = prefab;
-        poolKey = prefab.name;
+        this.poolKey = poolKey;
+        prefab = Resources.Load<GameObject>(poolKey);//TODO
     }
 
     public GameObject Get(bool active = true)

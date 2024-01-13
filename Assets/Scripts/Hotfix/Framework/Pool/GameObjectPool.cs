@@ -23,40 +23,41 @@ public class GameObjectPool
 
     private static Dictionary<string, GameObjectCollection> gameObjectCollections = new();
 
-    public static void PreLoad(GameObject prefab, int count, int capacity = -1)
+    public static void PreLoad(string poolKey, int count, int capacity = -1)
     {
-        var pool = GetGameObjectCollection(prefab);
+        var pool = GetGameObjectCollection(poolKey);
         pool.SetCapacity(capacity);
         pool.Add(count);
     }
 
-    public static GameObject Get(GameObject prefab)
+    public static GameObject Get(string poolKey)
     {
-        var pool = GetGameObjectCollection(prefab);
+        var pool = GetGameObjectCollection(poolKey);
         return pool.Get();
     }
 
-    public static bool Put(GameObject prefab)
+    public static bool Put(GameObject go)
     {
-        var pool = GetGameObjectCollection(prefab);
-        return pool.Put(prefab);
+        string poolKey = go.name;
+        var pool = GetGameObjectCollection(poolKey);
+        return pool.Put(go);
     }
 
-    public static bool Add(GameObject prefab, int count)
+    public static bool Add(string poolKey, int count)
     {
-        var pool = GetGameObjectCollection(prefab);
+        var pool = GetGameObjectCollection(poolKey);
         return pool.Add(count);
     }
 
-    public static void Remove(GameObject prefab, int count)
+    public static void Remove(string poolKey, int count)
     {
-        var pool = GetGameObjectCollection(prefab);
+        var pool = GetGameObjectCollection(poolKey);
         pool.Remove(count);
     }
 
-    public static void Dispose(GameObject prefab)
+    public static void Dispose(string poolKey)
     {
-        var pool = GetGameObjectCollection(prefab);
+        var pool = GetGameObjectCollection(poolKey);
         pool.Dispose();
     }
 
@@ -69,18 +70,17 @@ public class GameObjectPool
         gameObjectCollections.Clear();
     }
 
-    public static GameObjectCollection GetGameObjectCollection(GameObject prefab)
+    public static GameObjectCollection GetGameObjectCollection(string poolKey)
     {
-        if (prefab == null)
+        if (string.IsNullOrEmpty(poolKey))
         {
-            Debug.LogError($"prefab不能为null");
+            Debug.LogError($"poolKey不能为null");
             return null;
         }
 
-        string poolKey = prefab.name;
         if (!gameObjectCollections.TryGetValue(poolKey, out GameObjectCollection gameObjectlCollection))
         {
-            gameObjectlCollection = new GameObjectCollection(prefab);
+            gameObjectlCollection = new GameObjectCollection(poolKey);
             gameObjectCollections.Add(poolKey, gameObjectlCollection);
         }
         return gameObjectlCollection;
