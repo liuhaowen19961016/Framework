@@ -62,14 +62,14 @@ public partial class UI_Win_FlyReward : MonoBehaviour
             var evtPlayFlyRewardSingleTypeComplete = GameEventDataPool.Allocate<EvtPlayFlyRewardSingleTypeComplete>();
             evtPlayFlyRewardSingleTypeComplete.itemId = itemId;
             evtPlayFlyRewardSingleTypeComplete.realCount = realCount;
-            GameEvent.Dispatch(evtPlayFlyRewardSingleTypeComplete);
+            GameEvent.DispatchGameEvent(evtPlayFlyRewardSingleTypeComplete);
             // 本组飞奖励完成
             if (isLastInGroup)
             {
                 var evtPlayFlyRewardGroupComplete = GameEventDataPool.Allocate<EvtPlayFlyRewardGroupComplete>();
                 evtPlayFlyRewardGroupComplete.itemId = itemId;
                 evtPlayFlyRewardGroupComplete.realCount = realCount;
-                GameEvent.Dispatch(evtPlayFlyRewardGroupComplete);
+                GameEvent.DispatchGameEvent(evtPlayFlyRewardGroupComplete);
             }
             return;
         }
@@ -200,7 +200,7 @@ public partial class UI_Win_FlyReward : MonoBehaviour
                 var evtPlayFlyRewardSingleTypeComplete = GameEventDataPool.Allocate<EvtPlayFlyRewardSingleTypeComplete>();
                 evtPlayFlyRewardSingleTypeComplete.itemId = data.itemIdList[i];
                 evtPlayFlyRewardSingleTypeComplete.realCount = data.realCountList[i];
-                GameEvent.Dispatch(evtPlayFlyRewardSingleTypeComplete);
+                GameEvent.DispatchGameEvent(evtPlayFlyRewardSingleTypeComplete);
                 continue;
             }
             Vector3 toLocalPos = CTUtils.Screen2UILocal(CTUtils.UIWorld2Screen(targetTrans.transform.position, uiCamera), transform as RectTransform, uiCamera);

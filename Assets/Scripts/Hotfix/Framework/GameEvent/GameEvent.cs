@@ -86,20 +86,20 @@ public class GameEvent
 
     #region 发送事件
 
-    public static void DispatchGameEvent<T>(EGameEventType gameEventType, T arg1, int subId = -1)
+    public static void DispatchGameEvent<T>(T data, int subId = -1)
         where T : GameEventDataBase, new()
     {
-        var handlers = GetHandlers(gameEventType, subId);
+        var handlers = GetHandlers(data.gameEventType, subId);
         if (handlers == null)
             return;
 
         foreach (var handler in handlers)
         {
             var callback = handler as Action<T>;
-            callback?.Invoke(arg1);
+            callback?.Invoke(data);
         }
 
-        GameEventDataPool.Recycle(arg1);
+        GameEventDataPool.Recycle(data);
     }
     public static void Dispatch(EGameEventType gameEventType, int subId = -1)
     {
