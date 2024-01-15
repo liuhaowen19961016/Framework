@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System;
 
-public class GameEvent
+public class Event
 {
-    private static Dictionary<EGameEventType, Dictionary<int, List<Delegate>>> gameEvents = new();
+    private static Dictionary<EGameEventType, Dictionary<int, List<Delegate>>> events = new();
 
     #region 添加监听者
 
@@ -79,7 +79,7 @@ public class GameEvent
 
     public static void RemoveAllListener()
     {
-        gameEvents.Clear();
+        events.Clear();
     }
 
     #endregion 移除监听者
@@ -204,10 +204,10 @@ public class GameEvent
     {
         if (handler == null)
             return false;
-        if (!gameEvents.TryGetValue(gameEventType, out var handlerDict))
+        if (!events.TryGetValue(gameEventType, out var handlerDict))
         {
             handlerDict = new Dictionary<int, List<Delegate>>();
-            gameEvents.Add(gameEventType, handlerDict);
+            events.Add(gameEventType, handlerDict);
         }
         if (!handlerDict.TryGetValue(subId, out List<Delegate> handlers))
         {
@@ -220,7 +220,7 @@ public class GameEvent
 
     private static bool RemoveListener(EGameEventType gameEventType, Delegate handler, int subId = -1)
     {
-        if (!gameEvents.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> handlerDict))
+        if (!events.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> handlerDict))
             return false;
         if (!handlerDict.TryGetValue(subId, out List<Delegate> handlers))
             return false;
@@ -232,7 +232,7 @@ public class GameEvent
             handlerDict.Remove(subId);
             if (handlerDict.Count <= 0)
             {
-                gameEvents.Remove(gameEventType);
+                events.Remove(gameEventType);
             }
         }
         return true;
@@ -240,7 +240,7 @@ public class GameEvent
 
     private static List<Delegate> GetHandlers(EGameEventType gameEventType, int subId = -1)
     {
-        if (!gameEvents.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> handlerDict))
+        if (!events.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> handlerDict))
             return null;
         if (!handlerDict.TryGetValue(subId, out List<Delegate> handlers))
             return null;
