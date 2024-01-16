@@ -9,6 +9,11 @@ namespace Main
     /// 用于开启Hoxfix工程
     public class Loader
     {
+        public static Action FixedUpdate;
+        public static Action Update;
+        public static Action LateUpdate;
+        public static Action OnApplicationQuit;
+
         public static void StartLoader()
         {
             Assembly assembly = Assembly.Load("Hotfix");

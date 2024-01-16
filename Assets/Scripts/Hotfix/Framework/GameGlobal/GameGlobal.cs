@@ -1,3 +1,4 @@
+using Main;
 
 namespace Hotfix
 {
@@ -12,8 +13,15 @@ namespace Hotfix
         {
             CommonLog.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
 
+            Loader.FixedUpdate += FixedUpdate;
+            Loader.Update += Update;
+            Loader.LateUpdate += LateUpdate;
+            Loader.OnApplicationQuit += OnApplicationQuit;
+
+            //
             timer = new Timer();
 
+            //
             initComplete = true;
         }
 
@@ -22,13 +30,13 @@ namespace Hotfix
 
         }
 
-        public void FixedUpdate()
+        public static void FixedUpdate()
         {
             if (!initComplete)
                 return;
         }
 
-        public void Update()
+        public static void Update()
         {
             if (!initComplete)
                 return;
@@ -36,10 +44,21 @@ namespace Hotfix
             timer?.Update();
         }
 
-        public void LateUpdate()
+        public static void LateUpdate()
         {
             if (!initComplete)
                 return;
+        }
+
+        public static void OnApplicationQuit()
+        {
+            if (!initComplete)
+                return;
+
+            Loader.FixedUpdate -= FixedUpdate;
+            Loader.Update -= Update;
+            Loader.LateUpdate -= LateUpdate;
+            Loader.OnApplicationQuit -= OnApplicationQuit;
         }
     }
 }

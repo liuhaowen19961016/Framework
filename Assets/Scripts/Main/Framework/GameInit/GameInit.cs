@@ -33,22 +33,22 @@ namespace Main
 
         private void FixedUpdate()
         {
-           
+            Loader.FixedUpdate();
         }
 
         private void Update()
         {
-           
+            Loader.Update();
         }
 
         private void LateUpdate()
         {
-        
+            Loader.LateUpdate();
         }
 
         private void OnApplicationQuit()
         {
-       
+            Loader.OnApplicationQuit();
         }
     }
 }
