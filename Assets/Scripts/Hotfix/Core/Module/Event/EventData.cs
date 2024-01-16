@@ -1,4 +1,4 @@
-public enum EGameEventType
+public enum EEventType
 {
     Invalid,
 
@@ -12,13 +12,13 @@ public enum EGameEventType
     #endregion UI
 }
 
-public class GameEventDataBase : IPoolObject
+public class EventDataBase : IPoolObject
 {
-    public EGameEventType gameEventType;
+    public EEventType gameEventType;
 
     public virtual void OnInit()
     {
-        gameEventType = EGameEventType.Invalid;
+        gameEventType = EEventType.Invalid;
     }
 
     public virtual void OnRecycle()
@@ -27,17 +27,17 @@ public class GameEventDataBase : IPoolObject
     }
 }
 
-public class GameEventDataPool
+public class EventDataPool
 {
     public static T Allocate<T>()
-        where T : GameEventDataBase, new()
+        where T : EventDataBase, new()
     {
         T data = ReferencePool.Allocate<T>();
         return data;
     }
 
     public static bool Recycle<T>(T data)
-        where T : GameEventDataBase, new()
+        where T : EventDataBase, new()
     {
         return ReferencePool.Recycle<T>(data);
     }

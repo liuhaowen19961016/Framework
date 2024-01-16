@@ -3,39 +3,39 @@ using System;
 
 public class Event
 {
-    private static Dictionary<EGameEventType, Dictionary<int, List<Delegate>>> events = new();
+    private static Dictionary<EEventType, Dictionary<int, List<Delegate>>> events = new();
 
     #region 添加监听者
 
-    public static bool AddListener(EGameEventType gameEventType, Action handler, int subId = -1)
+    public static bool AddListener(EEventType gameEventType, Action handler, int subId = -1)
     {
         return AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T>(EGameEventType gameEventType, Action<T> handler, int subId = -1)
+    public static bool AddListener<T>(EEventType gameEventType, Action<T> handler, int subId = -1)
     {
         return AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U>(EGameEventType gameEventType, Action<T, U> handler, int subId = -1)
+    public static bool AddListener<T, U>(EEventType gameEventType, Action<T, U> handler, int subId = -1)
     {
         return AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V>(EGameEventType gameEventType, Action<T, U, V> handler, int subId = -1)
+    public static bool AddListener<T, U, V>(EEventType gameEventType, Action<T, U, V> handler, int subId = -1)
     {
         return AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V, W>(EGameEventType gameEventType, Action<T, U, V, W> handler, int subId = -1)
+    public static bool AddListener<T, U, V, W>(EEventType gameEventType, Action<T, U, V, W> handler, int subId = -1)
     {
         return AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V, W, X>(EGameEventType gameEventType, Action<T, U, V, W, X> handler, int subId = -1)
+    public static bool AddListener<T, U, V, W, X>(EEventType gameEventType, Action<T, U, V, W, X> handler, int subId = -1)
     {
         return AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V, W, X, Y>(EGameEventType gameEventType, Action<T, U, V, W, X, Y> handler, int subId = -1)
+    public static bool AddListener<T, U, V, W, X, Y>(EEventType gameEventType, Action<T, U, V, W, X, Y> handler, int subId = -1)
     {
         return AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V, W, X, Y, Z>(EGameEventType gameEventType, Action<T, U, V, W, X, Y, Z> handler, int subId = -1)
+    public static bool AddListener<T, U, V, W, X, Y, Z>(EEventType gameEventType, Action<T, U, V, W, X, Y, Z> handler, int subId = -1)
     {
         return AddListener(gameEventType, (Delegate)handler, subId);
     }
@@ -44,35 +44,35 @@ public class Event
 
     #region 移除监听者
 
-    public static bool RemoveListener(EGameEventType gameEventType, Action handler, int subId = -1)
+    public static bool RemoveListener(EEventType gameEventType, Action handler, int subId = -1)
     {
         return RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T>(EGameEventType gameEventType, Action<T> handler, int subId = -1)
+    public static bool RemoveListener<T>(EEventType gameEventType, Action<T> handler, int subId = -1)
     {
         return RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U>(EGameEventType gameEventType, Action<T, U> handler, int subId = -1)
+    public static bool RemoveListener<T, U>(EEventType gameEventType, Action<T, U> handler, int subId = -1)
     {
         return RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V>(EGameEventType gameEventType, Action<T, U, V> handler, int subId = -1)
+    public static bool RemoveListener<T, U, V>(EEventType gameEventType, Action<T, U, V> handler, int subId = -1)
     {
         return RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V, W>(EGameEventType gameEventType, Action<T, U, V, W> handler, int subId = -1)
+    public static bool RemoveListener<T, U, V, W>(EEventType gameEventType, Action<T, U, V, W> handler, int subId = -1)
     {
         return RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V, W, X>(EGameEventType gameEventType, Action<T, U, V, W, X> handler, int subId = -1)
+    public static bool RemoveListener<T, U, V, W, X>(EEventType gameEventType, Action<T, U, V, W, X> handler, int subId = -1)
     {
         return RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V, W, X, Y>(EGameEventType gameEventType, Action<T, U, V, W, X, Y> handler, int subId = -1)
+    public static bool RemoveListener<T, U, V, W, X, Y>(EEventType gameEventType, Action<T, U, V, W, X, Y> handler, int subId = -1)
     {
         return RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V, W, X, Y, Z>(EGameEventType gameEventType, Action<T, U, V, W, X, Y, Z> handler, int subId = -1)
+    public static bool RemoveListener<T, U, V, W, X, Y, Z>(EEventType gameEventType, Action<T, U, V, W, X, Y, Z> handler, int subId = -1)
     {
         return RemoveListener(gameEventType, (Delegate)handler, subId);
     }
@@ -87,7 +87,7 @@ public class Event
     #region 发送事件
 
     public static void DispatchGameEvent<T>(T data, int subId = -1)
-        where T : GameEventDataBase, new()
+        where T : EventDataBase, new()
     {
         var handlers = GetHandlers(data.gameEventType, subId);
         if (handlers == null)
@@ -99,9 +99,9 @@ public class Event
             callback?.Invoke(data);
         }
 
-        GameEventDataPool.Recycle(data);
+        EventDataPool.Recycle(data);
     }
-    public static void Dispatch(EGameEventType gameEventType, int subId = -1)
+    public static void Dispatch(EEventType gameEventType, int subId = -1)
     {
         var handlers = GetHandlers(gameEventType, subId);
         if (handlers == null)
@@ -113,7 +113,7 @@ public class Event
             callback?.Invoke();
         }
     }
-    public static void Dispatch<T>(EGameEventType gameEventType, T arg1, int subId = -1)
+    public static void Dispatch<T>(EEventType gameEventType, T arg1, int subId = -1)
     {
         var handlers = GetHandlers(gameEventType, subId);
         if (handlers == null)
@@ -125,7 +125,7 @@ public class Event
             callback?.Invoke(arg1);
         }
     }
-    public static void Dispatch<T, U>(EGameEventType gameEventType, T arg1, U arg2, int subId = -1)
+    public static void Dispatch<T, U>(EEventType gameEventType, T arg1, U arg2, int subId = -1)
     {
         var handlers = GetHandlers(gameEventType, subId);
         if (handlers == null)
@@ -137,7 +137,7 @@ public class Event
             callback?.Invoke(arg1, arg2);
         }
     }
-    public static void Dispatch<T, U, V>(EGameEventType gameEventType, T arg1, U arg2, V arg3, int subId = -1)
+    public static void Dispatch<T, U, V>(EEventType gameEventType, T arg1, U arg2, V arg3, int subId = -1)
     {
         var handlers = GetHandlers(gameEventType, subId);
         if (handlers == null)
@@ -149,7 +149,7 @@ public class Event
             callback?.Invoke(arg1, arg2, arg3);
         }
     }
-    public static void Dispatch<T, U, V, W>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, int subId = -1)
+    public static void Dispatch<T, U, V, W>(EEventType gameEventType, T arg1, U arg2, V arg3, W arg4, int subId = -1)
     {
         var handlers = GetHandlers(gameEventType, subId);
         if (handlers == null)
@@ -161,7 +161,7 @@ public class Event
             callback?.Invoke(arg1, arg2, arg3, arg4);
         }
     }
-    public static void Dispatch<T, U, V, W, X>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, int subId = -1)
+    public static void Dispatch<T, U, V, W, X>(EEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, int subId = -1)
     {
         var handlers = GetHandlers(gameEventType, subId);
         if (handlers == null)
@@ -173,7 +173,7 @@ public class Event
             callback?.Invoke(arg1, arg2, arg3, arg4, arg5);
         }
     }
-    public static void Dispatch<T, U, V, W, X, Y>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6, int subId = -1)
+    public static void Dispatch<T, U, V, W, X, Y>(EEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6, int subId = -1)
     {
         var handlers = GetHandlers(gameEventType, subId);
         if (handlers == null)
@@ -185,7 +185,7 @@ public class Event
             callback?.Invoke(arg1, arg2, arg3, arg4, arg5, arg6);
         }
     }
-    public static void Dispatch<T, U, V, W, X, Y, Z>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6, Z arg7, int subId = -1)
+    public static void Dispatch<T, U, V, W, X, Y, Z>(EEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6, Z arg7, int subId = -1)
     {
         var handlers = GetHandlers(gameEventType, subId);
         if (handlers == null)
@@ -200,7 +200,7 @@ public class Event
 
     #endregion 发送事件
 
-    private static bool AddListener(EGameEventType gameEventType, Delegate handler, int subId = -1)
+    private static bool AddListener(EEventType gameEventType, Delegate handler, int subId = -1)
     {
         if (handler == null)
             return false;
@@ -218,7 +218,7 @@ public class Event
         return true;
     }
 
-    private static bool RemoveListener(EGameEventType gameEventType, Delegate handler, int subId = -1)
+    private static bool RemoveListener(EEventType gameEventType, Delegate handler, int subId = -1)
     {
         if (!events.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> handlerDict))
             return false;
@@ -238,7 +238,7 @@ public class Event
         return true;
     }
 
-    private static List<Delegate> GetHandlers(EGameEventType gameEventType, int subId = -1)
+    private static List<Delegate> GetHandlers(EEventType gameEventType, int subId = -1)
     {
         if (!events.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> handlerDict))
             return null;

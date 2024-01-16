@@ -109,7 +109,7 @@ public class TimerTask
     }
 }
 
-public class TimerManager 
+public class Timer
 {
     private List<TimerTask> timerTaskList_ToAdd = new();
     private List<TimerTask> timerTaskList = new();

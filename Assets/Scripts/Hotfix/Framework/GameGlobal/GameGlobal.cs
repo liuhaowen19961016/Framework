@@ -3,18 +3,8 @@ namespace Hotfix
 {
     public class GameGlobal
     {
-        private static GameGlobal ins;
-        public static GameGlobal Get()
-        {
-            if (ins == null)
-            {
-                ins = new GameGlobal();
-            }
-            return ins;
-        }
-
-        private static TimerManager timerMgr;
-        public TimerManager TimerMgr => timerMgr;
+        private static Timer timer;
+        public static Timer Timer => timer;
 
         private static bool initComplete;
 
@@ -22,7 +12,7 @@ namespace Hotfix
         {
             CommonLog.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
 
-            timerMgr = new TimerManager();
+            timer = new Timer();
 
             initComplete = true;
         }
@@ -42,6 +32,8 @@ namespace Hotfix
         {
             if (!initComplete)
                 return;
+
+            timer?.Update();
         }
 
         public void LateUpdate()
