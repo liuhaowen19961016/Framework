@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 
 namespace Main
 {
@@ -16,9 +15,8 @@ namespace Main
 
         public static void StartLoader()
         {
-            Assembly assembly = Assembly.Load("Hotfix");
-            Type type = assembly.GetType("Hotfix.GameGlobal");
-            type.GetMethod("Start", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, null);
+            HotfixBridge.Init();
+            HotfixBridge.CallStaticMethod("Hotfix", "GameGlobal", "Start");
         }
     }
 }
