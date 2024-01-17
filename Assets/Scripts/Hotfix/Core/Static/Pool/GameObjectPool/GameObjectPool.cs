@@ -63,9 +63,9 @@ public class GameObjectPool
 
     public static void DisposeAll()
     {
-        foreach (var referencelCollection in gameObjectCollections.Values)
+        foreach (var gameObjectCollection in gameObjectCollections.Values)
         {
-            referencelCollection.Dispose();
+            gameObjectCollection.Dispose();
         }
         gameObjectCollections.Clear();
     }

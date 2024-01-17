@@ -140,6 +140,14 @@ public class ReferenceCollection
 
     public void Dispose()
     {
+        while (references.Count > 0)
+        {
+            var obj = references.Dequeue();
+            if (obj is IPoolObject poolObject)
+            {
+                poolObject.OnDispose();
+            }
+        }
         references.Clear();
     }
 
