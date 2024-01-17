@@ -9,7 +9,7 @@ using UnityEngine;
 /// <summary>
 /// 添加飞奖励数据
 /// </summary>
-public class EvtEnqueueFlyRewardData : EventDataBase
+public class EvtEnqueueFlyRewardData : GameEventDataBase
 {
     public List<int> itemIdList = new();
     public List<Vector3> fromWorldPosList = new();
@@ -18,12 +18,12 @@ public class EvtEnqueueFlyRewardData : EventDataBase
 
     public override void OnInit()
     {
-        gameEventType = EEventType.EnqueueFlyRewardData;
+        gameEventType = EGameEventType.EnqueueFlyRewardData;
     }
 
     public EvtEnqueueFlyRewardData()
     {
-        gameEventType = EEventType.EnqueueFlyRewardData;
+        gameEventType = EGameEventType.EnqueueFlyRewardData;
     }
 
     public override void OnRecycle()
@@ -39,14 +39,14 @@ public class EvtEnqueueFlyRewardData : EventDataBase
 /// <summary>
 /// 本组飞奖励完成
 /// </summary>
-public class EvtPlayFlyRewardGroupComplete : EventDataBase
+public class EvtPlayFlyRewardGroupComplete : GameEventDataBase
 {
     public int itemId;
     public int realCount;
 
     public override void OnInit()
     {
-        gameEventType = EEventType.PlayFlyRewardGroupComplete;
+        gameEventType = EGameEventType.PlayFlyRewardGroupComplete;
     }
 
     public override void OnRecycle()
@@ -60,14 +60,14 @@ public class EvtPlayFlyRewardGroupComplete : EventDataBase
 /// <summary>
 /// 单类型飞奖励完成
 /// </summary>
-public class EvtPlayFlyRewardSingleTypeComplete : EventDataBase
+public class EvtPlayFlyRewardSingleTypeComplete : GameEventDataBase
 {
     public int itemId;
     public int realCount;
 
     public override void OnInit()
     {
-        gameEventType = EEventType.PlayFlyRewardSingleTypeComplete;
+        gameEventType = EGameEventType.PlayFlyRewardSingleTypeComplete;
     }
 
     public override void OnRecycle()
@@ -81,14 +81,14 @@ public class EvtPlayFlyRewardSingleTypeComplete : EventDataBase
 /// <summary>
 /// 单次飞奖励完成
 /// </summary>
-public class EvtPlayFlyRewardSingleOnceComplete : EventDataBase
+public class EvtPlayFlyRewardSingleOnceComplete : GameEventDataBase
 {
     public int itemId;
     public float perRealCount;
 
     public override void OnInit()
     {
-        gameEventType = EEventType.PlayFlyRewardSingleOnceComplete;
+        gameEventType = EGameEventType.PlayFlyRewardSingleOnceComplete;
     }
 
     public override void OnRecycle()
