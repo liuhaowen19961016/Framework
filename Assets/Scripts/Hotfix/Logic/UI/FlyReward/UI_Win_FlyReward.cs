@@ -192,7 +192,7 @@ public partial class UI_Win_FlyReward : MonoBehaviour
         Camera uiCamera = GameObject.Find("Canvas").GetComponent<Canvas>().worldCamera;//TODO
         for (int i = 0; i < data.itemIdList.Count; i++)
         {
-            Vector3 fromLocalPos = CTUtils.World2UILocal(data.fromWorldPosList[i], transform as RectTransform, worldCamera, uiCamera);
+            //Vector3 fromLocalPos = CTUtils.World2UILocal(data.fromWorldPosList[i], transform as RectTransform, worldCamera, uiCamera);
             Transform targetTrans = GetTargetTrans(data.itemIdList[i]);
             // 目标位置为null的则没有飞奖励效果，直接视为本类型的飞奖励效果完成
             if (targetTrans == null)
@@ -203,9 +203,9 @@ public partial class UI_Win_FlyReward : MonoBehaviour
                 Event.DispatchGameEvent(evtPlayFlyRewardSingleTypeComplete);
                 continue;
             }
-            Vector3 toLocalPos = CTUtils.Screen2UILocal(CTUtils.UIWorld2Screen(targetTrans.transform.position, uiCamera), transform as RectTransform, uiCamera);
+            //Vector3 toLocalPos = CTUtils.Screen2UILocal(CTUtils.UIWorld2Screen(targetTrans.transform.position, uiCamera), transform as RectTransform, uiCamera);
             FlyRewardData flyRewardData = ReferencePool.Allocate<FlyRewardData>();
-            flyRewardData.SetData(data.itemIdList[i], targetTrans, fromLocalPos, toLocalPos, data.showCountList[i], data.realCountList[i]);
+            //flyRewardData.SetData(data.itemIdList[i], targetTrans, fromLocalPos, toLocalPos, data.showCountList[i], data.realCountList[i]);
             tempFlyRewardDatas.Add(flyRewardData);
         }
         // 根据优先级添加到飞奖励数据的队列中
