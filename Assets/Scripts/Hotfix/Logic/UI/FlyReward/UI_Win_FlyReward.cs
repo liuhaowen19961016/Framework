@@ -1,6 +1,7 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
+using Hotfix;
 
 /// <summary>
 /// 每个飞奖励的数据
@@ -38,6 +39,11 @@ public class FlyRewardData : IPoolObject
         showCount = -1;
         realCount = -1;
     }
+
+    public void OnDispose()
+    {
+
+    }
 }
 
 /// <summary>
@@ -47,8 +53,8 @@ public partial class UI_Win_FlyReward : MonoBehaviour
 {
     public void Awake()
     {
-        GameEvent.AddListener<EvtEnqueueFlyRewardData>(EGameEventType.EnqueueFlyRewardData, OnEnqueueFlyRewardData);
-        GameEvent.AddListener<EvtPlayFlyRewardGroupComplete>(EGameEventType.PlayFlyRewardGroupComplete, OnPlayFlyRewardGroupComplete);
+        GameGlobal.GameEvent.AddListener<EvtEnqueueFlyRewardData>(EGameEventType.EnqueueFlyRewardData, OnEnqueueFlyRewardData);
+        GameGlobal.GameEvent.AddListener<EvtPlayFlyRewardGroupComplete>(EGameEventType.PlayFlyRewardGroupComplete, OnPlayFlyRewardGroupComplete);
 
         GameObjectPool.PreLoad("FlyReward1", 5);//TODO
     }
@@ -59,17 +65,17 @@ public partial class UI_Win_FlyReward : MonoBehaviour
         if (targetTrans == null)
         {
             // 单类型飞奖励完成
-            var evtPlayFlyRewardSingleTypeComplete = GameEventDataPool.Allocate<EvtPlayFlyRewardSingleTypeComplete>();
+            var evtPlayFlyRewardSingleTypeComplete = GameEventPool.Allocate<EvtPlayFlyRewardSingleTypeComplete>();
             evtPlayFlyRewardSingleTypeComplete.itemId = itemId;
             evtPlayFlyRewardSingleTypeComplete.realCount = realCount;
-            GameEvent.DispatchGameEvent(evtPlayFlyRewardSingleTypeComplete);
+            GameGlobal.GameEvent.DispatchGameEvent(evtPlayFlyRewardSingleTypeComplete);
             // 本组飞奖励完成
             if (isLastInGroup)
             {
-                var evtPlayFlyRewardGroupComplete = GameEventDataPool.Allocate<EvtPlayFlyRewardGroupComplete>();
+                var evtPlayFlyRewardGroupComplete = GameEventPool.Allocate<EvtPlayFlyRewardGroupComplete>();
                 evtPlayFlyRewardGroupComplete.itemId = itemId;
                 evtPlayFlyRewardGroupComplete.realCount = realCount;
-                GameEvent.DispatchGameEvent(evtPlayFlyRewardGroupComplete);
+                GameGlobal.GameEvent.DispatchGameEvent(evtPlayFlyRewardGroupComplete);
             }
             return;
         }
@@ -159,8 +165,8 @@ public partial class UI_Win_FlyReward : MonoBehaviour
 
     public void OnDestroy()
     {
-        GameEvent.RemoveListener<EvtEnqueueFlyRewardData>(EGameEventType.EnqueueFlyRewardData, OnEnqueueFlyRewardData);
-        GameEvent.RemoveListener<EvtPlayFlyRewardGroupComplete>(EGameEventType.PlayFlyRewardGroupComplete, OnPlayFlyRewardGroupComplete);
+        GameGlobal.GameEvent.RemoveListener<EvtEnqueueFlyRewardData>(EGameEventType.EnqueueFlyRewardData, OnEnqueueFlyRewardData);
+        GameGlobal.GameEvent.RemoveListener<EvtPlayFlyRewardGroupComplete>(EGameEventType.PlayFlyRewardGroupComplete, OnPlayFlyRewardGroupComplete);
         flyRewardDataQueue.Clear();
         tempFlyRewardDatas.Clear();
         tempFlyRewardDataDict.Clear();
@@ -197,10 +203,10 @@ public partial class UI_Win_FlyReward : MonoBehaviour
             // 目标位置为null的则没有飞奖励效果，直接视为本类型的飞奖励效果完成
             if (targetTrans == null)
             {
-                var evtPlayFlyRewardSingleTypeComplete = GameEventDataPool.Allocate<EvtPlayFlyRewardSingleTypeComplete>();
+                var evtPlayFlyRewardSingleTypeComplete = GameEventPool.Allocate<EvtPlayFlyRewardSingleTypeComplete>();
                 evtPlayFlyRewardSingleTypeComplete.itemId = data.itemIdList[i];
                 evtPlayFlyRewardSingleTypeComplete.realCount = data.realCountList[i];
-                GameEvent.DispatchGameEvent(evtPlayFlyRewardSingleTypeComplete);
+                GameGlobal.GameEvent.DispatchGameEvent(evtPlayFlyRewardSingleTypeComplete);
                 continue;
             }
             //Vector3 toLocalPos = CTUtils.Screen2UILocal(CTUtils.UIWorld2Screen(targetTrans.transform.position, uiCamera), transform as RectTransform, uiCamera);

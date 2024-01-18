@@ -7,6 +7,9 @@ namespace Hotfix
         private static Timer timer;
         public static Timer Timer => timer;
 
+        private static GameEvent gameEvent;
+        public static GameEvent GameEvent => gameEvent;
+
         private static bool initComplete;
 
         private static void Start()
@@ -20,6 +23,7 @@ namespace Hotfix
 
             //
             timer = new Timer();
+            gameEvent = new GameEvent();
 
             //
             initComplete = true;

@@ -3,248 +3,178 @@ using System;
 
 public class GameEvent
 {
-    private static Dictionary<EGameEventType, Dictionary<int, List<Delegate>>> events = new();
+    private Dictionary<EGameEventType, GameEventData> gameEventDatas = new();
 
     #region 添加监听者
 
-    public static bool AddListener(EGameEventType gameEventType, Action handler, int subId = -1)
+    public void AddListener(EGameEventType gameEventType, Action handler, int subId = -1)
     {
-        return AddListener(gameEventType, (Delegate)handler, subId);
+        AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T>(EGameEventType gameEventType, Action<T> handler, int subId = -1)
+    public void AddListener<T>(EGameEventType gameEventType, Action<T> handler, int subId = -1)
     {
-        return AddListener(gameEventType, (Delegate)handler, subId);
+        AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U>(EGameEventType gameEventType, Action<T, U> handler, int subId = -1)
+    public void AddListener<T, U>(EGameEventType gameEventType, Action<T, U> handler, int subId = -1)
     {
-        return AddListener(gameEventType, (Delegate)handler, subId);
+        AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V>(EGameEventType gameEventType, Action<T, U, V> handler, int subId = -1)
+    public void AddListener<T, U, V>(EGameEventType gameEventType, Action<T, U, V> handler, int subId = -1)
     {
-        return AddListener(gameEventType, (Delegate)handler, subId);
+        AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V, W>(EGameEventType gameEventType, Action<T, U, V, W> handler, int subId = -1)
+    public void AddListener<T, U, V, W>(EGameEventType gameEventType, Action<T, U, V, W> handler, int subId = -1)
     {
-        return AddListener(gameEventType, (Delegate)handler, subId);
+        AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V, W, X>(EGameEventType gameEventType, Action<T, U, V, W, X> handler, int subId = -1)
+    public void AddListener<T, U, V, W, X>(EGameEventType gameEventType, Action<T, U, V, W, X> handler, int subId = -1)
     {
-        return AddListener(gameEventType, (Delegate)handler, subId);
+        AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V, W, X, Y>(EGameEventType gameEventType, Action<T, U, V, W, X, Y> handler, int subId = -1)
+    public void AddListener<T, U, V, W, X, Y>(EGameEventType gameEventType, Action<T, U, V, W, X, Y> handler, int subId = -1)
     {
-        return AddListener(gameEventType, (Delegate)handler, subId);
+        AddListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool AddListener<T, U, V, W, X, Y, Z>(EGameEventType gameEventType, Action<T, U, V, W, X, Y, Z> handler, int subId = -1)
+    public void AddListener<T, U, V, W, X, Y, Z>(EGameEventType gameEventType, Action<T, U, V, W, X, Y, Z> handler, int subId = -1)
     {
-        return AddListener(gameEventType, (Delegate)handler, subId);
+        AddListener(gameEventType, (Delegate)handler, subId);
     }
 
     #endregion 添加监听者
 
     #region 移除监听者
 
-    public static bool RemoveListener(EGameEventType gameEventType, Action handler, int subId = -1)
+    public void RemoveListener(EGameEventType gameEventType, Action handler, int subId = -1)
     {
-        return RemoveListener(gameEventType, (Delegate)handler, subId);
+        RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T>(EGameEventType gameEventType, Action<T> handler, int subId = -1)
+    public void RemoveListener<T>(EGameEventType gameEventType, Action<T> handler, int subId = -1)
     {
-        return RemoveListener(gameEventType, (Delegate)handler, subId);
+        RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U>(EGameEventType gameEventType, Action<T, U> handler, int subId = -1)
+    public void RemoveListener<T, U>(EGameEventType gameEventType, Action<T, U> handler, int subId = -1)
     {
-        return RemoveListener(gameEventType, (Delegate)handler, subId);
+        RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V>(EGameEventType gameEventType, Action<T, U, V> handler, int subId = -1)
+    public void RemoveListener<T, U, V>(EGameEventType gameEventType, Action<T, U, V> handler, int subId = -1)
     {
-        return RemoveListener(gameEventType, (Delegate)handler, subId);
+        RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V, W>(EGameEventType gameEventType, Action<T, U, V, W> handler, int subId = -1)
+    public void RemoveListener<T, U, V, W>(EGameEventType gameEventType, Action<T, U, V, W> handler, int subId = -1)
     {
-        return RemoveListener(gameEventType, (Delegate)handler, subId);
+        RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V, W, X>(EGameEventType gameEventType, Action<T, U, V, W, X> handler, int subId = -1)
+    public void RemoveListener<T, U, V, W, X>(EGameEventType gameEventType, Action<T, U, V, W, X> handler, int subId = -1)
     {
-        return RemoveListener(gameEventType, (Delegate)handler, subId);
+        RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V, W, X, Y>(EGameEventType gameEventType, Action<T, U, V, W, X, Y> handler, int subId = -1)
+    public void RemoveListener<T, U, V, W, X, Y>(EGameEventType gameEventType, Action<T, U, V, W, X, Y> handler, int subId = -1)
     {
-        return RemoveListener(gameEventType, (Delegate)handler, subId);
+        RemoveListener(gameEventType, (Delegate)handler, subId);
     }
-    public static bool RemoveListener<T, U, V, W, X, Y, Z>(EGameEventType gameEventType, Action<T, U, V, W, X, Y, Z> handler, int subId = -1)
+    public void RemoveListener<T, U, V, W, X, Y, Z>(EGameEventType gameEventType, Action<T, U, V, W, X, Y, Z> handler, int subId = -1)
     {
-        return RemoveListener(gameEventType, (Delegate)handler, subId);
+        RemoveListener(gameEventType, (Delegate)handler, subId);
     }
 
-    public static void RemoveAllListener()
+    public void RemoveAllListener()
     {
-        events.Clear();
+        gameEventDatas.Clear();
     }
 
     #endregion 移除监听者
 
-    #region 发送事件
+    #region 分发事件
 
-    public static void DispatchGameEvent<T>(T data, int subId = -1)
-        where T : GameEventDataBase, new()
+    public void DispatchGameEvent<T>(T data, int subId = -1)
+        where T : GameEventBase, new()
     {
-        var handlers = GetHandlers(data.gameEventType, subId);
-        if (handlers == null)
+        if (!gameEventDatas.TryGetValue(data.gameEventType, out GameEventData gameEventData))
             return;
 
-        foreach (var handler in handlers)
-        {
-            var callback = handler as Action<T>;
-            callback?.Invoke(data);
-        }
+        gameEventData.Dispatch<T>(data, subId);
 
-        GameEventDataPool.Recycle(data);
+        GameEventPool.Recycle(data);
     }
-    public static void Dispatch(EGameEventType gameEventType, int subId = -1)
+    public void Dispatch(EGameEventType gameEventType, int subId = -1)
     {
-        var handlers = GetHandlers(gameEventType, subId);
-        if (handlers == null)
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
             return;
 
-        foreach (var handler in handlers)
-        {
-            var callback = handler as Action;
-            callback?.Invoke();
-        }
+        gameEventData.Dispatch(subId);
     }
-    public static void Dispatch<T>(EGameEventType gameEventType, T arg1, int subId = -1)
+    public void Dispatch<T>(EGameEventType gameEventType, T arg1, int subId = -1)
     {
-        var handlers = GetHandlers(gameEventType, subId);
-        if (handlers == null)
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
             return;
 
-        foreach (var handler in handlers)
-        {
-            var callback = handler as Action<T>;
-            callback?.Invoke(arg1);
-        }
+        gameEventData.Dispatch<T>(arg1, subId);
     }
-    public static void Dispatch<T, U>(EGameEventType gameEventType, T arg1, U arg2, int subId = -1)
+    public void Dispatch<T, U>(EGameEventType gameEventType, T arg1, U arg2, int subId = -1)
     {
-        var handlers = GetHandlers(gameEventType, subId);
-        if (handlers == null)
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
             return;
 
-        foreach (var handler in handlers)
-        {
-            var callback = handler as Action<T, U>;
-            callback?.Invoke(arg1, arg2);
-        }
+        gameEventData.Dispatch<T, U>(arg1, arg2, subId);
     }
-    public static void Dispatch<T, U, V>(EGameEventType gameEventType, T arg1, U arg2, V arg3, int subId = -1)
+    public void Dispatch<T, U, V>(EGameEventType gameEventType, T arg1, U arg2, V arg3, int subId = -1)
     {
-        var handlers = GetHandlers(gameEventType, subId);
-        if (handlers == null)
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
             return;
 
-        foreach (var handler in handlers)
-        {
-            var callback = handler as Action<T, U, V>;
-            callback?.Invoke(arg1, arg2, arg3);
-        }
+        gameEventData.Dispatch<T, U, V>(arg1, arg2, arg3, subId);
     }
-    public static void Dispatch<T, U, V, W>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, int subId = -1)
+    public void Dispatch<T, U, V, W>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, int subId = -1)
     {
-        var handlers = GetHandlers(gameEventType, subId);
-        if (handlers == null)
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
             return;
 
-        foreach (var handler in handlers)
-        {
-            var callback = handler as Action<T, U, V, W>;
-            callback?.Invoke(arg1, arg2, arg3, arg4);
-        }
+        gameEventData.Dispatch<T, U, V, W>(arg1, arg2, arg3, arg4, subId);
     }
-    public static void Dispatch<T, U, V, W, X>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, int subId = -1)
+    public void Dispatch<T, U, V, W, X>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, int subId = -1)
     {
-        var handlers = GetHandlers(gameEventType, subId);
-        if (handlers == null)
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
             return;
 
-        foreach (var handler in handlers)
-        {
-            var callback = handler as Action<T, U, V, W, X>;
-            callback?.Invoke(arg1, arg2, arg3, arg4, arg5);
-        }
+        gameEventData.Dispatch<T, U, V, W, X>(arg1, arg2, arg3, arg4, arg5, subId);
     }
-    public static void Dispatch<T, U, V, W, X, Y>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6, int subId = -1)
+    public void Dispatch<T, U, V, W, X, Y>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6, int subId = -1)
     {
-        var handlers = GetHandlers(gameEventType, subId);
-        if (handlers == null)
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
             return;
 
-        foreach (var handler in handlers)
-        {
-            var callback = handler as Action<T, U, V, W, X, Y>;
-            callback?.Invoke(arg1, arg2, arg3, arg4, arg5, arg6);
-        }
+        gameEventData.Dispatch<T, U, V, W, X, Y>(arg1, arg2, arg3, arg4, arg5, arg6, subId);
     }
-    public static void Dispatch<T, U, V, W, X, Y, Z>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6, Z arg7, int subId = -1)
+    public void Dispatch<T, U, V, W, X, Y, Z>(EGameEventType gameEventType, T arg1, U arg2, V arg3, W arg4, X arg5, Y arg6, Z arg7, int subId = -1)
     {
-        var handlers = GetHandlers(gameEventType, subId);
-        if (handlers == null)
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
             return;
 
-        foreach (var handler in handlers)
-        {
-            var callback = handler as Action<T, U, V, W, X, Y, Z>;
-            callback?.Invoke(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
-        }
+        gameEventData.Dispatch<T, U, V, W, X, Y, Z>(arg1, arg2, arg3, arg4, arg5, arg6, arg7, subId);
     }
 
-    #endregion 发送事件
+    #endregion 分发事件
 
-    private static bool AddListener(EGameEventType gameEventType, Delegate handler, int subId = -1)
+    private void AddListener(EGameEventType gameEventType, Delegate handler, int subId = -1)
     {
         if (handler == null)
-            return false;
-        if (!events.TryGetValue(gameEventType, out var handlerDict))
+            return;
+
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
         {
-            handlerDict = new Dictionary<int, List<Delegate>>();
-            events.Add(gameEventType, handlerDict);
+            gameEventData = new GameEventData(gameEventType);
+            gameEventDatas.Add(gameEventType, gameEventData);
         }
-        if (!handlerDict.TryGetValue(subId, out List<Delegate> handlers))
-        {
-            handlers = new List<Delegate>();
-            handlerDict[subId] = handlers;
-        }
-        handlers.Add(handler);
-        return true;
+        gameEventData.AddListener(handler, subId);
     }
 
-    private static bool RemoveListener(EGameEventType gameEventType, Delegate handler, int subId = -1)
+    private void RemoveListener(EGameEventType gameEventType, Delegate handler, int subId = -1)
     {
-        if (!events.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> handlerDict))
-            return false;
-        if (!handlerDict.TryGetValue(subId, out List<Delegate> handlers))
-            return false;
+        if (handler == null)
+            return;
+        if (!gameEventDatas.TryGetValue(gameEventType, out GameEventData gameEventData))
+            return;
 
-        handlers.Remove(handler);
-
-        if (handlers.Count <= 0)
-        {
-            handlerDict.Remove(subId);
-            if (handlerDict.Count <= 0)
-            {
-                events.Remove(gameEventType);
-            }
-        }
-        return true;
-    }
-
-    private static List<Delegate> GetHandlers(EGameEventType gameEventType, int subId = -1)
-    {
-        if (!events.TryGetValue(gameEventType, out Dictionary<int, List<Delegate>> handlerDict))
-            return null;
-        if (!handlerDict.TryGetValue(subId, out List<Delegate> handlers))
-            return null;
-
-        return handlers;
+        gameEventData.RemoveListener(handler, subId);
     }
 }
