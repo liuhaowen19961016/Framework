@@ -188,4 +188,23 @@ public static class MathUtils
         List<T> randomEnumList = GetRandomValueList<T>(values, getCount, excludeSame, ignoreList);
         return randomEnumList;
     }
+	
+	/// <summary>
+    /// 列表元素乱序
+    /// </summary>
+    public static void OutOfOrder<T>(List<T> list)
+    {
+        int index;
+        T temp;
+        for (int i = 0; i < list.Count; i++)
+        {
+            index = UnityEngine.Random.Range(0, list.Count);
+            if (index != i)
+            {
+                temp = list[i];
+                list[i] = list[index];
+                list[index] = temp;
+            }
+        }
+    }
 }
