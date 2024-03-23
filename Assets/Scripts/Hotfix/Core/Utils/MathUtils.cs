@@ -192,7 +192,7 @@ public static class MathUtils
 	/// <summary>
     /// 列表元素乱序
     /// </summary>
-    public static void OutOfOrder<T>(List<T> list)
+    public static void DisruptOfOrder<T>(List<T> list)
     {
         int index;
         T temp;
