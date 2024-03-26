@@ -4,101 +4,88 @@ using UnityEngine;
 
 #region UI
 
-#region 飞奖励
+#region 飞物体效果
 
 /// <summary>
-/// 添加飞奖励数据
+/// 添加飞物体数据
 /// </summary>
-public class EvtEnqueueFlyRewardData : GameEventBase
+public class EvtAddFlyObjData : GameEventBase
 {
-    public List<int> itemIdList = new();
-    public List<Vector3> fromWorldPosList = new();
-    public List<int> showCountList = new();
-    public List<int> realCountList = new();
+    public List<EFlyObjType> flyObjTypes = new();
+    public List<int> logicIdList = new();
+    public List<Vector3> fromScreenPosList = new();
+    public List<Vector3> toScreenPosList = new();
+    public List<int> showCountList = new();//显示的物体数量
+    public List<int> realCountList = new();//真实获取的物体数量
 
-    public override void OnInit()
-    {
-        gameEventType = EGameEventType.EnqueueFlyRewardData;
-    }
+    public List<Action> onSpawnFlyObjItemOverList = new();
+    public List<Action> onCompleteList = new();
+    public List<EFlyObjTag> tagList = new();
 
-    public EvtEnqueueFlyRewardData()
+    public EvtAddFlyObjData()
     {
-        gameEventType = EGameEventType.EnqueueFlyRewardData;
+        gameEventType = EGameEventType.AddFlyObjData;
     }
 
     public override void OnRecycle()
     {
         base.OnRecycle();
-        itemIdList.Clear();
-        fromWorldPosList.Clear();
+        flyObjTypes.Clear();
+        logicIdList.Clear();
+        fromScreenPosList.Clear();
+        toScreenPosList.Clear();
         showCountList.Clear();
+        onCompleteList.Clear();
         realCountList.Clear();
+        onSpawnFlyObjItemOverList.Clear();
+        tagList.Clear();
     }
 }
 
 /// <summary>
-/// 本组飞奖励完成
+/// 本组飞物体完成
 /// </summary>
-public class EvtPlayFlyRewardGroupComplete : GameEventBase
+public class EvtFlyObjGroupComplete : GameEventBase
 {
-    public int itemId;
-    public int realCount;
+    public EFlyObjType flyObjType;
+    public EFlyObjTag flyObjTag;
+    public int logicId;
 
-    public override void OnInit()
+    public EvtFlyObjGroupComplete()
     {
-        gameEventType = EGameEventType.PlayFlyRewardGroupComplete;
+        gameEventType = EGameEventType.FlyObjGroupComplete;
     }
 
     public override void OnRecycle()
     {
         base.OnRecycle();
-        itemId = 0;
-        realCount = 0;
+        logicId = 0;
     }
 }
 
 /// <summary>
-/// 单类型飞奖励完成
+/// 单个飞物体完成
 /// </summary>
-public class EvtPlayFlyRewardSingleTypeComplete : GameEventBase
+public class EvtFlyObjSingleComplete : GameEventBase
 {
-    public int itemId;
-    public int realCount;
+    public EFlyObjType flyObjType;
+    public EFlyObjTag flyObjTag;
+    public int logicId;
+    public float addRealCount;
 
-    public override void OnInit()
+    public EvtFlyObjSingleComplete()
     {
-        gameEventType = EGameEventType.PlayFlyRewardSingleTypeComplete;
+        gameEventType = EGameEventType.FlyObjSingleComplete;
     }
 
     public override void OnRecycle()
     {
         base.OnRecycle();
-        itemId = 0;
-        realCount = 0;
+        logicId = 0;
+        addRealCount = 0;
     }
 }
 
-/// <summary>
-/// 单次飞奖励完成
-/// </summary>
-public class EvtPlayFlyRewardSingleOnceComplete : GameEventBase
-{
-    public int itemId;
-    public float perRealCount;
-
-    public override void OnInit()
-    {
-        gameEventType = EGameEventType.PlayFlyRewardSingleOnceComplete;
-    }
-
-    public override void OnRecycle()
-    {
-        base.OnRecycle();
-        itemId = 0;
-        perRealCount = 0;
-    }
-}
-
-#endregion 飞奖励
+#endregion 飞物体效果
 
 #endregion UI
