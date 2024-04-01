@@ -10,6 +10,9 @@ namespace Hotfix
         private static GameEvent gameEvent;
         public static GameEvent GameEvent => gameEvent;
 
+        public static TestHotfix test;
+        public static TestHotfix Test => test;
+
         private static bool initComplete;
 
         private static void Start()
@@ -24,6 +27,10 @@ namespace Hotfix
             //
             timer = new Timer();
             gameEvent = new GameEvent();
+
+            //
+            test = new TestHotfix();
+            test.Register();
 
             //
             initComplete = true;
