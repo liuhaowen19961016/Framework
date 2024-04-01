@@ -21,11 +21,11 @@ public class GameObjectPool
         }
     }
 
-    public const int InitCapacity = 50;
+    public const int DefaultCapacity = 50;
 
     private static Dictionary<string, GameObjectCollection> gameObjectCollections = new();
 
-    public static void PreLoad(string poolKey, int count, int capacity = InitCapacity)
+    public static void PreLoad(string poolKey, int count, int capacity = DefaultCapacity)
     {
         var pool = GetGameObjectCollection(poolKey);
         pool.SetCapacity(capacity);

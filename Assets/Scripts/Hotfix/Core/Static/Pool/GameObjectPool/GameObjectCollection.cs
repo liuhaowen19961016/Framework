@@ -9,7 +9,7 @@ public class GameObjectCollection
     private string poolKey;
     private GameObject prefab;
     private Queue<GameObject> gameObjects = new();
-    private int capacity = 50;//-1表示无限容量
+    private int capacity;//-1表示无限容量
     private Transform root;
     private Transform Root
     {
@@ -25,9 +25,10 @@ public class GameObjectCollection
         }
     }
 
-    public GameObjectCollection(string poolKey)
+    public GameObjectCollection(string poolKey, int capacity = GameObjectPool.DefaultCapacity)
     {
         this.poolKey = poolKey;
+        this.capacity = capacity;
         prefab = Resources.Load<GameObject>(poolKey);//TODO
     }
 
