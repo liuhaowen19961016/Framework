@@ -9,7 +9,7 @@ public class GameObjectCollection
     private string poolKey;
     private GameObject prefab;
     private Queue<GameObject> gameObjects = new();
-    private int capacity = -1;//-1表示无限容量
+    private int capacity = 50;//-1表示无限容量
     private Transform root;
     private Transform Root
     {
@@ -66,8 +66,6 @@ public class GameObjectCollection
         }
 
         go.transform.SetParent(Root, false);
-        IPoolObject poolObject = go.GetComponent<IPoolObject>();
-        poolObject?.OnRecycle();
         gameObjects.Enqueue(go);
         go.SetActive(false);
         return true;
@@ -124,8 +122,6 @@ public class GameObjectCollection
         GameObject newGo = Object.Instantiate(prefab);
         newGo.name = poolKey;
         newGo.transform.SetParent(Root, false);
-        IPoolObject poolObject = newGo.GetComponent<IPoolObject>();
-        poolObject?.OnInit();
         return newGo;
     }
 

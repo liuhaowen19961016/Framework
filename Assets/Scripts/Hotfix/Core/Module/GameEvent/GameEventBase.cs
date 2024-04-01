@@ -11,7 +11,7 @@ public enum EGameEventType
     #endregion UI
 }
 
-public class GameEventBase : IPoolObject
+public class GameEventBase : IReferencePoolObject
 {
     public EGameEventType gameEventType;
 

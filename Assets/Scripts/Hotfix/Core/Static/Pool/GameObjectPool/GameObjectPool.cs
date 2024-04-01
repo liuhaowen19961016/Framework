@@ -21,19 +21,21 @@ public class GameObjectPool
         }
     }
 
+    public const int InitCapacity = 50;
+
     private static Dictionary<string, GameObjectCollection> gameObjectCollections = new();
 
-    public static void PreLoad(string poolKey, int count, int capacity = -1)
+    public static void PreLoad(string poolKey, int count, int capacity = InitCapacity)
     {
         var pool = GetGameObjectCollection(poolKey);
         pool.SetCapacity(capacity);
         pool.Add(count);
     }
 
-    public static GameObject Get(string poolKey)
+    public static GameObject Get(string poolKey, bool active = true)
     {
         var pool = GetGameObjectCollection(poolKey);
-        return pool.Get();
+        return pool.Get(active);
     }
 
     public static bool Put(GameObject go)
