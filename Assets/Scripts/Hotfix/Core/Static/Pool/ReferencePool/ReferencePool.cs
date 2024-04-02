@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -7,39 +8,53 @@ using UnityEngine;
 /// </summary>
 public class ReferencePool
 {
+    public const int DefaultCapacity = 50;
+
     private static Dictionary<Type, ReferenceCollection> referencelCollections = new();
 
-    public static void PreLoad<T>(int count, int capacity = -1)
-        where T : class, new()
+    public static void PreLoad<T>(int count, int capacity = DefaultCapacity)
+        where T : class
     {
         var pool = GetReferenceCollection(typeof(T));
         pool.SetCapacity(capacity);
         pool.Add(count);
     }
 
-    public static T Allocate<T>()
-        where T : class, new()
+    public static object Allocate(Type type)
     {
-        var pool = GetReferenceCollection(typeof(T));
-        return pool.Allocate<T>();
+        var pool = GetReferenceCollection(type);
+        return pool.Allocate(type);
+    }
+
+    public static T Allocate<T>()
+        where T : class
+    {
+        var obj = Allocate(typeof(T));
+        return obj as T;
+    }
+
+    public static bool Recycle(object obj)
+    {
+        var pool = GetReferenceCollection(obj.GetType());
+        return pool.Recycle(obj);
     }
 
     public static bool Recycle<T>(T obj)
-       where T : class, new()
+       where T : class
     {
         var pool = GetReferenceCollection(typeof(T));
         return pool.Recycle<T>(obj);
     }
 
     public static bool Add<T>(int count)
-       where T : class, new()
+       where T : class
     {
         var pool = GetReferenceCollection(typeof(T));
         return pool.Add(count);
     }
 
     public static void Remove<T>(int count)
-      where T : class, new()
+      where T : class
     {
         var pool = GetReferenceCollection(typeof(T));
         pool.Remove(count);
@@ -48,6 +63,12 @@ public class ReferencePool
     public static void Dispose<T>()
     {
         var pool = GetReferenceCollection(typeof(T));
+        pool.Dispose();
+    }
+
+    public static void Dispose(Type type)
+    {
+        var pool = GetReferenceCollection(type);
         pool.Dispose();
     }
 

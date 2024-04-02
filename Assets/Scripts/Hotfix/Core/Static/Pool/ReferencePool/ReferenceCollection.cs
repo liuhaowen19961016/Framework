@@ -9,7 +9,7 @@ public class ReferenceCollection
 {
     private Queue<object> references = new Queue<object>();
     private Type referenceType;
-    private int capacity = -1;//-1表示无限容量
+    private int capacity;//-1表示无限容量
 
     public int UnusedReferenceCount
     {
@@ -55,21 +55,21 @@ public class ReferenceCollection
         }
     }
 
-    public ReferenceCollection(Type referenceType)
+    public ReferenceCollection(Type referenceType, int capacity = ReferencePool.DefaultCapacity)
     {
         this.referenceType = referenceType;
+        this.capacity = capacity;
         usingReferenceCount = 0;
         allocateReferenceCount = 0;
         recycleReferenceCount = 0;
         addReferenceCount = 0;
     }
 
-    public T Allocate<T>()
-         where T : class, new()
+    public object Allocate(Type type)
     {
-        if (typeof(T) != referenceType)
+        if (type != referenceType)
         {
-            Debug.LogError($"类型不一致，对象类型：{typeof(T)}，池子类型：{referenceType}");
+            Debug.LogError($"类型不一致，对象类型：{type}，池子类型：{referenceType}");
             return null;
         }
 
@@ -78,14 +78,21 @@ public class ReferenceCollection
         if (references.Count > 0)
         {
             var temp = references.Dequeue();
-            return (T)temp;
+            return temp;
         }
         var newReference = Create();
-        return (T)newReference;
+        return newReference;
     }
 
-    public bool Recycle<T>(T obj)
-         where T : class, new()
+    public T Allocate<T>()
+         where T : class
+    {
+        Type type = typeof(T);
+        object obj = Allocate(type);
+        return obj as T;
+    }
+
+    public bool Recycle(object obj)
     {
         if (obj.GetType() != referenceType)
         {
@@ -102,11 +109,17 @@ public class ReferenceCollection
         }
 
         references.Enqueue(obj);
-        if (obj is IPoolObject poolObject)
+        if (obj is IReferencePoolObject poolObject)
         {
             poolObject.OnRecycle();
         }
         return true;
+    }
+
+    public bool Recycle<T>(T obj)
+         where T : class
+    {
+        return Recycle((object)obj);
     }
 
     public bool Add(int count)
@@ -143,7 +156,7 @@ public class ReferenceCollection
         while (references.Count > 0)
         {
             var obj = references.Dequeue();
-            if (obj is IPoolObject poolObject)
+            if (obj is IReferencePoolObject poolObject)
             {
                 poolObject.OnDispose();
             }
@@ -159,9 +172,9 @@ public class ReferenceCollection
     private object Create()
     {
         var newReference = Activator.CreateInstance(referenceType);
-        if (newReference is IPoolObject poolObject)
+        if (newReference is IReferencePoolObject poolObject)
         {
-            poolObject.OnInit();
+            poolObject.OnCreate();
         }
         addReferenceCount++;
         return newReference;

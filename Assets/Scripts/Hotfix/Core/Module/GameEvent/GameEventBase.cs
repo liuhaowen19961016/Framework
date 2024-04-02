@@ -15,7 +15,7 @@ public class GameEventBase : IReferencePoolObject
 {
     public EGameEventType gameEventType;
 
-    public virtual void OnInit()
+    public virtual void OnCreate()
     {
         gameEventType = EGameEventType.Invalid;
     }
