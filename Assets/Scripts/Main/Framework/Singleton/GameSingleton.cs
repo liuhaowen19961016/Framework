@@ -26,7 +26,7 @@ public class GameSingleton
         Type type = singleton.GetType();
         if (singletonDict.ContainsKey(type))
         {
-            CommonLog.Error($"已经存在此单例，不能重复添加，单例类型：{type}");
+            Log.Error($"已经存在此单例，不能重复添加，单例类型：{type}");
             return;
         }
         singletonDict.Add(type, singleton);

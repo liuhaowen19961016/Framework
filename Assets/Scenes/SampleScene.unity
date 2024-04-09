@@ -390,6 +390,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameInitSetting:
-    logLevel: 6
-    enableCommonLog: 1
-    enableNetworkLog: 0
+    logEnable: 1
+    logLevel: 11111

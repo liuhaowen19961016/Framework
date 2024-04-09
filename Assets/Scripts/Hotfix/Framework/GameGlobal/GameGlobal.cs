@@ -17,7 +17,7 @@ namespace Hotfix
 
         private static void Start()
         {
-            CommonLog.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
+            Log.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
 
             Loader.FixedUpdate += FixedUpdate;
             Loader.Update += Update;

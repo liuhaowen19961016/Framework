@@ -13,7 +13,7 @@ public class Singleton<T> : ISingleton
         {
             if (ins == null)
             {
-                CommonLog.Error($"请先注册此单例，{typeof(T).FullName}");
+                Log.Error($"请先注册此单例，{typeof(T).FullName}");
             }
             return ins;
         }

@@ -24,11 +24,11 @@ public static class GameUtils
     {
         if (loopCondition == null)
         {
-            CommonLog.Error("循环条件不能为null");
+            Log.Error("循环条件不能为null");
             return;
         }
 
-        int countLimit = 999;
+        int countLimit = 11111;
         int count = 0;
         while (loopCondition())
         {
@@ -36,7 +36,7 @@ public static class GameUtils
             count++;
             if (count == countLimit)
             {
-                CommonLog.Error("出现死循环！！！！！！！！！！");
+                Log.Error("出现死循环！！！！！！！！！！");
                 break;
             }
         }

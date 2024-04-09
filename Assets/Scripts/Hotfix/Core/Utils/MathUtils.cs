@@ -100,7 +100,7 @@ public static class MathUtils
         int canRandomCount = list.Count - ignoreCount;
         if (!excludeSame && canRandomCount < getCount)
         {
-            CommonLog.Error("可随机的数量小于要获取的数量");
+            Log.Error("可随机的数量小于要获取的数量");
             return null;
         }
         List<T> randomList = new();
@@ -129,7 +129,7 @@ public static class MathUtils
         int canRandomCount = list.Length - ignoreCount;
         if (!excludeSame && canRandomCount < getCount)
         {
-            CommonLog.Error("可随机的数量小于要获取的数量");
+            Log.Error("可随机的数量小于要获取的数量");
             return null;
         }
         List<T> randomList = new();
@@ -158,7 +158,7 @@ public static class MathUtils
         int canRandomCount = list.Length - ignoreCount;
         if (!excludeSame && canRandomCount < getCount)
         {
-            CommonLog.Error("可随机的数量小于要获取的数量");
+            Log.Error("可随机的数量小于要获取的数量");
             return null;
         }
         List<T> randomList = new();

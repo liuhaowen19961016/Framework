@@ -18,7 +18,7 @@ public static class HotfixBridge
         MethodInfo methodInfo = type.GetMethod(methodName, bindingFlags);
         if (methodInfo == null)
         {
-            CommonLog.Error($"方法获取失败，nameSpace：{nameSpace}，typeName：{typeName}，methodName：{methodName}");
+            Log.Error($"方法获取失败，nameSpace：{nameSpace}，typeName：{typeName}，methodName：{methodName}");
             return;
         }
         methodInfo.Invoke(obj, args);
@@ -62,7 +62,7 @@ public static class HotfixBridge
         {
             return type;
         }
-        CommonLog.Error($"类获取失败，typeName：{typeName}");
+        Log.Error($"类获取失败，typeName：{typeName}");
         return null;
     }
 

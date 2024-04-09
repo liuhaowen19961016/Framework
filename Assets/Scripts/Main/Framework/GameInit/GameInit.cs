@@ -5,13 +5,8 @@ namespace Main
     [System.Serializable]
     public class GameInitSetting
     {
-        #region Log Setting
-
+        public bool logEnable;
         public ELogLevel logLevel;
-        public bool enableCommonLog;
-        public bool enableNetworkLog;
-
-        #endregion Log Setting
     }
 
     /// <summary>
@@ -19,16 +14,23 @@ namespace Main
     /// </summary>
     public class GameInit : MonoBehaviour
     {
-        public static GameInitSetting GameInitSetting;//外部获取用
         public GameInitSetting gameInitSetting;//游戏启动设置
 
         private void Start()
         {
-            GameInitSetting = gameInitSetting;
-            Log.Init(gameInitSetting.logLevel);
+            Init();
 
             // TODO：放在热更结束后调用
             Loader.StartLoader();
+        }
+
+        private void Init()
+        {
+            //log
+            LogService.Init(gameInitSetting.logEnable, gameInitSetting.logLevel);
+            LogService.Add(new UnityLog());
+            LogService.Add(new FileLog());
+            Log.Info("log init success");
         }
 
         private void FixedUpdate()

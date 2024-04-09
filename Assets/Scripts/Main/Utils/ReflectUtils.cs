@@ -11,7 +11,7 @@ public static class ReflectUtils
         Assembly assembly = Assembly.Load(assemblyName);
         if (assembly == null)
         {
-            CommonLog.Error($"程序集获取失败，assemblyName：{assemblyName}");
+            Log.Error($"程序集获取失败，assemblyName：{assemblyName}");
             return null;
         }
         return assembly;
@@ -44,7 +44,7 @@ public static class ReflectUtils
         Type type = assembly.GetType($"{nameSpace}.{typeName}");
         if (type == null)
         {
-            CommonLog.Error($"类获取失败，assemblyName：{assemblyName}，nameSpace：{nameSpace}，typeName：{typeName}");
+            Log.Error($"类获取失败，assemblyName：{assemblyName}，nameSpace：{nameSpace}，typeName：{typeName}");
             return null;
         }
         return type;
@@ -58,7 +58,7 @@ public static class ReflectUtils
         MethodInfo methodInfo = type.GetMethod(methodName, bindingFlags);
         if (methodInfo == null)
         {
-            CommonLog.Error($"方法获取失败，assemblyName：{assemblyName}，nameSpace：{nameSpace}，typeName：{typeName}，methodName：{methodName}");
+            Log.Error($"方法获取失败，assemblyName：{assemblyName}，nameSpace：{nameSpace}，typeName：{typeName}，methodName：{methodName}");
             return;
         }
         methodInfo.Invoke(obj, args);
