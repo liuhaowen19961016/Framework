@@ -6,30 +6,32 @@ using UnityEngine;
 /// </summary>
 public class GameObjectCollection
 {
+    private EGameObjectPoolType gameObjectPoolType;
     private string poolKey;
     private GameObject prefab;
-    private Queue<GameObject> gameObjects = new();
-    private int capacity;//-1表示无限容量
+    private Queue<GameObject> gameObjects;
+    private int capacity;
+    public int ReuseGameObjectCount => gameObjects.Count;
     private Transform root;
-    private Transform Root
-    {
-        get
-        {
-            if (root == null)
-            {
-                root = new GameObject().transform;
-                root.name = poolKey;
-                root.transform.SetParent(GameObjectPool.GameObjectPoolRoot, false);
-            }
-            return root;
-        }
-    }
 
-    public GameObjectCollection(string poolKey, int capacity = GameObjectPool.DefaultCapacity)
+    public GameObjectCollection(string poolKey, EGameObjectPoolType gameObjectPoolType)
     {
+        gameObjects = new Queue<GameObject>();
+        this.gameObjectPoolType = gameObjectPoolType;
         this.poolKey = poolKey;
-        this.capacity = capacity;
+        capacity = GameObjectPool.DefaultCapacity;
         prefab = Resources.Load<GameObject>(poolKey);//TODO
+        Transform typeRoot = GameObjectPool.GetRoot(gameObjectPoolType);
+        if (typeRoot == null)
+        {
+            typeRoot = new GameObject().transform;
+            typeRoot.name = gameObjectPoolType.ToString();
+            typeRoot.transform.SetParent(GameObjectPool.GameObjectPoolRoot, false);
+            GameObjectPool.SetRoot(typeRoot, gameObjectPoolType);
+        }
+        root = new GameObject().transform;
+        root.name = poolKey;
+        root.transform.SetParent(typeRoot, false);
     }
 
     public GameObject Get(bool active = true)
@@ -40,8 +42,8 @@ public class GameObjectCollection
             tempGo.SetActive(active);
             return tempGo;
         }
-        var newGo = Instantiate();
-        newGo.SetActive(active);
+
+        var newGo = Instantiate(active);
         return newGo;
     }
 
@@ -49,12 +51,12 @@ public class GameObjectCollection
     {
         if (go == null)
         {
-            Debug.LogError($"go为null");
+            Log.Error($"GameObject不能为null");
             return false;
         }
         if (go.name != poolKey)
         {
-            Debug.LogError($"不属于此池子，对象名：{go.name}，池子key：{poolKey}");
+            Log.Error($"不属于此池子，对象名：{go.name}，池子key：{poolKey}");
             Destory(go);
             return false;
         }
@@ -62,11 +64,11 @@ public class GameObjectCollection
         if (capacity >= 0 && gameObjects.Count >= capacity)
         {
             Destory(go);
-            Debug.LogError($"池子容量已满，无法回收，直接销毁，池子key：{poolKey}");
+            Log.Error($"池子容量已满，无法回收，直接销毁，池子key：{poolKey}");
             return false;
         }
 
-        go.transform.SetParent(Root, false);
+        go.transform.SetParent(root, false);
         gameObjects.Enqueue(go);
         go.SetActive(false);
         return true;
@@ -82,8 +84,7 @@ public class GameObjectCollection
         bool addComplete = true;
         while (count-- > 0)
         {
-            var newGo = Instantiate();
-            newGo.SetActive(false);
+            var newGo = Instantiate(false);
             gameObjects.Enqueue(newGo);
             if (capacity >= 0 && gameObjects.Count >= capacity)
             {
@@ -100,34 +101,41 @@ public class GameObjectCollection
         {
             count = gameObjects.Count;
         }
-
         while (count-- > 0)
         {
             GameObject tempGo = gameObjects.Dequeue();
             Destory(tempGo);
         }
+
+        if (gameObjects.Count == 0 && root != null)
+        {
+            Destory(root.gameObject);
+            root = null;
+        }
     }
 
     public void Dispose()
     {
-        while (gameObjects.Count > 0)
-        {
-            GameObject tempGo = gameObjects.Dequeue();
-            Destory(tempGo);
-        }
+        Remove(gameObjects.Count);
         gameObjects.Clear();
-    }
-
-    private GameObject Instantiate()
-    {
-        GameObject newGo = Object.Instantiate(prefab);
-        newGo.name = poolKey;
-        newGo.transform.SetParent(Root, false);
-        return newGo;
     }
 
     private void Destory(GameObject go)
     {
         Object.Destroy(go);
+    }
+
+    private GameObject Instantiate(bool active)
+    {
+        if (prefab == null)
+        {
+            Log.Error($"prefab路径有误，池子key：{poolKey}");
+            return null;
+        }
+        GameObject newGo = Object.Instantiate(prefab);
+        newGo.name = poolKey;
+        newGo.transform.SetParent(root, false);
+        newGo.SetActive(active);
+        return newGo;
     }
 }
