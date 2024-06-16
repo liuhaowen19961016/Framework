@@ -1,4 +1,5 @@
 using Main;
+using Framework;
 
 namespace Hotfix
 {
@@ -7,8 +8,8 @@ namespace Hotfix
         private static Timer timer;
         public static Timer Timer => timer;
 
-        private static GameEvent gameEvent;
-        public static GameEvent GameEvent => gameEvent;
+        private static Event _event;
+        public static Event Event => _event;
 
         public static TestHotfix test;
         public static TestHotfix Test => test;
@@ -26,7 +27,7 @@ namespace Hotfix
 
             //
             timer = new Timer();
-            gameEvent = new GameEvent();
+            _event = new Event();
 
             //
             test = new TestHotfix();
