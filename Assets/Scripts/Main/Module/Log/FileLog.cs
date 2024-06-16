@@ -5,10 +5,12 @@ using UnityEngine;
 
 public enum ELogPlatform
 {
+    WinEditor,
+    OSXEditor,
+    WinPlayer,
+    OSXPlayer,
     Android,
     IOS,
-    Win,
-    MACOS,
 }
 
 /// <summary>
@@ -31,9 +33,20 @@ public class FileLog : ILog
     {
         switch (Application.platform)
         {
-            case RuntimePlatform.WindowsPlayer:
             case RuntimePlatform.WindowsEditor:
-                logPlatform = ELogPlatform.Win;
+                logPlatform = ELogPlatform.WinEditor;
+                break;
+
+            case RuntimePlatform.OSXEditor:
+                logPlatform = ELogPlatform.OSXEditor;
+                break;
+
+            case RuntimePlatform.WindowsPlayer:
+                logPlatform = ELogPlatform.WinPlayer;
+                break;
+
+            case RuntimePlatform.OSXPlayer:
+                logPlatform = ELogPlatform.OSXPlayer;
                 break;
 
             case RuntimePlatform.Android:
@@ -107,15 +120,15 @@ public class FileLog : ILog
     {
         switch (logPlatform)
         {
-            case ELogPlatform.Android:
-                return Path.Combine(Application.persistentDataPath, LogFileDir);
-
-            case ELogPlatform.IOS:
-                return Path.Combine(Application.temporaryCachePath, LogFileDir);
-
-            case ELogPlatform.Win:
-            case ELogPlatform.MACOS:
+            case ELogPlatform.WinEditor:
+            case ELogPlatform.OSXEditor:
                 return Application.dataPath + "/../" + LogFileDir;
+
+            case ELogPlatform.Android:
+            case ELogPlatform.IOS:
+            case ELogPlatform.WinPlayer:
+            case ELogPlatform.OSXPlayer:
+                return Path.Combine(Application.persistentDataPath, LogFileDir);
 
             default:
                 return Application.dataPath + "/../" + LogFileDir;
