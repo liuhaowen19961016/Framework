@@ -3,8 +3,8 @@ using UnityEngine;
 
 public enum EGameObjectPoolType
 {
-    Global = 1,                 //全局
-    InBattle,                   //战斗内
+    Global = 1, //全局
+    InBattle, //战斗内
 }
 
 /// <summary>
@@ -20,14 +20,14 @@ public class GameObjectPool
             if (gameObjectPoolRoot == null)
             {
                 GameObject rootGo = new GameObject("GameObjectPoolRoot");
-                GameObject.DontDestroyOnLoad(rootGo);
+                Object.DontDestroyOnLoad(rootGo);
                 gameObjectPoolRoot = rootGo.transform;
             }
             return gameObjectPoolRoot;
         }
     }
 
-    public const int DefaultCapacity = 50;
+    private const int DefaultCapacity = 50;
 
     private static Dictionary<EGameObjectPoolType, Dictionary<string, GameObjectCollection>> gameObjectCollections = new();
     private static Dictionary<EGameObjectPoolType, Transform> gameObjectPoolType2Root = new();
@@ -37,16 +37,15 @@ public class GameObjectPool
         if (count <= 0)
             return;
 
-        var pool = GetGameObjectCollection(poolKey, gameObjectPoolType, true);
+        var pool = GetGameObjectCollection(poolKey, gameObjectPoolType, capacity, true);
         if (pool == null)
             return;
-        pool.SetCapacity(capacity);
         pool.Add(count);
     }
 
     public static GameObject Get(string poolKey, EGameObjectPoolType gameObjectPoolType = EGameObjectPoolType.Global, bool active = true)
     {
-        var pool = GetGameObjectCollection(poolKey, gameObjectPoolType, true);
+        var pool = GetGameObjectCollection(poolKey, gameObjectPoolType, forceGet: true);
         if (pool == null)
             return null;
         return pool.Get(active);
@@ -107,6 +106,8 @@ public class GameObjectPool
     public static void SetCapacity(string poolKey, int capacity, EGameObjectPoolType gameObjectPoolType = EGameObjectPoolType.Global)
     {
         var pool = GetGameObjectCollection(poolKey, gameObjectPoolType);
+        if (pool == null)
+            return;
         pool.SetCapacity(capacity);
     }
 
@@ -119,34 +120,33 @@ public class GameObjectPool
         return count;
     }
 
-    public static Transform GetRoot(EGameObjectPoolType gameObjectPoolType = EGameObjectPoolType.Global)
-    {
-        if (gameObjectPoolType2Root.TryGetValue(gameObjectPoolType, out Transform root))
-        {
-            return root;
-        }
-        return null;
-    }
-
     #region Tools
 
-    private static GameObjectCollection GetGameObjectCollection(string poolKey, EGameObjectPoolType gameObjectPoolType = EGameObjectPoolType.Global, bool forceGet = false)
+    private static GameObjectCollection GetGameObjectCollection(string poolKey,
+        EGameObjectPoolType gameObjectPoolType = EGameObjectPoolType.Global, int capacity = DefaultCapacity, bool forceGet = false)
     {
         if (string.IsNullOrEmpty(poolKey))
         {
             Log.Error("poolKey不能为空");
             return null;
         }
-        var gameObjectCollections = GetGameObjectCollections(gameObjectPoolType, forceGet: forceGet);
+        var gameObjectCollections = GetGameObjectCollections(gameObjectPoolType, forceGet);
         if (gameObjectCollections == null)
             return null;
 
-        if (!gameObjectCollections.TryGetValue(poolKey, out var existGameObjectCollection))
+        if (!gameObjectPoolType2Root.TryGetValue(gameObjectPoolType, out var rootTrans))
         {
-            existGameObjectCollection = new GameObjectCollection(poolKey, gameObjectPoolType);
-            gameObjectCollections.Add(poolKey, existGameObjectCollection);
+            rootTrans = new GameObject().transform;
+            rootTrans.name = gameObjectPoolType.ToString();
+            rootTrans.transform.SetParent(GameObjectPoolRoot, false);
+            gameObjectPoolType2Root[gameObjectPoolType] = rootTrans;
         }
-        return existGameObjectCollection;
+        if (!gameObjectCollections.TryGetValue(poolKey, out var gameObjectCollection))
+        {
+            gameObjectCollection = new GameObjectCollection(poolKey, gameObjectPoolType, capacity, rootTrans);
+            gameObjectCollections.Add(poolKey, gameObjectCollection);
+        }
+        return gameObjectCollection;
     }
 
     private static Dictionary<string, GameObjectCollection> GetGameObjectCollections(EGameObjectPoolType gameObjectPoolType = EGameObjectPoolType.Global, bool forceGet = false)
@@ -160,13 +160,6 @@ public class GameObjectPool
             }
         }
         return existGameObjectCollections;
-    }
-
-    public static void SetRoot(Transform root, EGameObjectPoolType gameObjectPoolType)
-    {
-        if (root == null)
-            return;
-        gameObjectPoolType2Root[gameObjectPoolType] = root;
     }
 
     #endregion Tools

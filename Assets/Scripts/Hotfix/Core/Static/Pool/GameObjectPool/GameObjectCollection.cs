@@ -12,26 +12,18 @@ public class GameObjectCollection
     private Queue<GameObject> gameObjects;
     private int capacity;
     public int ReuseGameObjectCount => gameObjects.Count;
-    private Transform root;
+    private Transform parentTrans;
 
-    public GameObjectCollection(string poolKey, EGameObjectPoolType gameObjectPoolType)
+    public GameObjectCollection(string poolKey, EGameObjectPoolType gameObjectPoolType, int capacity, Transform typeRootTrans)
     {
         gameObjects = new Queue<GameObject>();
         this.gameObjectPoolType = gameObjectPoolType;
         this.poolKey = poolKey;
-        capacity = GameObjectPool.DefaultCapacity;
-        prefab = Resources.Load<GameObject>(poolKey);//TODO
-        Transform typeRoot = GameObjectPool.GetRoot(gameObjectPoolType);
-        if (typeRoot == null)
-        {
-            typeRoot = new GameObject().transform;
-            typeRoot.name = gameObjectPoolType.ToString();
-            typeRoot.transform.SetParent(GameObjectPool.GameObjectPoolRoot, false);
-            GameObjectPool.SetRoot(typeRoot, gameObjectPoolType);
-        }
-        root = new GameObject().transform;
-        root.name = poolKey;
-        root.transform.SetParent(typeRoot, false);
+        this.capacity = capacity;
+        prefab = Resources.Load<GameObject>(poolKey); //TODO
+        parentTrans = new GameObject().transform;
+        parentTrans.name = poolKey;
+        parentTrans.transform.SetParent(typeRootTrans, false);
     }
 
     public GameObject Get(bool active = true)
@@ -68,7 +60,7 @@ public class GameObjectCollection
             return false;
         }
 
-        go.transform.SetParent(root, false);
+        go.transform.SetParent(parentTrans, false);
         gameObjects.Enqueue(go);
         go.SetActive(false);
         return true;
@@ -107,10 +99,10 @@ public class GameObjectCollection
             Destory(tempGo);
         }
 
-        if (gameObjects.Count == 0 && root != null)
+        if (gameObjects.Count == 0 && parentTrans != null)
         {
-            Destory(root.gameObject);
-            root = null;
+            Destory(parentTrans.gameObject);
+            parentTrans = null;
         }
     }
 
@@ -134,7 +126,7 @@ public class GameObjectCollection
         }
         GameObject newGo = Object.Instantiate(prefab);
         newGo.name = poolKey;
-        newGo.transform.SetParent(root, false);
+        newGo.transform.SetParent(parentTrans, false);
         newGo.SetActive(active);
         return newGo;
     }
