@@ -7,7 +7,6 @@ public class UnityLog : ILog
 {
     public void Init()
     {
-
     }
 
     public void Wirte(string message, ELogLevel logLevel, ELogColor logColor = ELogColor.Default)
@@ -18,12 +17,15 @@ public class UnityLog : ILog
             case ELogLevel.Debug:
                 Debug.Log(message);
                 break;
+
             case ELogLevel.Warning:
                 Debug.LogWarning(message);
                 break;
+
             case ELogLevel.Error:
                 Debug.LogError(message);
                 break;
+
             default:
                 Debug.Log(message);
                 break;
@@ -36,14 +38,19 @@ public class UnityLog : ILog
         {
             case ELogColor.Red:
                 return "#FF0000";
+
             case ELogColor.Green:
                 return "#00FF00";
+
             case ELogColor.Blue:
                 return "#0000FF";
+
             case ELogColor.Cyan:
                 return "#00FFFF";
+
             case ELogColor.Yellow:
                 return "#FFFF00";
+
             default:
                 return "#FFFFFF";
         }

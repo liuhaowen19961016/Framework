@@ -18,7 +18,7 @@ public class FileLog : ILog
 {
     private const string LogFileDir = "GameLog";
     private const string LogFileSuffix = "log";
-    private int MaxLogFileCount = 11;
+    private const int MaxLogFileCount = 11;
 
     private ELogPlatform logPlatform;
     private string logFileName;
@@ -35,12 +35,15 @@ public class FileLog : ILog
             case RuntimePlatform.WindowsEditor:
                 logPlatform = ELogPlatform.Win;
                 break;
+
             case RuntimePlatform.Android:
                 logPlatform = ELogPlatform.Android;
                 break;
+
             case RuntimePlatform.IPhonePlayer:
                 logPlatform = ELogPlatform.IOS;
                 break;
+
             default:
                 break;
         }
@@ -70,7 +73,7 @@ public class FileLog : ILog
             }
 
             string logFileName = $"{(string.IsNullOrEmpty(this.logFileName) ? "GameLog" : this.logFileName)}" +
-                $" {DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day} {DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.{LogFileSuffix}";
+                                 $" {DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day} {DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.{LogFileSuffix}";
             FileStream fs = new FileStream(Path.Combine(logFileDir, logFileName), FileMode.OpenOrCreate);
             sw = new StreamWriter(fs);
             sw.WriteLine($"LogFileName：{(string.IsNullOrEmpty(this.logFileName) ? "GameLog" : this.logFileName)}");
@@ -97,7 +100,6 @@ public class FileLog : ILog
         }
         catch
         {
-
         }
     }
 
@@ -107,11 +109,14 @@ public class FileLog : ILog
         {
             case ELogPlatform.Android:
                 return Path.Combine(Application.persistentDataPath, LogFileDir);
+
             case ELogPlatform.IOS:
                 return Path.Combine(Application.temporaryCachePath, LogFileDir);
+
             case ELogPlatform.Win:
             case ELogPlatform.MACOS:
                 return Application.dataPath + "/../" + LogFileDir;
+
             default:
                 return Application.dataPath + "/../" + LogFileDir;
         }

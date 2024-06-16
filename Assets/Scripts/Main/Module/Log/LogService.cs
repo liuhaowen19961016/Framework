@@ -35,7 +35,9 @@ public enum ELogColor
 
 public class LogService
 {
-    private LogService() { }
+    private LogService()
+    {
+    }
 
     private static ELogLevel mCurLogLevel;
     private static bool mEnable;
