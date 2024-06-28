@@ -2,6 +2,13 @@ using System.Collections.Generic;
 using Framework;
 using UnityEngine;
 
+/*****
+ todo comment 目前只支持游戏物体路径与游戏物体名相同的情况
+ ******/
+
+/// <summary>
+/// 游戏物体对象池类型
+/// </summary>
 public enum EGameObjectPoolType
 {
     Global = 1, //全局
@@ -30,8 +37,8 @@ public class GameObjectPool
 
     private const int DefaultCapacity = 50;
 
-    private static Dictionary<EGameObjectPoolType, Dictionary<string, GameObjectCollection>> gameObjectCollections = new();
-    private static Dictionary<EGameObjectPoolType, Transform> gameObjectPoolType2Root = new();
+    private static Dictionary<EGameObjectPoolType, Dictionary<string, GameObjectCollection>> gameObjectCollections = new Dictionary<EGameObjectPoolType, Dictionary<string, GameObjectCollection>>();
+    private static Dictionary<EGameObjectPoolType, Transform> gameObjectPoolType2Root = new Dictionary<EGameObjectPoolType, Transform>();
 
     public static void PreLoad(string poolKey, int count, int capacity = DefaultCapacity, EGameObjectPoolType gameObjectPoolType = EGameObjectPoolType.Global)
     {

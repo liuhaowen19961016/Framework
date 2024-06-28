@@ -11,7 +11,7 @@ public class GameObjectCollection
     private string poolKey;
     private GameObject prefab;
     private Queue<GameObject> gameObjects;
-    private int capacity;
+    private int capacity; //-1表示无限容量
     public int ReuseGameObjectCount => gameObjects.Count;
     private Transform parentTrans;
 
@@ -21,7 +21,7 @@ public class GameObjectCollection
         this.gameObjectPoolType = gameObjectPoolType;
         this.poolKey = poolKey;
         this.capacity = capacity;
-        prefab = Resources.Load<GameObject>(poolKey); //TODO
+        prefab = Resources.Load<GameObject>(poolKey); //TODO logic 根据项目的资源加载接口改动
         parentTrans = new GameObject().transform;
         parentTrans.name = poolKey;
         parentTrans.transform.SetParent(typeRootTrans, false);
