@@ -12,13 +12,13 @@ public static class MathUtils
     public static float Round(float value, int digits = 1)
     {
         if (value == 0)
-        {
             return 0;
-        }
+        float sign = Mathf.Sign(value);
+        value = Mathf.Abs(value);
         float multiple = Mathf.Pow(10, digits);
-        float tempValue = value > 0 ? value * multiple + 0.5f : value * multiple - 0.5f;
+        float tempValue = value * multiple + 0.5f;
         tempValue = Mathf.FloorToInt(tempValue);
-        return tempValue / multiple;
+        return tempValue / multiple * sign;
     }
 
     /// <summary>
@@ -29,10 +29,7 @@ public static class MathUtils
         int randomNum = UnityEngine.Random.Range(0, list.Count);
         T randomValue = list[randomNum];
         GameUtils.SafeWhile(
-            () =>
-            {
-                return ignoreList != null && ignoreList.Contains(randomValue);
-            },
+            () => { return ignoreList != null && ignoreList.Contains(randomValue); },
             () =>
             {
                 int randomNum = UnityEngine.Random.Range(0, list.Count);
@@ -49,10 +46,7 @@ public static class MathUtils
         int randomNum = UnityEngine.Random.Range(0, list.Length);
         T randomValue = list[randomNum];
         GameUtils.SafeWhile(
-            () =>
-            {
-                return ignoreList != null && ignoreList.Contains(randomValue);
-            },
+            () => { return ignoreList != null && ignoreList.Contains(randomValue); },
             () =>
             {
                 int randomNum = UnityEngine.Random.Range(0, list.Length);
@@ -69,10 +63,7 @@ public static class MathUtils
         int randomNum = UnityEngine.Random.Range(0, list.Length);
         T randomValue = (T)list.GetValue(randomNum);
         GameUtils.SafeWhile(
-            () =>
-            {
-                return ignoreList != null && ignoreList.Contains(randomValue);
-            },
+            () => { return ignoreList != null && ignoreList.Contains(randomValue); },
             () =>
             {
                 int randomNum = UnityEngine.Random.Range(0, list.Length);
@@ -106,10 +97,7 @@ public static class MathUtils
         }
         List<T> randomList = new();
         GameUtils.SafeWhile(
-            () =>
-            {
-                return randomList.Count < getCount;
-            },
+            () => { return randomList.Count < getCount; },
             () =>
             {
                 var value = GetRandomValue<T>(list, ignoreList);
@@ -135,10 +123,7 @@ public static class MathUtils
         }
         List<T> randomList = new();
         GameUtils.SafeWhile(
-            () =>
-            {
-                return randomList.Count < getCount;
-            },
+            () => { return randomList.Count < getCount; },
             () =>
             {
                 var value = GetRandomValue<T>(list, ignoreList);
@@ -164,10 +149,7 @@ public static class MathUtils
         }
         List<T> randomList = new();
         GameUtils.SafeWhile(
-            () =>
-            {
-                return randomList.Count < getCount;
-            },
+            () => { return randomList.Count < getCount; },
             () =>
             {
                 var value = GetRandomValue<T>(list, ignoreList);
@@ -183,14 +165,14 @@ public static class MathUtils
     /// 获取一个随机的枚举值列表
     /// </summary>
     public static List<T> GetRandomEnumList<T>(int getCount, bool excludeSame = false, List<T> ignoreList = null)
-            where T : Enum
+        where T : Enum
     {
         Array values = Enum.GetValues(typeof(T));
         List<T> randomEnumList = GetRandomValueList<T>(values, getCount, excludeSame, ignoreList);
         return randomEnumList;
     }
-	
-	/// <summary>
+
+    /// <summary>
     /// 列表元素乱序
     /// </summary>
     public static void DisruptOfOrder<T>(List<T> list)
