@@ -38,7 +38,6 @@ namespace Hotfix
 
         private void Init()
         {
-
         }
 
         public static void FixedUpdate()
@@ -53,6 +52,7 @@ namespace Hotfix
                 return;
 
             timer?.Update();
+            test.Update();
         }
 
         public static void LateUpdate()

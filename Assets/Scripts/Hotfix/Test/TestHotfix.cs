@@ -8,4 +8,12 @@ public class TestHotfix
     {
 
     }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            
+        }
+    }
 }
