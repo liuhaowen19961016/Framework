@@ -6,7 +6,6 @@ public class TestHotfix
 {
     public void Register()
     {
-
     }
 
     public void Update()

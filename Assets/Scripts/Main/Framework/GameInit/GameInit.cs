@@ -27,10 +27,10 @@ namespace Framework
         private void Init()
         {
             //初始化log
-            LogService.Init(gameInitSetting.logEnable, gameInitSetting.logLevel);
-            LogService.Add(new UnityLog());
-            LogService.Add(new FileLog());
-            Log.Info("log init success");
+            // LogService.Init(gameInitSetting.logEnable, gameInitSetting.logLevel);
+            // LogService.Add(new UnityLog());
+            // LogService.Add(new FileLog());
+            // Log.Info("log init success");
         }
 
         private void FixedUpdate()
