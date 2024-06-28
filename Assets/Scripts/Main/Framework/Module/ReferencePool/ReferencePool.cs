@@ -3,97 +3,100 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
-/// <summary>
-/// 引用池管理器
-/// </summary>
-public class ReferencePool
+namespace Framework
 {
-    public const int DefaultCapacity = 50;
-
-    private static Dictionary<Type, ReferenceCollection> referencelCollections = new();
-
-    public static void PreLoad<T>(int count, int capacity = DefaultCapacity)
-        where T : class
+    /// <summary>
+    /// 引用池管理器
+    /// </summary>
+    public class ReferencePool
     {
-        var pool = GetReferenceCollection(typeof(T));
-        pool.SetCapacity(capacity);
-        pool.Add(count);
-    }
+        public const int DefaultCapacity = 50;
 
-    public static object Allocate(Type type)
-    {
-        var pool = GetReferenceCollection(type);
-        return pool.Allocate(type);
-    }
+        private static Dictionary<Type, ReferenceCollection> referencelCollections = new Dictionary<Type, ReferenceCollection>();
 
-    public static T Allocate<T>()
-        where T : class
-    {
-        var obj = Allocate(typeof(T));
-        return obj as T;
-    }
-
-    public static bool Recycle(object obj)
-    {
-        var pool = GetReferenceCollection(obj.GetType());
-        return pool.Recycle(obj);
-    }
-
-    public static bool Recycle<T>(T obj)
-       where T : class
-    {
-        var pool = GetReferenceCollection(typeof(T));
-        return pool.Recycle<T>(obj);
-    }
-
-    public static bool Add<T>(int count)
-       where T : class
-    {
-        var pool = GetReferenceCollection(typeof(T));
-        return pool.Add(count);
-    }
-
-    public static void Remove<T>(int count)
-      where T : class
-    {
-        var pool = GetReferenceCollection(typeof(T));
-        pool.Remove(count);
-    }
-
-    public static void Dispose<T>()
-    {
-        var pool = GetReferenceCollection(typeof(T));
-        pool.Dispose();
-    }
-
-    public static void Dispose(Type type)
-    {
-        var pool = GetReferenceCollection(type);
-        pool.Dispose();
-    }
-
-    public static void DisposeAll()
-    {
-        foreach (var referencelCollection in referencelCollections.Values)
+        public static void PreLoad<T>(int count, int capacity = DefaultCapacity)
+            where T : class
         {
-            referencelCollection.Dispose();
-        }
-        referencelCollections.Clear();
-    }
-
-    public static ReferenceCollection GetReferenceCollection(Type referenceType)
-    {
-        if (referenceType == null)
-        {
-            Debug.LogError($"类型错误，不能为null");
-            return null;
+            var pool = GetReferenceCollection(typeof(T));
+            pool.SetCapacity(capacity);
+            pool.Add(count);
         }
 
-        if (!referencelCollections.TryGetValue(referenceType, out ReferenceCollection referenceCollection))
+        public static object Allocate(Type type)
         {
-            referenceCollection = new ReferenceCollection(referenceType);
-            referencelCollections.Add(referenceType, referenceCollection);
+            var pool = GetReferenceCollection(type);
+            return pool.Allocate(type);
         }
-        return referenceCollection;
+
+        public static T Allocate<T>()
+            where T : class
+        {
+            var obj = Allocate(typeof(T));
+            return obj as T;
+        }
+
+        public static bool Recycle(object obj)
+        {
+            var pool = GetReferenceCollection(obj.GetType());
+            return pool.Recycle(obj);
+        }
+
+        public static bool Recycle<T>(T obj)
+            where T : class
+        {
+            var pool = GetReferenceCollection(typeof(T));
+            return pool.Recycle<T>(obj);
+        }
+
+        public static bool Add<T>(int count)
+            where T : class
+        {
+            var pool = GetReferenceCollection(typeof(T));
+            return pool.Add(count);
+        }
+
+        public static void Remove<T>(int count)
+            where T : class
+        {
+            var pool = GetReferenceCollection(typeof(T));
+            pool.Remove(count);
+        }
+
+        public static void Dispose<T>()
+        {
+            var pool = GetReferenceCollection(typeof(T));
+            pool.Dispose();
+        }
+
+        public static void Dispose(Type type)
+        {
+            var pool = GetReferenceCollection(type);
+            pool.Dispose();
+        }
+
+        public static void DisposeAll()
+        {
+            foreach (var referencelCollection in referencelCollections.Values)
+            {
+                referencelCollection.Dispose();
+            }
+            referencelCollections.Clear();
+        }
+
+        public static ReferenceCollection GetReferenceCollection(Type referenceType)
+        {
+            if (referenceType == null)
+            {
+                Debug.LogError($"类型错误，不能为null");
+                return null;
+            }
+
+            if (!referencelCollections.TryGetValue(referenceType, out ReferenceCollection referenceCollection))
+            {
+                referenceCollection = new ReferenceCollection(referenceType);
+                referencelCollections.Add(referenceType, referenceCollection);
+            }
+            return referenceCollection;
+        }
     }
 }

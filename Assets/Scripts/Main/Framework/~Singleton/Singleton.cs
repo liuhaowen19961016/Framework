@@ -1,4 +1,6 @@
 using System;
+using Framework;
+
 /// <summary>
 /// 单例模版
 /// </summary>

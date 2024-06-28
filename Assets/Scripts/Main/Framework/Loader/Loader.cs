@@ -1,6 +1,6 @@
 using System;
 
-namespace Main
+namespace Framework
 {
     /// <summary>
     /// 装载器

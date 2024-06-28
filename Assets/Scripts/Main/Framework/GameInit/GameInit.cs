@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Main
+namespace Framework
 {
     [System.Serializable]
     public class GameInitSetting
@@ -14,7 +14,7 @@ namespace Main
     /// </summary>
     public class GameInit : MonoBehaviour
     {
-        public GameInitSetting gameInitSetting;//游戏启动设置
+        public GameInitSetting gameInitSetting; //游戏启动设置
 
         private void Start()
         {
@@ -26,7 +26,7 @@ namespace Main
 
         private void Init()
         {
-            //log
+            //初始化log
             LogService.Init(gameInitSetting.logEnable, gameInitSetting.logLevel);
             LogService.Add(new UnityLog());
             LogService.Add(new FileLog());
