@@ -96,6 +96,11 @@ namespace Framework
             return deltaTime;
         }
 
+        public float GetLeftTime()
+        {
+            return leftTime;
+        }
+
         public void SetDuration(float duration)
         {
             this.duration = duration;
