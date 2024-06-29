@@ -113,6 +113,10 @@ namespace UnityEngine.UI
             {
                 onClick?.Invoke();
             }
+            if (enableClickSound)
+            {
+                PlayClickSound();
+            }
             lastClickTime = Time.unscaledTime;
             timer_longPress = 0;
         }
@@ -136,6 +140,11 @@ namespace UnityEngine.UI
                     timer_longPress = 0;
                 }
             }
+        }
+
+        private void PlayClickSound()
+        {
+            //todo logic 播放声音
         }
     }
 }
