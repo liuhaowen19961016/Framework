@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Framework;
 using UnityEngine;
@@ -36,5 +37,30 @@ public static class GameUtils
                 break;
             }
         }
+    }
+
+    private const float DefaultGameTimeScale = 1f; //游戏内默认TimeScale
+    /// <summary>
+    /// 进入子弹时间
+    /// </summary>
+    public static IEnumerator EnterBulletTime(float toTimeScale, float duration)
+    {
+        float curTime = 0;
+        var scaleDis = Time.timeScale - toTimeScale;
+        while (curTime < duration)
+        {
+            curTime += Time.unscaledDeltaTime;
+            if (Time.timeScale <= toTimeScale)
+                Time.timeScale = toTimeScale;
+            else
+                Time.timeScale -= Time.timeScale * 0.5f;
+            yield return null;
+        }
+        Time.timeScale = DefaultGameTimeScale;
+    }
+
+    public static void SetTimeScale(float timeScale)
+    {
+        Time.timeScale = timeScale;
     }
 }
