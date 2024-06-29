@@ -27,11 +27,17 @@ public static class ColorUtils
     /// </summary>
     public static Color Hex2Color(string hex)
     {
+        if (!hex.StartsWith("#"))
+        {
+            Debug.LogError("转换失败，颜色格式有误，需要以#号开头");
+            return Color.clear;
+        }
         Color color;
         bool b = ColorUtility.TryParseHtmlString(hex, out color);
         if (!b)
         {
             Debug.LogError("转换失败，颜色格式有误");
+            return Color.clear;
         }
         return color;
     }

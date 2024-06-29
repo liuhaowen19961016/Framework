@@ -5,11 +5,6 @@ using UnityEngine;
 
 public static class GameUtils
 {
-    public static void HttpPost()
-    {
-
-    }
-
     /// <summary>
     /// 是否在Unity编辑器环境下
     /// </summary>
@@ -29,7 +24,7 @@ public static class GameUtils
             return;
         }
 
-        int countLimit = 11111;
+        int countLimit = 11111; //最大的循环次数
         int count = 0;
         while (loopCondition())
         {
@@ -42,20 +37,4 @@ public static class GameUtils
             }
         }
     }
-
-    ///// <summary>
-    ///// 是否全部相等
-    ///// </summary>
-    //public static bool AllSame<T>(params T[] array)
-    //{
-    //    if (array == null || array.Length <= 0)
-    //        return true;
-    //    T compareValue = array[0];
-    //    for (int i = 0; i < array.Length; i++)
-    //    {
-    //        if (!compareValue.Equals(array[i]))
-    //            return false;
-    //    }
-    //    return true;
-    //}
 }
