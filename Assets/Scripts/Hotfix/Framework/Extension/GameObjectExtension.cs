@@ -124,8 +124,51 @@ public static class GameObjectExtension
         go.transform.localEulerAngles = tempLocalRot;
     }
 
+    /// <summary>
+    /// 设置父物体
+    /// </summary>
     public static void SetParent(this GameObject go, GameObject parentGo, bool worldPositionStays = true)
     {
         go.transform.SetParent(parentGo.transform, worldPositionStays);
+    }
+
+    /// <summary>
+    /// 获取组件
+    /// </summary>
+    public static T GetComponent<T>(this GameObject go, bool forceGet = false)
+        where T : Component
+    {
+        if (go == null)
+            return null;
+        T component = go.GetComponent<T>();
+        if (component == null && forceGet)
+            component = go.AddComponent<T>();
+        return component;
+    }
+
+    /// <summary>
+    /// 添加组件
+    /// </summary>
+    public static T AddComponent<T>(this GameObject go, bool canRepeat = false)
+        where T : Component
+    {
+        if (go == null)
+            return null;
+        T component = go.GetComponent<T>();
+        if (component != null && !canRepeat)
+            return null;
+        component = go.AddComponent<T>();
+        return component;
+    }
+
+    /// <summary>
+    /// 销毁游戏物体
+    /// </summary>
+    public static bool Destroy(this GameObject go)
+    {
+        if (go == null)
+            return false;
+        Object.Destroy(go);
+        return true;
     }
 }
