@@ -12,17 +12,25 @@ public class UIMenuOption
     [MenuItem("GameObject/Framework/UI/GameImage", priority = 0)]
     public static void AddGameImage()
     {
-        GameObject obj = CreateUIComponent("GameImage");
-        Image gameImage = obj.AddComponent<Image>();
+        GameObject componentGo = CreateUIComponent("GameImage");
+        Image gameImage = componentGo.AddComponent<Image>();
         gameImage.raycastTarget = false;
     }
 
     [MenuItem("GameObject/Framework/UI/GameButton", priority = 1)]
     public static void AddGameButton()
     {
-        GameObject obj = CreateUIComponent("GameButton");
-        obj.AddComponent<GameButton>();
-        obj.AddComponent<Image>();
+        GameObject componentGo = CreateUIComponent("GameButton");
+        componentGo.AddComponent<GameButton>();
+        componentGo.AddComponent<Image>();
+    }
+
+    [MenuItem("GameObject/Framework/UI/EmptyGraphics", priority = 2)]
+    public static void AddEmptyGraphic()
+    {
+        GameObject componentGo = CreateUIComponent("EmptyGraphics");
+        componentGo.AddComponent<EmptyGraphics>();
+        componentGo.AddComponent<CanvasRenderer>();
     }
 
     /// <summary>
