@@ -78,7 +78,7 @@ public static class CollectionExtension
             Log.Error("可随机的数量小于要获取的数量");
             return null;
         }
-        List<T> randomList = new();
+        List<T> randomList = new List<T>();
         GameUtils.SafeWhile(
             () => { return randomList.Count < getCount; },
             () =>
@@ -113,7 +113,7 @@ public static class CollectionExtension
             Log.Error("可随机的数量小于要获取的数量");
             return null;
         }
-        List<T> randomList = new();
+        List<T> randomList = new List<T>();
         GameUtils.SafeWhile(
             () => { return randomList.Count < getCount; },
             () =>

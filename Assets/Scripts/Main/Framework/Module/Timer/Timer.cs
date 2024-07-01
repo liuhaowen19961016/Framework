@@ -115,8 +115,8 @@ namespace Framework
 
     public class Timer
     {
-        private List<TimerTask> timerTaskList_ToAdd = new();
-        private List<TimerTask> timerTaskList = new();
+        private List<TimerTask> timerTaskList_ToAdd = new List<TimerTask>();
+        private List<TimerTask> timerTaskList = new List<TimerTask>();
 
         public TimerTask Register(float duration, bool ignoreTimeScale = false, int loopCount = 1, Action onSet = null, Action<float> onUpdate = null, Action onComplete = null)
         {

@@ -6,8 +6,8 @@ namespace Framework
     public class EventData
     {
         private EEventType eventType;
-        private Dictionary<int, List<Delegate>> handlers = new();
-        private List<Delegate> executedHandlers = new();
+        private Dictionary<int, List<Delegate>> handlers = new Dictionary<int, List<Delegate>>();
+        private List<Delegate> executedHandlers = new List<Delegate>();
 
         public EventData(EEventType eventType)
         {

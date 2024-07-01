@@ -5,7 +5,7 @@ namespace Framework
 {
     public class Event
     {
-        private Dictionary<EEventType, EventData> eventDatas = new();
+        private Dictionary<EEventType, EventData> eventDatas = new Dictionary<EEventType, EventData>();
 
         public void AddListener<T>(EEventType eventType, Action<T> handler, int subId = -1)
             where T : EventBase

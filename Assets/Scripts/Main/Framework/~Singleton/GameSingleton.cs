@@ -8,11 +8,11 @@ using Framework;
 [Obsolete]
 public class GameSingleton
 {
-    private static Dictionary<Type, ISingleton> singletonDict = new();
+    private static Dictionary<Type, ISingleton> singletonDict = new Dictionary<Type, ISingleton>();
 
-    private static Queue<ISingletonFixedUpdate> singletonFixedUpdates = new();
-    private static Queue<ISingletonUpdate> singletonUpdates = new();
-    private static Queue<ISingletonLateUpdate> singletonLateUpdates = new();
+    private static Queue<ISingletonFixedUpdate> singletonFixedUpdates = new Queue<ISingletonFixedUpdate>();
+    private static Queue<ISingletonUpdate> singletonUpdates = new Queue<ISingletonUpdate>();
+    private static Queue<ISingletonLateUpdate> singletonLateUpdates = new Queue<ISingletonLateUpdate>();
 
     public static T AddSingleton<T>()
         where T : ISingleton, new()

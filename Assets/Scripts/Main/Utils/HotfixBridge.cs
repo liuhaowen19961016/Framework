@@ -37,7 +37,7 @@ public static class HotfixBridge
 
     #region 缓存热更类
 
-    private static Dictionary<string, Type> types = new();
+    private static Dictionary<string, Type> types = new Dictionary<string, Type>();
 
     public static void Init()
     {

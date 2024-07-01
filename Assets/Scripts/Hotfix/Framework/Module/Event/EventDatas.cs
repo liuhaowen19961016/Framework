@@ -13,16 +13,16 @@ namespace Framework
     /// </summary>
     public class EvtAddFlyObjData : EventBase
     {
-        public List<EFlyObjType> flyObjTypes = new();
-        public List<int> logicIdList = new();
-        public List<Vector3> fromScreenPosList = new();
-        public List<Vector3> toScreenPosList = new();
-        public List<int> showCountList = new(); //显示的物体数量
-        public List<int> realCountList = new(); //真实获取的物体数量
+        public List<EFlyObjType> flyObjTypes = new List<EFlyObjType>();
+        public List<int> logicIdList = new List<int>();
+        public List<Vector3> fromScreenPosList = new List<Vector3>();
+        public List<Vector3> toScreenPosList = new List<Vector3>();
+        public List<int> showCountList = new List<int>(); //显示的物体数量
+        public List<int> realCountList = new List<int>(); //真实获取的物体数量
 
-        public List<Action> onSpawnFlyObjItemOverList = new();
-        public List<Action> onCompleteList = new();
-        public List<EFlyObjTag> tagList = new();
+        public List<Action> onSpawnFlyObjItemOverList = new List<Action>();
+        public List<Action> onCompleteList = new List<Action>();
+        public List<EFlyObjTag> tagList = new List<EFlyObjTag>();
 
         public EvtAddFlyObjData()
         {
