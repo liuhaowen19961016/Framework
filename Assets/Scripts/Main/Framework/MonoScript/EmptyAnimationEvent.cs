@@ -1,0 +1,13 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// 为了获取Animation上的Event关键帧时不报错
+/// </summary>
+public class EmptyAnimationEvent : MonoBehaviour
+{
+    public void EmptyFunction()
+    {
+    }
+}
