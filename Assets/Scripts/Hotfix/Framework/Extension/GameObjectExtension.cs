@@ -125,6 +125,36 @@ public static class GameObjectExtension
     }
 
     /// <summary>
+    /// 设置X缩放
+    /// </summary>
+    public static void SetScaleX(this GameObject go, float x)
+    {
+        var tempScale = go.transform.localScale;
+        tempScale.x = x;
+        go.transform.localScale = tempScale;
+    }
+
+    /// <summary>
+    /// 设置Y缩放
+    /// </summary>
+    public static void SetScaleY(this GameObject go, float y)
+    {
+        var tempScale = go.transform.localScale;
+        tempScale.y = y;
+        go.transform.localScale = tempScale;
+    }
+
+    /// <summary>
+    /// 设置Z缩放
+    /// </summary>
+    public static void SetScaleZ(this GameObject go, float z)
+    {
+        var tempScale = go.transform.localScale;
+        tempScale.z = z;
+        go.transform.localScale = tempScale;
+    }
+
+    /// <summary>
     /// 设置父物体
     /// </summary>
     public static void SetParent(this GameObject go, GameObject parentGo, bool worldPositionStays = true)
