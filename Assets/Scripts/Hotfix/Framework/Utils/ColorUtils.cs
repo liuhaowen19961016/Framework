@@ -5,6 +5,30 @@ using UnityEngine;
 /// </summary>
 public static class ColorUtils
 {
+    public static Color SetColorR(Color color, float r)
+    {
+        color.r = r;
+        return color;
+    }
+
+    public static Color SetColorG(Color color, float g)
+    {
+        color.g = g;
+        return color;
+    }
+
+    public static Color SetColorB(Color color, float b)
+    {
+        color.b = b;
+        return color;
+    }
+
+    public static Color SetColorA(Color color, float a)
+    {
+        color.a = a;
+        return color;
+    }
+
     /// <summary>
     /// Color转Hex
     /// </summary>
