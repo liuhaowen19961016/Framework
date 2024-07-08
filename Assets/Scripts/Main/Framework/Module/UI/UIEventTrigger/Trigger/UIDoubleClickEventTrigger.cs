@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace Framework
 {
-    public class DoubleClickEventTrigger : MonoBehaviour, IPointerClickHandler
+    public class UIDoubleClickEventTrigger : MonoBehaviour, IPointerClickHandler
     {
         private Action<GameObject, int> onDoubleClick;
 
@@ -12,11 +12,11 @@ namespace Framework
         private float lastClickTime;
         private int doubleClickCount;
 
-        public static DoubleClickEventTrigger Get(GameObject go)
+        public static UIDoubleClickEventTrigger Get(GameObject go)
         {
-            var component = go.GetComponent<DoubleClickEventTrigger>();
+            var component = go.GetComponent<UIDoubleClickEventTrigger>();
             if (component == null)
-                component = go.AddComponent<DoubleClickEventTrigger>();
+                component = go.AddComponent<UIDoubleClickEventTrigger>();
             return component;
         }
 
@@ -48,11 +48,14 @@ namespace Framework
         public void RemoveListener(Action<GameObject, int> onDoubleClick)
         {
             this.onDoubleClick -= onDoubleClick;
+            if (this.onDoubleClick == null || this.onDoubleClick.GetInvocationList().Length <= 0)
+                Destroy(gameObject.GetComponent<UIDoubleClickEventTrigger>());
         }
 
         public void RemoveAllListener()
         {
             this.onDoubleClick = null;
+            Destroy(gameObject.GetComponent<UIDoubleClickEventTrigger>());
         }
     }
 }

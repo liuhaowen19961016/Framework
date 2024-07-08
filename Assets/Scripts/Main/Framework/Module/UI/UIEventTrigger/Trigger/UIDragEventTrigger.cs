@@ -4,15 +4,15 @@ using UnityEngine.EventSystems;
 
 namespace Framework
 {
-    public class DragEventTrigger : MonoBehaviour, IDragHandler
+    public class UIDragEventTrigger : MonoBehaviour, IDragHandler
     {
         private Action<GameObject, PointerEventData> onDrag;
 
-        public static DragEventTrigger Get(GameObject go)
+        public static UIDragEventTrigger Get(GameObject go)
         {
-            var component = go.GetComponent<DragEventTrigger>();
+            var component = go.GetComponent<UIDragEventTrigger>();
             if (component == null)
-                component = go.AddComponent<DragEventTrigger>();
+                component = go.AddComponent<UIDragEventTrigger>();
             return component;
         }
 
@@ -29,11 +29,14 @@ namespace Framework
         public void RemoveListener(Action<GameObject, PointerEventData> onDrag)
         {
             this.onDrag -= onDrag;
+            if (this.onDrag == null || this.onDrag.GetInvocationList().Length <= 0)
+                Destroy(gameObject.GetComponent<UIDragEventTrigger>());
         }
 
         public void RemoveAllListener()
         {
             this.onDrag = null;
+            Destroy(gameObject.GetComponent<UIDragEventTrigger>());
         }
     }
 }

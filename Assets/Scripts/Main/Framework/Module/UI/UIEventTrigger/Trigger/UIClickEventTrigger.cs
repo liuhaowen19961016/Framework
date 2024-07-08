@@ -4,18 +4,18 @@ using UnityEngine.EventSystems;
 
 namespace Framework
 {
-    public class ClickEventTrigger : MonoBehaviour, IPointerClickHandler
+    public class UIClickEventTrigger : MonoBehaviour, IPointerClickHandler
     {
         private Action<GameObject> onClick;
-        
+
         private float invalidTime;
         private float lastClickTime;
 
-        public static ClickEventTrigger Get(GameObject go)
+        public static UIClickEventTrigger Get(GameObject go)
         {
-            var component = go.GetComponent<ClickEventTrigger>();
+            var component = go.GetComponent<UIClickEventTrigger>();
             if (component == null)
-                component = go.AddComponent<ClickEventTrigger>();
+                component = go.AddComponent<UIClickEventTrigger>();
             return component;
         }
 
@@ -35,16 +35,20 @@ namespace Framework
         public void AddListener(Action<GameObject> onClick)
         {
             this.onClick += onClick;
+            var v = this.onClick.GetInvocationList().Length;
         }
 
         public void RemoveListener(Action<GameObject> onClick)
         {
             this.onClick -= onClick;
+            if (this.onClick == null || this.onClick.GetInvocationList().Length <= 0)
+                Destroy(gameObject.GetComponent<UIClickEventTrigger>());
         }
 
         public void RemoveAllListener()
         {
             this.onClick = null;
+            Destroy(gameObject.GetComponent<UIClickEventTrigger>());
         }
     }
 }

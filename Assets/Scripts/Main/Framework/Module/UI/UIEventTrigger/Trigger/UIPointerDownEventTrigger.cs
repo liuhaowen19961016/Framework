@@ -4,15 +4,15 @@ using UnityEngine.EventSystems;
 
 namespace Framework
 {
-    public class PointerDownEventTrigger : MonoBehaviour, IPointerDownHandler
+    public class UIPointerDownEventTrigger : MonoBehaviour, IPointerDownHandler
     {
         private Action<GameObject, PointerEventData> onPointerDown;
 
-        public static PointerDownEventTrigger Get(GameObject go)
+        public static UIPointerDownEventTrigger Get(GameObject go)
         {
-            var component = go.GetComponent<PointerDownEventTrigger>();
+            var component = go.GetComponent<UIPointerDownEventTrigger>();
             if (component == null)
-                component = go.AddComponent<PointerDownEventTrigger>();
+                component = go.AddComponent<UIPointerDownEventTrigger>();
             return component;
         }
 
@@ -29,11 +29,14 @@ namespace Framework
         public void RemoveListener(Action<GameObject, PointerEventData> onPointerDown)
         {
             this.onPointerDown -= onPointerDown;
+            if (this.onPointerDown == null || this.onPointerDown.GetInvocationList().Length <= 0)
+                Destroy(gameObject.GetComponent<UIPointerDownEventTrigger>());
         }
 
         public void RemoveAllListener()
         {
             this.onPointerDown = null;
+            Destroy(gameObject.GetComponent<UIPointerDownEventTrigger>());
         }
     }
 }

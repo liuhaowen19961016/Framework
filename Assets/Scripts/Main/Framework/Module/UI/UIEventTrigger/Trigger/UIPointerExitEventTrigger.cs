@@ -4,15 +4,15 @@ using UnityEngine.EventSystems;
 
 namespace Framework
 {
-    public class PointerExitEventTrigger : MonoBehaviour, IPointerExitHandler
+    public class UIPointerExitEventTrigger : MonoBehaviour, IPointerExitHandler
     {
         private Action<GameObject, PointerEventData> onPointerExit;
 
-        public static PointerExitEventTrigger Get(GameObject go)
+        public static UIPointerExitEventTrigger Get(GameObject go)
         {
-            var component = go.GetComponent<PointerExitEventTrigger>();
+            var component = go.GetComponent<UIPointerExitEventTrigger>();
             if (component == null)
-                component = go.AddComponent<PointerExitEventTrigger>();
+                component = go.AddComponent<UIPointerExitEventTrigger>();
             return component;
         }
 
@@ -29,11 +29,14 @@ namespace Framework
         public void RemoveListener(Action<GameObject, PointerEventData> onPointerExit)
         {
             this.onPointerExit -= onPointerExit;
+            if (this.onPointerExit == null || this.onPointerExit.GetInvocationList().Length <= 0)
+                Destroy(gameObject.GetComponent<UIPointerExitEventTrigger>());
         }
 
         public void RemoveAllListener()
         {
             this.onPointerExit = null;
+            Destroy(gameObject.GetComponent<UIPointerExitEventTrigger>());
         }
     }
 }
