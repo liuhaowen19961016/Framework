@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using Framework;
 using UnityEngine;
 using Event = UnityEngine.Event;
@@ -10,6 +12,16 @@ public static class AnimatorExtension
     /// stateName：动画机中的状态名
     public static void PlayAni(this Animator animator, string stateName, float normalizedTime = 0, int layer = 0)
     {
+        if (animator == null)
+        {
+            Log.Error("动画状态机组件为null");
+            return;
+        }
+        if (string.IsNullOrEmpty(stateName))
+        {
+            Log.Error($"{animator.name}动画机中的状态名不能为空");
+            return;
+        }
         animator.Play(stateName, layer, normalizedTime);
     }
 
@@ -159,5 +171,29 @@ public static class AnimatorExtension
         }
         Log.Error($"{animator.name}动画状态机中的{animationClipName}动画片段找不到{functionName}事件");
         return clip.length / animator.speed;
+    }
+
+    /// <summary>
+    /// 获取当前StateInfo
+    /// </summary>
+    /// 播放动画后一定要等待一帧后再获取
+    public static IEnumerator GetCurStateInfo(this Animator animator, string stateName, Action<AnimatorStateInfo> onGetCurStateInfo, int layer = 0)
+    {
+        if (animator == null)
+        {
+            Log.Error("动画状态机组件为null");
+            yield break;
+        }
+        if (string.IsNullOrEmpty(stateName))
+        {
+            Log.Error($"{animator.name}动画机中的状态名不能为空");
+            yield break;
+        }
+        yield return new WaitForEndOfFrame();
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(layer);
+        if (stateInfo.IsName(stateName))
+        {
+            onGetCurStateInfo?.Invoke(stateInfo);
+        }
     }
 }
