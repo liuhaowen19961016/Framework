@@ -8,6 +8,8 @@ public static class CTUtils
     /// <summary>
     /// 世界坐标转屏幕坐标
     /// </summary>
+    /// Tip：
+    /// 1.Perspective相机下，WorldPos的Z坐标与Camera的Z坐标不能相同，相同返回Vector3.Zero
     public static Vector2 World2Screen(Vector3 worldPos, Camera camera = null)
     {
         if (camera == null)
@@ -20,6 +22,8 @@ public static class CTUtils
     /// <summary>
     /// 屏幕坐标转世界坐标
     /// </summary>
+    /// Tip：
+    /// 1.Perspective相机下，screenPos的Z坐标不能为0，为0返回Camera坐标
     public static Vector3 Screen2World(Vector3 screenPos, Camera camera = null)
     {
         if (camera == null)
@@ -32,6 +36,8 @@ public static class CTUtils
     /// <summary>
     /// 世界坐标转视口坐标
     /// </summary>
+    /// Tip：
+    /// 1.Perspective相机下，WorldPos的Z坐标与Camera的Z坐标不能相同，相同返回Vector3.Zero
     public static Vector2 World2Viewport(Vector3 worldPos, Camera camera = null)
     {
         if (camera == null)
