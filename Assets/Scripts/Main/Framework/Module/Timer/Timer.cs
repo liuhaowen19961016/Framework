@@ -12,18 +12,20 @@ namespace Framework
         private Action onComplete;
         private Action onSet;
         private Action<float> onUpdate;
+        private MonoBehaviour monoHolder;
+        private bool hasMonoHolder;
 
         private bool isPause;
         private bool isDispose;
         private bool isDone;
         public bool IsComplete
         {
-            get { return isDispose || isDone; }
+            get { return isDispose || isDone || (hasMonoHolder && monoHolder == null); }
         }
 
         private float leftTime;
 
-        public void Set(float duration, bool ignoreTimeScale, int loopCount, Action onSet, Action<float> onUpdate, Action onComplete)
+        public void Set(float duration, bool ignoreTimeScale, int loopCount, Action onSet, Action<float> onUpdate, Action onComplete, MonoBehaviour monoHolder)
         {
             this.duration = duration;
             this.ignoreTimeScale = ignoreTimeScale;
@@ -31,6 +33,8 @@ namespace Framework
             this.onSet = onSet;
             this.onUpdate = onUpdate;
             this.onComplete = onComplete;
+            this.monoHolder = monoHolder;
+            hasMonoHolder = monoHolder != null;
 
             SetDuration(duration);
             this.onSet?.Invoke();
@@ -118,10 +122,11 @@ namespace Framework
         private List<TimerTask> timerTaskList_ToAdd = new List<TimerTask>();
         private List<TimerTask> timerTaskList = new List<TimerTask>();
 
-        public TimerTask Register(float duration, bool ignoreTimeScale = false, int loopCount = 1, Action onSet = null, Action<float> onUpdate = null, Action onComplete = null)
+        public TimerTask Register(float duration, bool ignoreTimeScale = false, int loopCount = 1, Action onSet = null, Action<float> onUpdate = null, Action onComplete = null,
+            MonoBehaviour monoHolder = null)
         {
             TimerTask timerTask = new TimerTask();
-            timerTask.Set(duration, ignoreTimeScale, loopCount, onSet, onUpdate, onComplete);
+            timerTask.Set(duration, ignoreTimeScale, loopCount, onSet, onUpdate, onComplete, monoHolder);
             timerTaskList_ToAdd.Add(timerTask);
             return timerTask;
         }
