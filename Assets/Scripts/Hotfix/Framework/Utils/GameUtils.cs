@@ -97,4 +97,27 @@ public static class GameUtils
         }
         return go;
     }
+
+    /// <summary>
+    /// 计算从fromTrans节点到toTrans节点的路径
+    /// </summary>
+    /// formTrans：AA toTrans：BB，return：AA/XX/XX/BB
+    public static string CalculateTransPath(Transform fromTrans, Transform toTrans)
+    {
+        if (!toTrans.IsChildOf(fromTrans))
+            return;
+        
+        string transPath = targetTrans.name;
+        Transform parent = targetTrans.parent;
+        SafeWhile(() =>
+        {
+            return parent != null
+                   && parent != rootTrans;
+        }, () =>
+        {
+            transPath += parent.name;
+            parent = parent.parent;
+        });
+        return transPath;
+    }
 }
