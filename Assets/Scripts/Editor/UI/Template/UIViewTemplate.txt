@@ -1,0 +1,17 @@
+/******************************/
+/*****自动生成，禁止手动修改*****/
+/*****#GENDATETIME#*****/
+/*****************************/
+
+using Framework;
+using UnityEngine.UI;
+
+public partial class #CLASSNAME# : UIViewBase
+{
+    #FIELDSTR#
+
+    private override BindComponent()
+    {
+        #FIELDBINDSTR#
+    }
+}

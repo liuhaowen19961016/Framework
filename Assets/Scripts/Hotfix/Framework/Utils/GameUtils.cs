@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Framework;
 using UnityEngine;
 
@@ -99,15 +100,18 @@ public static class GameUtils
     }
 
     /// <summary>
-    /// 计算从fromTrans节点到toTrans节点的路径
+    /// 计算从rootTrans节点到targetTrans节点的路径
     /// </summary>
-    /// formTrans：AA toTrans：BB，return：AA/XX/XX/BB
-    public static string CalculateTransPath(Transform fromTrans, Transform toTrans)
+    /// 默认不带rootTrans
+    public static string CalculateTransPath(Transform targetTrans, Transform rootTrans, bool startWithRootTrans = false)
     {
-        if (!toTrans.IsChildOf(fromTrans))
-            return;
-        
-        string transPath = targetTrans.name;
+        if (!targetTrans.IsChildOf(rootTrans))
+        {
+            Debug.LogError($"{targetTrans.name}不是{rootTrans.name}的子物体");
+            return string.Empty;
+        }
+
+        StringBuilder transPath = new StringBuilder(targetTrans.name);
         Transform parent = targetTrans.parent;
         SafeWhile(() =>
         {
@@ -115,9 +119,13 @@ public static class GameUtils
                    && parent != rootTrans;
         }, () =>
         {
-            transPath += parent.name;
+            transPath.Insert(0, parent.name + "/");
             parent = parent.parent;
         });
-        return transPath;
+        if (startWithRootTrans)
+        {
+            transPath.Insert(0, rootTrans.name + "/");
+        }
+        return transPath.ToString();
     }
 }
