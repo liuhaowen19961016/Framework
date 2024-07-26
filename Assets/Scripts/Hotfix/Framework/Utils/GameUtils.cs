@@ -59,8 +59,42 @@ public static class GameUtils
         Time.timeScale = DefaultGameTimeScale;
     }
 
+    /// <summary>
+    /// 设置时间缩放
+    /// </summary>
     public static void SetTimeScale(float timeScale)
     {
         Time.timeScale = timeScale;
+    }
+
+    /// <summary>
+    /// 创建GameObject
+    /// </summary>
+    public static GameObject CreateGameObject(string name, Transform parent, bool canRepeat = false, params Type[] components)
+    {
+        GameObject go = new GameObject();
+        go.name = name;
+        go.transform.SetParent(parent, false);
+        go.transform.localPosition = Vector2.zero;
+        if (!canRepeat)
+        {
+            HashSet<Type> hashtable = new HashSet<Type>();
+            foreach (var temp in components)
+            {
+                hashtable.Add(temp);
+            }
+            foreach (var component in hashtable)
+            {
+                go.AddComponent(component);
+            }
+        }
+        else
+        {
+            foreach (var component in components)
+            {
+                go.AddComponent(component);
+            }
+        }
+        return go;
     }
 }
