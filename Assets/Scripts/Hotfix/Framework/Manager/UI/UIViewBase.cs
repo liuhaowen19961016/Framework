@@ -72,8 +72,8 @@ namespace Framework
                 OnSetInteractable(value);
             }
         }
-
-        public UIViewBase(GameObject go, UIViewInfo uiViewInfo)
+        
+        public void InitData(GameObject go, UIViewInfo uiViewInfo)
         {
             this.go = go;
             viewName = uiViewInfo.viewName;

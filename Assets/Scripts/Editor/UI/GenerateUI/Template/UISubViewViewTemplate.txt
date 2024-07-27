@@ -1,11 +1,11 @@
 /******************************/
-/*****自动生成的UIView界面代码，禁止手动修改*****/
+/*****自动生成的UISubView界面代码，禁止手动修改*****/
 /*****界面逻辑写在子类中*****/
 /*****生成时间：#GENDATETIME#*****/
 /*****************************/
 
 #NAMESPACE#
-public class #CLASSNAME# : UIViewBase
+public class #CLASSNAME# : UISubViewBase
 {
 #FIELDDEFINECODE#
     protected override void BindComponent()

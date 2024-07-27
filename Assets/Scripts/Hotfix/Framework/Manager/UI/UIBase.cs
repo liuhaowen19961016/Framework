@@ -18,7 +18,7 @@ namespace Framework
         /// <summary>
         /// 打开界面时最先调用
         /// </summary>
-        public virtual void OnInit(object viewData)
+        protected virtual void OnInit(object viewData)
         {
             BindComponent();
             RegisterUIEvent();
@@ -26,22 +26,22 @@ namespace Framework
             viewData = this.viewData;
         }
 
-        public virtual void BindComponent()
+        protected virtual void BindComponent()
         {
         }
 
-        public virtual void RegisterUIEvent()
+        protected virtual void RegisterUIEvent()
         {
         }
 
-        public virtual void RegisterGameEvent()
+        protected virtual void RegisterGameEvent()
         {
         }
 
         /// <summary>
         /// 界面第一次打开时调用
         /// </summary>
-        public virtual void OnShow()
+        protected virtual void OnShow()
         {
             go.SetActive(true);
             foreach (var child in childs)
@@ -53,7 +53,7 @@ namespace Framework
         /// <summary>
         /// 界面每次打开时调用
         /// </summary>
-        public virtual void OnRefresh()
+        protected virtual void OnRefresh()
         {
             foreach (var child in childs)
             {
@@ -64,7 +64,7 @@ namespace Framework
         /// <summary>
         /// 关闭界面时调用（无论是否Destory）
         /// </summary>
-        public virtual void OnClose()
+        protected virtual void OnClose()
         {
             go.SetActive(false);
             foreach (var child in childs)
@@ -73,7 +73,7 @@ namespace Framework
             }
         }
 
-        public virtual void OnDestroy()
+        protected virtual void OnDestroy()
         {
             foreach (var child in childs)
             {

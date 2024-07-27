@@ -109,7 +109,13 @@ namespace Framework
                     Debug.LogError($"{viewName}界面打开失败");
                     return;
                 }
-                UIViewBase view = new UIViewBase(viewGo, viewInfo);
+                UIViewBase view = GenClass(viewName) as UIViewBase;
+                if (view == null)
+                {
+                    Debug.LogError($"绑定{viewName}界面脚本失败");
+                    return;
+                }
+                view.InitData(viewGo, viewInfo);
                 //初始化
                 view.InternalInit(viewData);
                 //入栈
@@ -182,6 +188,12 @@ namespace Framework
         }
 
         #region private
+
+        private object GenClass(string className)
+        {
+            var obj = Activator.CreateInstance(Type.GetType(className));
+            return obj;
+        }
 
         /// <summary>
         /// 查找界面数据
