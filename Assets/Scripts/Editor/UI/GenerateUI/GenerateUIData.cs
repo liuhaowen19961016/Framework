@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class GenUIData
 {
     public GameObject prefab;
     public ClassData uiViewData;
-    public Dictionary<string, ClassData> subViewDataDict = new Dictionary<string, ClassData>();
+    public Dictionary<string, ClassData> uiSubViewDataDict = new Dictionary<string, ClassData>();
+    public StringBuilder errorStr = new StringBuilder();
 }
 
 public class ClassData

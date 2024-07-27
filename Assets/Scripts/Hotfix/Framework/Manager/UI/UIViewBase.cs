@@ -104,9 +104,6 @@ namespace Framework
 
         public void InternalShow()
         {
-            RegisterUIEvent();
-            RegisterGameEvent();
-
             PlayAudio(true);
             PlayAni(true);
 

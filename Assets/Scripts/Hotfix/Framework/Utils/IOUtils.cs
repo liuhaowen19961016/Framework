@@ -2,9 +2,6 @@ using System.IO;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 
-/// <summary>
-/// 文件操作工具类
-/// </summary>
 public static class IOUtils
 {
     /// <summary>
@@ -46,7 +43,7 @@ public static class IOUtils
     /// 拷贝文件
     /// </summary>
     /// destPath：目标文件路径或目标文件夹路径
-    public static bool CopyFile(string srcFilePath, string destPath, bool destroySrcFile = false, bool overweite = true)
+    public static bool CopyFile(string srcFilePath, string destPath, bool destroySrcFile = false, bool overwrite = true)
     {
         if (!IsFilePath(srcFilePath))
         {
@@ -74,7 +71,7 @@ public static class IOUtils
         {
             Directory.CreateDirectory(destDirPath);
         }
-        File.Copy(srcFilePath, destFilePath, overweite);
+        File.Copy(srcFilePath, destFilePath, overwrite);
         if (destroySrcFile)
         {
             File.Delete(srcFilePath);
@@ -85,7 +82,7 @@ public static class IOUtils
     /// <summary>
     /// 拷贝文件夹
     /// </summary>
-    public static bool CopyFolder(string srcDirPath, string destDirPath, bool containRootDir = true, bool overweite = true)
+    public static bool CopyFolder(string srcDirPath, string destDirPath, bool containRootDir = true, bool overwrite = true)
     {
         if (!IsFolderPath(srcDirPath))
         {
@@ -113,7 +110,7 @@ public static class IOUtils
             if (IsFilePath(temp))
             {
                 string destFilePath = Path.Combine(destDirPath, Path.GetFileName(temp));
-                File.Copy(temp, destFilePath, overweite);
+                File.Copy(temp, destFilePath, overwrite);
             }
             else
             {
@@ -121,5 +118,45 @@ public static class IOUtils
             }
         }
         return true;
+    }
+
+    /// <summary>
+    /// 获取文件夹路径
+    /// </summary>
+    public static string GetDirPath(string path)
+    {
+        string dirPath = Path.GetDirectoryName(path);
+        return dirPath;
+    }
+
+    public static bool WirteToFile(string filePath, string fileContent, bool overwrite = true)
+    {
+        if (!IsFilePath(filePath))
+            return false;
+        string dirPath = GetDirPath(filePath);
+        if (!Directory.Exists(dirPath))
+        {
+            Directory.CreateDirectory(dirPath);
+        }
+        if (File.Exists(filePath))
+        {
+            if (overwrite)
+            {
+                File.WriteAllText(filePath, fileContent);
+                return true;
+            }
+            return false;
+        }
+        else
+        {
+            File.WriteAllText(filePath, fileContent);
+            return true;
+        }
+    }
+
+    public static bool FileExist(string filePath)
+    {
+        bool exist = File.Exists(filePath);
+        return exist;
     }
 }

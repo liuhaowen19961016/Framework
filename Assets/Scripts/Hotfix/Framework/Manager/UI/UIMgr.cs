@@ -53,7 +53,7 @@ namespace Framework
     {
         //根据项目进行调整
         public static Vector2 referenceResolution = new Vector2(768, 1366);
-        public const float SCREENMATCHVALUE = 0;
+        public const float ScreenMatchValue = 0;
 
         public static int LAYERNAME_UI = LayerMask.NameToLayer("UI");
         public const int LAYER_ORDERINLAYER = 1000;
@@ -234,7 +234,7 @@ namespace Framework
             canvas.worldCamera = uiCamera;
             raycaster = uiCanvasGo.GetComponent<GraphicRaycaster>();
             CanvasScaler canvasScaler = uiCanvasGo.GetComponent<CanvasScaler>();
-            canvasScaler.matchWidthOrHeight = SCREENMATCHVALUE;
+            canvasScaler.matchWidthOrHeight = ScreenMatchValue;
             canvasScaler.referenceResolution = referenceResolution;
             //创建Canvas下的层级结构
             string[] uiLayerNameArray = Enum.GetNames(typeof(EUILayerType));

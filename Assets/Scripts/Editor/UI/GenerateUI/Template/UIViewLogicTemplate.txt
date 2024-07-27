@@ -1,7 +1,7 @@
 using Framework;
 using UnityEngine.UI;
 
-public partial class #CLASSNAME# : UIViewBase
+public class #CLASSNAME# : #BASECLASSNAME#
 {
     
 }

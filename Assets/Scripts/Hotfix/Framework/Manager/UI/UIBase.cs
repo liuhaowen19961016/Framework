@@ -20,6 +20,14 @@ namespace Framework
         /// </summary>
         public virtual void OnInit(object viewData)
         {
+            BindComponent();
+            RegisterUIEvent();
+            RegisterGameEvent();
+            viewData = this.viewData;
+        }
+
+        public virtual void BindComponent()
+        {
         }
 
         public virtual void RegisterUIEvent()
