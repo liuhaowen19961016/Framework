@@ -1,0 +1,18 @@
+/******************************/
+/*****自动生成的UIView界面代码，禁止手动修改*****/
+/*****UIView的逻辑写在#CLASSNAME#逻辑脚本中*****/
+/*****生成时间：#GENDATETIME#*****/
+/*****************************/
+
+using Framework;
+using UnityEngine.UI;
+
+public partial class #CLASSNAME# : UIViewBase
+{
+    #FIELDDEFINECODE#
+
+    private override BindComponent()
+    {
+        #FIELDBINDCODE#
+    }
+}
