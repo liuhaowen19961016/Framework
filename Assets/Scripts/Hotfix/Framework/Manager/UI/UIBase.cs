@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace Framework
 
         protected object viewData;
 
-        private Dictionary<string, UISubViewBase> subViews = new Dictionary<string, UISubViewBase>(); //所有子界面
+        protected Dictionary<string, UISubViewBase> subViews = new Dictionary<string, UISubViewBase>(); //所有子界面
         private HashSet<string> subViewNameList = new HashSet<string>();
 
         #region 生命周期
@@ -18,13 +19,10 @@ namespace Framework
         protected virtual void OnInit(object viewData)
         {
             this.viewData = viewData;
-            BindComponent();
-            RegisterUIEvent();
-            RegisterGameEvent();
-
+            
             foreach (var subViewName in subViewNameList)
             {
-                var subView = ReflectUtils.Create(subViewName) as UISubViewBase;
+                var subView = Activator.CreateInstance(Type.GetType(subViewName)) as UISubViewBase;
                 subViews.Add(subViewName, subView);
                 subView.InternalInit(subViewName, viewData);
             }
@@ -32,6 +30,10 @@ namespace Framework
 
         protected virtual void OnCreate()
         {
+            BindComponent();
+            RegisterUIEvent();
+            RegisterGameEvent();
+            
             foreach (var subView in subViews.Values)
             {
                 subView.InternalCreate(go);
@@ -89,5 +91,10 @@ namespace Framework
         }
 
         #endregion 生命周期
+
+        protected void AddSubViewName(string subViewName)
+        {
+            subViewNameList.Add(subViewName);
+        }
     }
 }

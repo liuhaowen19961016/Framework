@@ -20,13 +20,26 @@ public static class ReflectUtils
 
     public static T Create<T>()
     {
-        T type = Activator.CreateInstance<T>();
-        return type;
+        Type type = typeof(T);
+        var obj = Create(type);
+        return (T)obj;
     }
 
     public static object Create(Type type)
     {
+        if (type == null)
+        {
+            Log.Error($"Type不能为空");
+            return null;
+        }
         object obj = Activator.CreateInstance(type);
+        return obj;
+    }
+
+    public static object Create(string assemblyName, string nameSpace, string typeName)
+    {
+        Type type = GetType(assemblyName, nameSpace, typeName);
+        object obj = Create(type);
         return obj;
     }
 

@@ -77,8 +77,10 @@ namespace Framework
         private void CollectUIConfig()
         {
             //todo test
-            UIViewInfo viewInfo = new UIViewInfo("UITest", EUILayerType.Top, EUIType.Main);
+            UIViewInfo viewInfo = new UIViewInfo("UIView_Main", EUILayerType.Window, EUIType.Main);
             uiCfgs.Add(viewInfo.viewName, viewInfo);
+            UIViewInfo viewInfo1 = new UIViewInfo("UIView_Shop", EUILayerType.Window, EUIType.Main);
+            uiCfgs.Add(viewInfo1.viewName, viewInfo1);
         }
 
         /// <summary>
@@ -102,12 +104,13 @@ namespace Framework
                 var layer = FindLayer(viewInfo.layerType);
                 if (layer == null)
                     return null;
-                UIViewBase view = ReflectUtils.Create(viewName) as UIViewBase;
-                if (view == null)
+                var type = Type.GetType(viewName);
+                if (type == null)
                 {
-                    Debug.LogError($"脚本绑定{viewName}界面失败");
+                    Debug.LogError($"脚本绑定{viewName}界面失败，没有生成UI脚本");
                     return null;
                 }
+                UIViewBase view = Activator.CreateInstance(type) as UIViewBase;
                 //初始化
                 view.InternalInit(viewInfo, viewData);
                 //GameObject viewGo = TMGame.GameGlobal.GetManager<ResMgr>().GetGameObject(viewName).GetInstance();

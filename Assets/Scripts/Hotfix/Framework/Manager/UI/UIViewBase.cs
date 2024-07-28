@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,7 +53,8 @@ namespace Framework
             }
         }
 
-        public bool Interactable //可交互性
+        [Obsolete]
+        public bool Interactable //可交互性（会使下层的界面可以接收射线，先别用，还没想到好的实现思路）
         {
             get
             {
@@ -131,6 +133,7 @@ namespace Framework
         /// <summary>
         /// 设置界面的可交互性回调
         /// </summary>
+        [Obsolete]
         public virtual void OnSetInteractable(bool b)
         {
         }

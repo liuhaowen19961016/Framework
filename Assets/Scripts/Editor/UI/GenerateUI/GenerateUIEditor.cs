@@ -42,10 +42,10 @@ public class GenerateUIEditor
     private const string UISUBVIEW_VIEW_TEMPLATEPATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UISubViewViewTemplate.txt"; //UISubView界面模板路径
 
     //生成代码文件夹
-    private const string UIVIEW_LOGIC_GENCODEDIR = "Assets/TempTest/UI/Logic/View/"; //自动生成UIView逻辑代码的文件夹
-    private const string UIVIEW_VIEW_GENCODEDIR = "Assets/TempTest/UI/AutoGen/View/"; //自动生成UIView界面代码的文件夹
-    private const string UISUBVIEW_LOGIC_GENCODEDIR = "Assets/TempTest/UI/Logic/SubView/"; //自动生成UISubView逻辑代码的文件夹
-    private const string UISUBVIEW_VIEW_GENCODEDIR = "Assets/TempTest/UI/AutoGen/SubView/"; //自动生成UISubView界面代码的文件夹
+    private const string UIVIEW_LOGIC_GENCODEDIR = "Assets/Scripts/Hotfix/UI/Logic/View/"; //自动生成UIView逻辑代码的文件夹
+    private const string UIVIEW_VIEW_GENCODEDIR = "Assets/Scripts/Hotfix/UI/AutoGen/View/"; //自动生成UIView界面代码的文件夹
+    private const string UISUBVIEW_LOGIC_GENCODEDIR = "Assets/Scripts/Hotfix/UI/Logic/SubView/"; //自动生成UISubView逻辑代码的文件夹
+    private const string UISUBVIEW_VIEW_GENCODEDIR = "Assets/Scripts/Hotfix/UI/AutoGen/SubView/"; //自动生成UISubView界面代码的文件夹
 
     private const string SUFFIX_CS = ".cs";
     private const string EXTRANAME_AUTOGEN = "Base";

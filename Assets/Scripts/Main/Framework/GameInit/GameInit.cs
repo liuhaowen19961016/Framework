@@ -35,22 +35,22 @@ namespace Framework
 
         private void FixedUpdate()
         {
-            Loader.FixedUpdate();
+            Loader.FixedUpdate?.Invoke();
         }
 
         private void Update()
         {
-            Loader.Update();
+            Loader.Update?.Invoke();
         }
 
         private void LateUpdate()
         {
-            Loader.LateUpdate();
+            Loader.LateUpdate?.Invoke();
         }
 
         private void OnApplicationQuit()
         {
-            Loader.OnApplicationQuit();
+            Loader.OnApplicationQuit?.Invoke();
         }
     }
 }

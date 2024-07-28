@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class UIViewName
 {
-    public const string UIWinMain = "UIWinMain";
+    public const string UIView_Main = "UIView_Main";//UIView_Main
+    public const string UIView_Shop= "UIView_Shop";
 }
