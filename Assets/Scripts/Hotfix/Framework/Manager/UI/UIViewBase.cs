@@ -1,4 +1,3 @@
-using Hotfix;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +6,7 @@ namespace Framework
     /// <summary>
     /// UI界面基类
     /// </summary>
-    public class UIViewBase : UIBase
+    public abstract class UIViewBase : UIBase
     {
         private EUILayerType layerType;
         public EUILayerType LayerType => layerType;
@@ -52,6 +51,7 @@ namespace Framework
                 }
             }
         }
+
         public bool Interactable //可交互性
         {
             get
@@ -72,21 +72,19 @@ namespace Framework
                 OnSetInteractable(value);
             }
         }
-        
-        public void InitData(GameObject go, UIViewInfo uiViewInfo)
+
+        public void InternalInit(UIViewInfo uiViewInfo, object viewData)
         {
-            this.go = go;
             viewName = uiViewInfo.viewName;
             layerType = uiViewInfo.layerType;
             type = uiViewInfo.type;
+            this.viewData = viewData;
+            OnInit(viewData);
         }
 
-        public void InternalInit(object viewData)
+        public void InternalCreate(GameObject go)
         {
-            this.viewData = viewData;
-
-            go.transform.SetParent(GameGlobal.UIMgr.FindLayer(layerType).LayerGo.transform, false);
-
+            this.go = go;
             canvas = go.GetComponent<Canvas>(true);
             canvas.overrideSorting = true;
             childCanvas = go.GetComponentsInChildren<Canvas>(true);
@@ -98,25 +96,29 @@ namespace Framework
 
             raycaster = go.GetComponent<GraphicRaycaster>(true);
             childRaycaster = go.GetComponentsInChildren<GraphicRaycaster>(true);
-
-            OnInit(viewData);
+            OnCreate();
         }
 
         public void InternalShow()
         {
+            go.SetActive(true);
+
             PlayAudio(true);
             PlayAni(true);
 
             OnShow();
-
-            //todo 发送打开界面事件
         }
 
-        public void InternalClose(bool destory)
+        public void InternalClose(bool destory = true)
         {
+            go.SetActive(false);
+
             OnClose();
+
             if (destory)
+            {
                 OnDestroy();
+            }
         }
 
         public void InternalRefresh()
@@ -137,31 +139,6 @@ namespace Framework
 
         private void PlayAni(bool isOpen)
         {
-            // var openAniName = GetOpenAniName();
-            // if (!string.IsNullOrEmpty(openAniName))
-            // {
-            //     try
-            //     {
-            //         var openAudio = GetOpenAudioStr();
-            //         if (!string.IsNullOrEmpty(openAudio))
-            //         {
-            //             GameGlobal.GetManager<SoundMgr>().PlaySfx(openAudio);
-            //         }
-            //     }
-            //     catch (Exception e)
-            //     {
-            //         Log.Error(e.Message);
-            //         Log.Error(e.StackTrace);
-            //     }
-            //   
-            //     var animator = gameObject.GetComponent<Animator>();
-            //     if (animator != null && animator.HasState(openAniName))
-            //     {
-            //         await TMUtility.PlayAnimationAsync(animator, openAniName,
-            //             gameObject.GetCancellationTokenOnDestroy());
-            //         OpenAniEndCallBack();
-            //     }
-            // }
         }
 
         private void PlayAudio(bool isOpen)

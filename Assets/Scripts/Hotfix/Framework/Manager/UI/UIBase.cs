@@ -1,29 +1,79 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Framework
 {
-    public class UIBase
+    public abstract class UIBase
     {
         protected GameObject go;
         public GameObject Go => go;
 
         protected object viewData;
 
-        private List<UIBase> childs = new List<UIBase>();
+        private Dictionary<string, UISubViewBase> subViews = new Dictionary<string, UISubViewBase>(); //所有子界面
+        private HashSet<string> subViewNameList = new HashSet<string>();
 
         #region 生命周期
 
-        /// <summary>
-        /// 打开界面时最先调用
-        /// </summary>
         protected virtual void OnInit(object viewData)
         {
+            this.viewData = viewData;
             BindComponent();
             RegisterUIEvent();
             RegisterGameEvent();
-            viewData = this.viewData;
+
+            foreach (var subViewName in subViewNameList)
+            {
+                var subView = ReflectUtils.Create(subViewName) as UISubViewBase;
+                subViews.Add(subViewName, subView);
+                subView.InternalInit(subViewName, viewData);
+            }
+        }
+
+        protected virtual void OnCreate()
+        {
+            foreach (var subView in subViews.Values)
+            {
+                subView.InternalCreate(go);
+            }
+        }
+
+        protected virtual void OnShow()
+        {
+            foreach (var subView in subViews.Values)
+            {
+                subView.OnShow();
+            }
+        }
+
+        /// <summary>
+        /// 界面每次打开时调用
+        /// </summary>
+        protected virtual void OnRefresh()
+        {
+            foreach (var subView in subViews.Values)
+            {
+                subView.OnRefresh();
+            }
+        }
+
+        /// <summary>
+        /// 关闭界面时调用（无论是否销毁）
+        /// </summary>
+        protected virtual void OnClose()
+        {
+            foreach (var subView in subViews.Values)
+            {
+                subView.OnClose();
+            }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            foreach (var subView in subViews.Values)
+            {
+                subView.OnDestroy();
+            }
         }
 
         protected virtual void BindComponent()
@@ -36,49 +86,6 @@ namespace Framework
 
         protected virtual void RegisterGameEvent()
         {
-        }
-
-        /// <summary>
-        /// 界面第一次打开时调用
-        /// </summary>
-        protected virtual void OnShow()
-        {
-            go.SetActive(true);
-            foreach (var child in childs)
-            {
-                child.OnShow();
-            }
-        }
-
-        /// <summary>
-        /// 界面每次打开时调用
-        /// </summary>
-        protected virtual void OnRefresh()
-        {
-            foreach (var child in childs)
-            {
-                child.OnRefresh();
-            }
-        }
-
-        /// <summary>
-        /// 关闭界面时调用（无论是否Destory）
-        /// </summary>
-        protected virtual void OnClose()
-        {
-            go.SetActive(false);
-            foreach (var child in childs)
-            {
-                child.OnClose();
-            }
-        }
-
-        protected virtual void OnDestroy()
-        {
-            foreach (var child in childs)
-            {
-                child.OnDestroy();
-            }
         }
 
         #endregion 生命周期

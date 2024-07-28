@@ -55,9 +55,8 @@ namespace Framework
         public static Vector2 referenceResolution = new Vector2(768, 1366);
         public const float ScreenMatchValue = 0;
 
-        public static int LAYERNAME_UI = LayerMask.NameToLayer("UI");
-        public const int LAYER_ORDERINLAYER = 1000;
-        public const int VIEW_ORDERINLAYER = 100;
+        public const int LAYERSTEP_ORDERINLAYER = 2000;
+        public const int VIEWSTEP_ORDERINLAYER = 100;
 
         private GameObject uiRootGo;
 
@@ -70,22 +69,22 @@ namespace Framework
         private GraphicRaycaster raycaster; //UI射线检测组件
         public GraphicRaycaster Raycaster => raycaster;
 
-        private Dictionary<string, UIViewInfo> viewInfos = new Dictionary<string, UIViewInfo>(); //所有界面数据（只有viewInfos中存在的界面才可以被UI管理器控制）
+        private Dictionary<string, UIViewInfo> uiCfgs = new Dictionary<string, UIViewInfo>(); //缓存所有UI表配置
 
         private List<UIViewBase> viewStack = new List<UIViewBase>();
         private Dictionary<EUILayerType, UILayer> layerType2Layer = new Dictionary<EUILayerType, UILayer>();
 
-        private void CollectViewInfo()
+        private void CollectUIConfig()
         {
             //todo test
             UIViewInfo viewInfo = new UIViewInfo("UITest", EUILayerType.Top, EUIType.Main);
-            viewInfos.Add(viewInfo.viewName, viewInfo);
+            uiCfgs.Add(viewInfo.viewName, viewInfo);
         }
 
         /// <summary>
         /// 同步打开界面
         /// </summary>
-        public void ShowSync(string viewName, object viewData = null)
+        public UIViewBase ShowSync(string viewName, object viewData = null)
         {
             var curView = FindView(viewName);
             if (curView != null)
@@ -93,36 +92,38 @@ namespace Framework
                 Pop(curView);
                 Push(curView);
                 curView.InternalRefresh();
+                return curView;
             }
             else
             {
                 var viewInfo = FindViewInfo(viewName);
                 if (viewInfo == null)
-                    return;
+                    return null;
                 var layer = FindLayer(viewInfo.layerType);
                 if (layer == null)
-                    return;
+                    return null;
+                UIViewBase view = ReflectUtils.Create(viewName) as UIViewBase;
+                if (view == null)
+                {
+                    Debug.LogError($"脚本绑定{viewName}界面失败");
+                    return null;
+                }
+                //初始化
+                view.InternalInit(viewInfo, viewData);
                 //GameObject viewGo = TMGame.GameGlobal.GetManager<ResMgr>().GetGameObject(viewName).GetInstance();
                 GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(viewName)); //todo test
                 if (viewGo == null)
                 {
                     Debug.LogError($"{viewName}界面打开失败");
-                    return;
+                    return null;
                 }
-                UIViewBase view = GenClass(viewName) as UIViewBase;
-                if (view == null)
-                {
-                    Debug.LogError($"绑定{viewName}界面脚本失败");
-                    return;
-                }
-                view.InitData(viewGo, viewInfo);
-                //初始化
-                view.InternalInit(viewData);
+                viewGo.transform.SetParent(layer.LayerGo.transform, false);
+                view.InternalCreate(viewGo);
                 //入栈
                 Push(view);
                 //显示
                 view.InternalShow();
-                view.InternalRefresh();
+                return view;
             }
         }
 
@@ -189,18 +190,12 @@ namespace Framework
 
         #region private
 
-        private object GenClass(string className)
-        {
-            var obj = Activator.CreateInstance(Type.GetType(className));
-            return obj;
-        }
-
         /// <summary>
         /// 查找界面数据
         /// </summary>
         private UIViewInfo FindViewInfo(string viewName)
         {
-            foreach (var kvp in viewInfos)
+            foreach (var kvp in uiCfgs)
             {
                 if (kvp.Key == viewName)
                     return kvp.Value;
@@ -240,7 +235,7 @@ namespace Framework
         {
             GameObject uiCanvasGo = GameUtils.CreateGameObject("UICanvas", uiRootGo.transform, false,
                 typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            uiCanvasGo.layer = LAYERNAME_UI;
+            uiCanvasGo.layer = LayerMask.NameToLayer("UI");
             Canvas canvas = uiCanvasGo.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             canvas.worldCamera = uiCamera;
@@ -254,11 +249,7 @@ namespace Framework
             {
                 EUILayerType uiLayerType = (EUILayerType)Enum.Parse(typeof(EUILayerType), layerName);
                 GameObject layerRootGo = GameUtils.CreateGameObject(layerName, uiCanvasGo.transform, false, typeof(RectTransform));
-                layerRootGo.layer = LAYERNAME_UI;
                 RectTransform rect = layerRootGo.GetComponent<RectTransform>();
-                rect.localScale = Vector3.one;
-                rect.localPosition = Vector3.zero;
-                rect.localRotation = Quaternion.identity;
                 rect.anchoredPosition = Vector2.zero;
                 rect.anchorMin = Vector2.zero;
                 rect.anchorMax = Vector2.one;
@@ -285,8 +276,8 @@ namespace Framework
 
         public void Init()
         {
-            //根据配表初始化界面数据
-            CollectViewInfo();
+            //收集UI表中的数据
+            CollectUIConfig();
             //创建UI结构
             uiRootGo = GameUtils.CreateGameObject("UIRoot", null, true);
             Object.DontDestroyOnLoad(uiRootGo);

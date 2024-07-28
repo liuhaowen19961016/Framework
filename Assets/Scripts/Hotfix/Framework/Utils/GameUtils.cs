@@ -76,7 +76,7 @@ public static class GameUtils
         GameObject go = new GameObject();
         go.name = name;
         go.transform.SetParent(parent, false);
-        go.transform.localPosition = Vector2.zero;
+        go.ResetLocal();
         if (!canRepeat)
         {
             HashSet<Type> hashtable = new HashSet<Type>();
@@ -107,7 +107,7 @@ public static class GameUtils
     {
         if (!targetTrans.IsChildOf(rootTrans))
         {
-            Debug.LogError($"{targetTrans.name}不是{rootTrans.name}的子物体");
+            Log.Error($"{targetTrans.name}不是{rootTrans.name}的子物体");
             return string.Empty;
         }
 
@@ -127,5 +127,22 @@ public static class GameUtils
             transPath.Insert(0, rootTrans.name + "/");
         }
         return transPath.ToString();
+    }
+
+    /// <summary>
+    /// 查找某一个节点
+    /// </summary>
+    public static Transform FindTrans(Transform rootTrans, string findTransName)
+    {
+        if (string.IsNullOrEmpty(findTransName))
+            return null;
+        for (int i = 0; i < rootTrans.childCount; i++)
+        {
+            var trans = rootTrans.GetChild(i);
+            if (trans.name == findTransName)
+                return trans;
+            FindTrans(trans, findTransName);
+        }
+        return null;
     }
 }

@@ -201,4 +201,18 @@ public static class GameObjectExtension
         Object.Destroy(go);
         return true;
     }
+
+    public static void Reset(this GameObject go)
+    {
+        go.transform.position = Vector3.zero;
+        go.transform.rotation = Quaternion.identity;
+        go.transform.localScale = Vector3.one;
+    }
+    
+    public static void ResetLocal(this GameObject go)
+    {
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localRotation = Quaternion.identity;
+        go.transform.localScale = Vector3.one;
+    }
 }

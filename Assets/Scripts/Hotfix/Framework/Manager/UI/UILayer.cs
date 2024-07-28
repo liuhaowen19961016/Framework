@@ -38,11 +38,11 @@ namespace Framework
         /// </summary>
         private void SetAllViewOrderInLayer()
         {
-            int originOrderInLayer = (int)layerType * UIMgr.LAYER_ORDERINLAYER;
+            int originOrderInLayer = (int)layerType * UIMgr.LAYERSTEP_ORDERINLAYER;
             for (int i = 0; i < uiViewList.Count; i++)
             {
                 uiViewList[i].OrderInLayer = originOrderInLayer;
-                originOrderInLayer += UIMgr.VIEW_ORDERINLAYER;
+                originOrderInLayer += UIMgr.VIEWSTEP_ORDERINLAYER;
             }
         }
 
