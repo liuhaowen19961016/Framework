@@ -4,6 +4,7 @@
 /*****生成时间：#GENDATETIME#*****/
 /*****************************/
 
+using Framework;
 #NAMESPACE#
 public class #CLASSNAME# : UIViewBase
 {
