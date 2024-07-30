@@ -8,14 +8,14 @@ namespace Framework
     /// </summary>
     public abstract class UIViewBase : UIBase
     {
-        private EUILayerType layerType;
-        public EUILayerType LayerType => layerType;
+        private UIViewConfig uiViewCfg; //UIView表
+        public UIViewConfig UIViewCfg => uiViewCfg;
 
-        private EUIType type;
-        private EUIType Type => type;
+        private string viewName; //界面名字
 
-        private string viewName;
-        public string ViewName => viewName;
+        public int ViewId => uiViewCfg.Id; //界面id
+        public EUILayerType LayerType => (EUILayerType)uiViewCfg.LayerType; //层级类型
+        private EUIType Type => (EUIType)uiViewCfg.Type; //类型
 
         private Canvas canvas; //当前界面的Canvas
         private Canvas[] childCanvas; //当前界面下的所有子Canvas
@@ -52,6 +52,7 @@ namespace Framework
             }
         }
 
+        //todo 删除
         public bool Interactable //可交互性
         {
             get
@@ -73,12 +74,11 @@ namespace Framework
             }
         }
 
-        public void InternalInit(UIViewInfo uiViewInfo, object viewData)
+        public void InternalInit(string viewName, UIViewConfig uiViewCfg, object viewData)
         {
-            viewName = uiViewInfo.viewName;
-            layerType = uiViewInfo.layerType;
-            type = uiViewInfo.type;
             this.viewData = viewData;
+            this.uiViewCfg = uiViewCfg;
+            this.viewName = viewName;
             OnInit(viewData);
         }
 

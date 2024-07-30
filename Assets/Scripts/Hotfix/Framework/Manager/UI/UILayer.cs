@@ -10,7 +10,6 @@ namespace Framework
         public GameObject LayerGo => layerGo;
 
         private EUILayerType layerType;
-        public EUILayerType LayerType => layerType;
 
         private List<UIViewBase> uiViewList; //当前层级下的所有界面
 

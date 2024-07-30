@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Hotfix;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -84,9 +85,9 @@ namespace Framework
         /// <summary>
         /// 同步打开界面
         /// </summary>
-        public UIViewBase ShowSync(string viewName, object viewData = null)
+        public UIViewBase ShowSync(int viewId, object viewData = null)
         {
-            var curView = FindView(viewName);
+            var curView = FindView(viewId);
             if (curView != null)
             {
                 Pop(curView);
@@ -96,22 +97,29 @@ namespace Framework
             }
             else
             {
-                var viewInfo = FindViewInfo(viewName);
-                if (viewInfo == null)
-                    return null;
-                var layer = FindLayer(viewInfo.layerType);
-                if (layer == null)
-                    return null;
-                UIViewBase view = ReflectUtils.Create(viewName) as UIViewBase;
-                if (view == null)
+                //todo 通过读表获取UIViewCfg
+                if (!UIViewTemp.UIViewConfigs.TryGetValue(viewId, out UIViewConfig uiViewCfg))
                 {
-                    Debug.LogError($"脚本绑定{viewName}界面失败");
+                    Debug.LogError($"UIView表中没有配置Id为{viewId}的界面");
                     return null;
                 }
+                string viewName = Path.GetFileName(uiViewCfg.Path);
+                var layer = FindLayer((EUILayerType)uiViewCfg.LayerType);
+                if (layer == null)
+                    return null;
+                var classType = Type.GetType(viewName);
+                if (classType == null)
+                {
+                    Debug.LogError($"脚本绑定{viewName}界面失败，请先生成界面脚本");
+                    return null;
+                }
+                UIViewBase view = Activator.CreateInstance(classType) as UIViewBase;
+                if (view == null)
+                    return null;
+
                 //初始化
-                view.InternalInit(viewInfo, viewData);
-                //GameObject viewGo = TMGame.GameGlobal.GetManager<ResMgr>().GetGameObject(viewName).GetInstance();
-                GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(viewName)); //todo test
+                view.InternalInit(viewName, uiViewCfg, viewData);
+                GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(viewName)); //todo 通过资源管理器加载
                 if (viewGo == null)
                 {
                     Debug.LogError($"{viewName}界面打开失败");
@@ -127,9 +135,9 @@ namespace Framework
             }
         }
 
-        public bool Close(string viewName, bool isDestory = true)
+        public bool Close(int viewId, bool isDestory = true)
         {
-            var curView = FindView(viewName);
+            var curView = FindView(viewId);
             if (curView == null)
                 return false;
             var layer = FindLayer(curView.LayerType);
@@ -155,11 +163,11 @@ namespace Framework
         /// <summary>
         /// 查找界面
         /// </summary>
-        public UIViewBase FindView(string viewName)
+        public UIViewBase FindView(int viewId)
         {
             foreach (var uiView in viewStack)
             {
-                if (uiView.ViewName == viewName)
+                if (uiView.ViewId == viewId)
                     return uiView;
             }
             return null;
@@ -190,23 +198,9 @@ namespace Framework
 
         #region private
 
-        /// <summary>
-        /// 查找界面数据
-        /// </summary>
-        private UIViewInfo FindViewInfo(string viewName)
-        {
-            foreach (var kvp in uiCfgs)
-            {
-                if (kvp.Key == viewName)
-                    return kvp.Value;
-            }
-            Debug.LogError($"请先在配置表中添加 {viewName} 界面数据");
-            return null;
-        }
-
         private void Push(UIViewBase view)
         {
-            if (FindView(view.ViewName) != null)
+            if (FindView(view.ViewId) != null)
                 return;
             var layer = FindLayer(view.LayerType);
             layer.AddView(view);
@@ -215,7 +209,7 @@ namespace Framework
 
         private void Pop(UIViewBase view)
         {
-            if (FindView(view.ViewName) == null)
+            if (FindView(view.ViewId) == null)
                 return;
             var layer = FindLayer(view.LayerType);
             layer.RemoveView(view);
