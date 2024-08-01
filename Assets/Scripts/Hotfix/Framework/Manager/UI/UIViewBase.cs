@@ -9,7 +9,6 @@ namespace Framework
     public abstract class UIViewBase : UIBase
     {
         private UIViewConfig uiViewCfg; //UIView表
-        public UIViewConfig UIViewCfg => uiViewCfg;
 
         private string viewName; //界面名字
 
@@ -20,8 +19,6 @@ namespace Framework
         private Canvas canvas; //当前界面的Canvas
         private Canvas[] childCanvas; //当前界面下的所有子Canvas
         private int[] childCanvasOriginSortingOrder;
-        private GraphicRaycaster raycaster; //当前界面的UI射线检测组件
-        private GraphicRaycaster[] childRaycaster; //当前界面下的所有子UI射线检测组件
 
         public int OrderInLayer //排序顺序
         {
@@ -52,33 +49,14 @@ namespace Framework
             }
         }
 
-        //todo 删除
-        public bool Interactable //可交互性
-        {
-            get
-            {
-                if (raycaster == null)
-                    return false;
-                return raycaster.enabled;
-            }
-            set
-            {
-                if (raycaster == null)
-                    return;
-                raycaster.enabled = value;
-                for (int i = 0; i < childRaycaster.Length; i++)
-                {
-                    childRaycaster[i].enabled = value;
-                }
-                OnSetInteractable(value);
-            }
-        }
-
         public void InternalInit(string viewName, UIViewConfig uiViewCfg, object viewData)
         {
             this.viewData = viewData;
             this.uiViewCfg = uiViewCfg;
             this.viewName = viewName;
+            uiViewHolder = this;
+            parent = this;
+
             OnInit(viewData);
         }
 
@@ -94,8 +72,6 @@ namespace Framework
                 childCanvasOriginSortingOrder[i] = childCanvas[i].sortingOrder;
             }
 
-            raycaster = go.GetComponent<GraphicRaycaster>(true);
-            childRaycaster = go.GetComponentsInChildren<GraphicRaycaster>(true);
             OnCreate();
         }
 
@@ -127,13 +103,6 @@ namespace Framework
         }
 
         #region Callback
-
-        /// <summary>
-        /// 设置界面的可交互性回调
-        /// </summary>
-        public virtual void OnSetInteractable(bool b)
-        {
-        }
 
         #endregion Callback
 

@@ -122,7 +122,7 @@ namespace Framework
                 GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(viewName)); //todo 通过资源管理器加载
                 if (viewGo == null)
                 {
-                    Debug.LogError($"{viewName}界面打开失败");
+                    Debug.LogError($"{viewName}界面资源实例化失败");
                     return null;
                 }
                 viewGo.transform.SetParent(layer.LayerGo.transform, false);
