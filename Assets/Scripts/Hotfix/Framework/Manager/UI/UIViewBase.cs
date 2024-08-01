@@ -64,6 +64,7 @@ namespace Framework
         {
             this.go = go;
             canvas = go.GetComponent<Canvas>(true);
+            go.GetComponent<GraphicRaycaster>(true);
             canvas.overrideSorting = true;
             childCanvas = go.GetComponentsInChildren<Canvas>(true);
             childCanvasOriginSortingOrder = new int[childCanvas.Length];
@@ -106,6 +107,11 @@ namespace Framework
 
         #endregion Callback
 
+        protected void Close(bool isDestory)
+        {
+            
+        }
+        
         private void PlayAni(bool isOpen)
         {
         }

@@ -22,7 +22,7 @@ namespace Framework
         /// <summary>
         /// 添加子界面
         /// </summary>
-        protected UISubViewBase AddUISubview(int uiSubViewId, Transform trans)
+        protected UISubViewBase AddUISubview(int uiSubViewId, Transform trans, object viewData = null)
         {
             //todo 通过读表获取UIViewCfg
             if (!UISubviewTemp.UISubViewConfigs.TryGetValue(uiSubViewId, out UISubViewConfig uiSubViewCfg))

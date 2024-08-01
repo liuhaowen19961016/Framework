@@ -37,7 +37,7 @@ namespace Hotfix
 
             uiMgr = new UIMgr();
             uiMgr.Init();
-            // uiMgr.ShowSync();
+            uiMgr.ShowSync(1);
 
             //
             initComplete = true;

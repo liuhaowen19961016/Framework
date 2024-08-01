@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Framework
@@ -25,6 +23,7 @@ namespace Framework
 
         public void InternalCreate(GameObject go)
         {
+            this.go = go;
             OnCreate();
         }
 

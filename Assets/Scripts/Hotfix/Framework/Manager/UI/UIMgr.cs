@@ -67,20 +67,12 @@ namespace Framework
         private Camera uiCamera; //UI相机
         public Camera UICamera => uiCamera;
 
-        private GraphicRaycaster raycaster; //UI射线检测组件
-        public GraphicRaycaster Raycaster => raycaster;
-
-        private Dictionary<string, UIViewInfo> uiCfgs = new Dictionary<string, UIViewInfo>(); //缓存所有UI表配置
+        private EventSystem eventSystem; //EventSystem
 
         private List<UIViewBase> viewStack = new List<UIViewBase>();
         private Dictionary<EUILayerType, UILayer> layerType2Layer = new Dictionary<EUILayerType, UILayer>();
 
-        private void CollectUIConfig()
-        {
-            //todo test
-            UIViewInfo viewInfo = new UIViewInfo("UITest", EUILayerType.Top, EUIType.Main);
-            uiCfgs.Add(viewInfo.viewName, viewInfo);
-        }
+        private Dictionary<object, bool> setEventSystemStateCache = new Dictionary<object, bool>();
 
         /// <summary>
         /// 同步打开界面
@@ -110,7 +102,7 @@ namespace Framework
                 var classType = Type.GetType(viewName);
                 if (classType == null)
                 {
-                    Debug.LogError($"脚本绑定{viewName}界面失败，请先生成界面脚本");
+                    Debug.LogError($"代码绑定{viewName}界面失败，界面路径错误或者没有生成界面代码");
                     return null;
                 }
                 UIViewBase view = Activator.CreateInstance(classType) as UIViewBase;
@@ -153,11 +145,11 @@ namespace Framework
         }
 
         /// <summary>
-        /// 设置是否开启射线检测（当前Canvas下的UI能否接收射线检测）
+        /// 设置UI是否可交互
         /// </summary>
-        public void SetRaycastEnable(bool enable)
+        public void SetEventSystemEnable(bool enable, object type)
         {
-            raycaster.enabled = enable;
+            eventSystem.enabled = enable; //todo logic
         }
 
         /// <summary>
@@ -233,7 +225,6 @@ namespace Framework
             Canvas canvas = uiCanvasGo.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             canvas.worldCamera = uiCamera;
-            raycaster = uiCanvasGo.GetComponent<GraphicRaycaster>();
             CanvasScaler canvasScaler = uiCanvasGo.GetComponent<CanvasScaler>();
             canvasScaler.matchWidthOrHeight = ScreenMatchValue;
             canvasScaler.referenceResolution = referenceResolution;
@@ -258,9 +249,9 @@ namespace Framework
 
         private EventSystem CreateEventSystem()
         {
-            GameObject eventSystemGo = GameUtils.CreateGameObject("UICanvas", uiRootGo.transform, false,
-                typeof(EventSystem), typeof(StandaloneInputModule), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            EventSystem eventSystem = eventSystemGo.GetComponent<EventSystem>();
+            GameObject eventSystemGo = GameUtils.CreateGameObject("EventSystem", uiRootGo.transform, false,
+                typeof(EventSystem), typeof(StandaloneInputModule));
+            eventSystem = eventSystemGo.GetComponent<EventSystem>();
             return eventSystem;
         }
 
@@ -270,8 +261,6 @@ namespace Framework
 
         public void Init()
         {
-            //收集UI表中的数据
-            CollectUIConfig();
             //创建UI结构
             uiRootGo = GameUtils.CreateGameObject("UIRoot", null, true);
             Object.DontDestroyOnLoad(uiRootGo);
