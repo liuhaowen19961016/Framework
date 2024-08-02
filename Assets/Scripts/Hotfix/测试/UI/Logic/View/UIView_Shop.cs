@@ -8,10 +8,12 @@ public class UIView_Shop : UIView_ShopBase
     protected override void OnShow()
     {
         base.OnShow();
+        Debug.LogError("UIView_Shop subviews " + SubViews.Count);
         Debug.LogError("UIView_Shop OnShow ");
         Debug.LogError("UIView_Shop OnShow " + parent);
         Debug.LogError("UIView_Shop OnShow " + uiViewHolder);
-        AddUISubview<UISubView_ResourceBar>(UINode_ResourceBar, "611");
+
+        UISubView_ResourceBar.Go.SetLocalPosX(11);
     }
 
     protected override void OnInit(object viewData)

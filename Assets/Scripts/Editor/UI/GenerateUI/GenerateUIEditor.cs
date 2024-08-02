@@ -190,6 +190,11 @@ public class GenerateUIEditor
     private static void AddGenUIData(GenUIData genUIData, EGenUIType parentGenUIType, EGenUIType genUIType, Transform trans, Type type, string typeName, Transform rootTrans)
     {
         string transName = trans.name;
+        if (!RegexUtils.IsCSValidName(transName))
+        {
+            genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的{transName}节点命名不符合C#规则\n");
+            return;
+        }
         if (parentGenUIType == EGenUIType.Common)
         {
             AddFieldData(genUIData.uiViewData, genUIType, trans, type, typeName, rootTrans);

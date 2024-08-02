@@ -19,7 +19,7 @@ namespace Framework
 
         protected object viewData;
 
-        private Dictionary<string, UISubViewBase> subViews = new Dictionary<string, UISubViewBase>(); //所有子界面
+        public Dictionary<string, UISubViewBase> SubViews = new Dictionary<string, UISubViewBase>(); //所有子界面
 
         /// <summary>
         /// 添加子界面
@@ -35,7 +35,6 @@ namespace Framework
                 return null;
 
             subView.InternalInit(this, subViewName, viewData);
-            subViews.Add(subViewName, subView);
             GameObject subViewGo = Object.Instantiate(Resources.Load<GameObject>(subViewName)); //todo 通过资源管理器加载
             if (subViewGo == null)
             {
@@ -65,7 +64,7 @@ namespace Framework
 
         protected virtual void OnShow()
         {
-            foreach (var subView in subViews.Values)
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnShow();
             }
@@ -76,7 +75,7 @@ namespace Framework
         /// </summary>
         protected virtual void OnRefresh()
         {
-            foreach (var subView in subViews.Values)
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnRefresh();
             }
@@ -87,7 +86,7 @@ namespace Framework
         /// </summary>
         protected virtual void OnClose()
         {
-            foreach (var subView in subViews.Values)
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnClose();
             }
@@ -95,7 +94,7 @@ namespace Framework
 
         protected virtual void OnDestroy()
         {
-            foreach (var subView in subViews.Values)
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnDestroy();
             }
