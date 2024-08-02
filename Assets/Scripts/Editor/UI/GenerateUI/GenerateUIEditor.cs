@@ -55,8 +55,8 @@ public class GenerateUIEditor
     private const string FIELD_DEFINE_TEMPLATE = "\tprotected #FieldType# #FieldName#;"; //字段定义模板
     private const string COMMON_FIELD_BIND_TEMPLATE = "\t\t#FieldName# = go.transform.Find(\"#FieldPath#\").GetComponent<#ComponentType#>();"; //通用字段绑定模板
     private const string SUBVIEW_FIELD_BIND_TEMPLATE = "\t\t#FieldName# =new #FieldName#();\n" +
-                                                       "#FieldName#.InternalInit(this, #FieldName#);\n" +
-                                                       "resourceBarItem.InternalCreate(go.transform.Find(\"#FieldPath#\").gameObject);\n"; //子界面字段绑定模板
+                                                       "\t\t#FieldName#.InternalInit(this, \"#FieldName#\");\n" +
+                                                       "\t\t#FieldName#.InternalCreate(go.transform.Find(\"#FieldPath#\").gameObject);"; //子界面字段绑定模板
 
     private static GenUIData genUIData;
     private static List<string> genSuccessClassNameList = new List<string>();
@@ -180,7 +180,7 @@ public class GenerateUIEditor
                 genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的{transName}节点找不到{type.Name}组件\n");
                 continue;
             }
-            AddGenUIData(genUIData, genUIType, genUIType, trans, type, type.Name, rootTrans);
+            AddGenUIData(genUIData, genUIType, EGenUIType.Common, trans, type, type.Name, rootTrans);
         }
     }
 
