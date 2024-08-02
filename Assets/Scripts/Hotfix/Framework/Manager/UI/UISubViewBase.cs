@@ -9,7 +9,7 @@ namespace Framework
     {
         private string subViewName; //子界面名字
 
-        public void InternalInit(UIBase parent, string subViewName, object viewData)
+        public void InternalInit(UIBase parent, string subViewName, object viewData = null)
         {
             this.viewData = viewData;
             this.subViewName = subViewName;

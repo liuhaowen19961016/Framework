@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Framework
 {
+    /// <summary>
+    /// 所有UI基类
+    /// </summary>
     public abstract class UIBase
     {
         public UIViewBase uiViewHolder; //属于哪个界面
@@ -23,7 +25,7 @@ namespace Framework
         /// 添加子界面
         /// </summary>
         protected T AddUISubview<T>(Transform trans, object viewData = null)
-               where T :UISubViewBase
+            where T : UISubViewBase
         {
             Type type = typeof(T);
             string subViewName = type.Name;

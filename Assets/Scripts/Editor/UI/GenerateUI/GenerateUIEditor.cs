@@ -107,7 +107,7 @@ public class GenerateUIEditor
 
         //收集生成UI的数据
         Transform root = go.transform;
-        CollectGenUIData(root, root, false);
+        CollectGenUIData(genUIData, root, root, false);
         //生成UIView代码
         GenUIViewCode_Logic(genUIData.uiViewData);
         GenUIViewCode_View(genUIData.uiViewData);
@@ -137,7 +137,7 @@ public class GenerateUIEditor
 
         //收集生成UI的数据
         Transform root = go.transform;
-        CollectGenUIData(root, root, true);
+        CollectGenUIData(genUIData, root, root, true);
         //生成UISubView代码
         foreach (var uiSubViewData in genUIData.uiSubViewDataDict.Values)
         {
@@ -150,7 +150,7 @@ public class GenerateUIEditor
         EditorUtils.ShowDialogWindow("生成UISubView完成", GenResultStr(), "确定");
     }
 
-    private static void CollectGenUIData(Transform targetTrans, Transform rootTrans, bool isSubView)
+    private static void CollectGenUIData(GenUIData genUIData, Transform targetTrans, Transform rootTrans, bool isSubView)
     {
         for (int i = 0; i < targetTrans.childCount; i++)
         {
@@ -164,11 +164,11 @@ public class GenerateUIEditor
             }
             if (namePrefix == PREFIX_UISUBVIEW)
             {
-                //UISubView的子物体只能是UISubView，UIView只能有一个
-                CollectGenUIData(trans, trans, true);
+                AddGenUIData(genUIData, isSubView, trans, trans.name, rootTrans);
+                CollectGenUIData(genUIData, trans, trans, true); //UISubView的子物体只能是UISubView，UIView只能有一个
                 continue;
             }
-            CollectGenUIData(trans, rootTrans, isSubView);
+            CollectGenUIData(genUIData, trans, rootTrans, isSubView);
             if (!Name2ComponentType.TryGetValue(namePrefix, out var type))
                 continue;
             Component component = trans.GetComponent(type);
@@ -177,37 +177,43 @@ public class GenerateUIEditor
                 genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的{transName}节点找不到{type.Name}组件\n");
                 continue;
             }
+            AddGenUIData(GenerateUIEditor.genUIData, isSubView, trans, type.Name, rootTrans);
+        }
+    }
 
-            if (!isSubView)
+    /// <summary>
+    /// 添加生成UI数据
+    /// </summary>
+    private static void AddGenUIData(GenUIData genUIData, bool isSubView, Transform trans, string typeName, Transform rootTrans)
+    {
+        string transName = trans.name;
+        if (!isSubView)
+        {
+            if (genUIData.uiViewData.fieldDataDict.ContainsKey(transName))
             {
-                if (genUIData.uiViewData.fieldDataDict.ContainsKey(transName))
-                {
-                    genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中存在相同{transName}名字的{type.Name}组件\n");
-                    continue;
-                }
-                genUIData.uiViewData.namespaceList.Add(type.Namespace);
-                FieldData fieldData = new FieldData();
-                fieldData.name = transName;
-                fieldData.type = type;
-                fieldData.path = GameUtils.CalculateTransPath(trans, rootTrans);
-                genUIData.uiViewData.fieldDataDict.Add(transName, fieldData);
+                genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中存在相同{transName}名字的{typeName}组件\n");
+                return;
             }
-            else
+            FieldData fieldData = new FieldData();
+            fieldData.fieldName = transName;
+            fieldData.typeName = typeName;
+            fieldData.fieldPath = GameUtils.CalculateTransPath(trans, rootTrans);
+            genUIData.uiViewData.fieldDataDict.Add(transName, fieldData);
+        }
+        else
+        {
+            string uiSubViewName = rootTrans.name;
+            if (!genUIData.uiSubViewDataDict.TryGetValue(uiSubViewName, out var uiSubViewData))
             {
-                string uiSubViewName = rootTrans.name;
-                if (!genUIData.uiSubViewDataDict.TryGetValue(uiSubViewName, out var uiSubViewData))
-                {
-                    uiSubViewData = new ClassData();
-                    uiSubViewData.className = uiSubViewName;
-                    genUIData.uiSubViewDataDict.Add(uiSubViewName, uiSubViewData);
-                }
-                uiSubViewData.namespaceList.Add(type.Namespace);
-                FieldData fieldData = new FieldData();
-                fieldData.name = transName;
-                fieldData.type = type;
-                fieldData.path = GameUtils.CalculateTransPath(trans, rootTrans);
-                uiSubViewData.fieldDataDict.Add(transName, fieldData);
+                uiSubViewData = new ClassData();
+                uiSubViewData.className = uiSubViewName;
+                genUIData.uiSubViewDataDict.Add(uiSubViewName, uiSubViewData);
             }
+            FieldData fieldData = new FieldData();
+            fieldData.fieldName = transName;
+            fieldData.typeName = typeName;
+            fieldData.fieldPath = GameUtils.CalculateTransPath(trans, rootTrans);
+            uiSubViewData.fieldDataDict.Add(transName, fieldData);
         }
     }
 
@@ -307,7 +313,12 @@ public class GenerateUIEditor
     private static string GenNamespaceCode(ClassData classData)
     {
         StringBuilder str = new StringBuilder();
-        HashSet<string> hashSet = new HashSet<string>(classData.namespaceList);
+        foreach (var fieldData in classData.fieldDataDict.Values)
+        {
+            Type type = Type.GetType(fieldData.typeName);
+            
+        }
+        HashSet<string> hashSet = new HashSet<string>();
         foreach (var nameSpace in hashSet)
         {
             string namespaceDefineStr = NAMESPACE_DEFINE_TEMPLATE;
@@ -326,8 +337,8 @@ public class GenerateUIEditor
         foreach (var fieldData in fieldDatas)
         {
             string fieldDefineStr = FIELD_DEFINE_TEMPLATE;
-            fieldDefineStr = fieldDefineStr.Replace("#FieldType#", fieldData.type.Name);
-            fieldDefineStr = fieldDefineStr.Replace("#FieldName#", fieldData.name);
+            fieldDefineStr = fieldDefineStr.Replace("#FieldType#", fieldData.typeName);
+            fieldDefineStr = fieldDefineStr.Replace("#FieldName#", fieldData.fieldName);
             str.Append(fieldDefineStr + "\n");
         }
         return str.ToString();
@@ -342,9 +353,9 @@ public class GenerateUIEditor
         foreach (var fieldData in fieldDatas)
         {
             string fieldBindStr = FIELD_BIND_TEMPLATE;
-            fieldBindStr = fieldBindStr.Replace("#FieldName#", fieldData.name);
-            fieldBindStr = fieldBindStr.Replace("#FieldPath#", fieldData.path);
-            fieldBindStr = fieldBindStr.Replace("#ComponentType#", fieldData.type.Name);
+            fieldBindStr = fieldBindStr.Replace("#FieldName#", fieldData.fieldName);
+            fieldBindStr = fieldBindStr.Replace("#FieldPath#", fieldData.fieldPath);
+            fieldBindStr = fieldBindStr.Replace("#ComponentType#", fieldData.typeName);
             str.Append(fieldBindStr + "\n");
         }
         return str.ToString();

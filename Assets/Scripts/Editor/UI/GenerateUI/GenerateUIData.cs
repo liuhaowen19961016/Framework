@@ -15,14 +15,13 @@ public class ClassData
 {
     public string className;
     public Dictionary<string, FieldData> fieldDataDict = new Dictionary<string, FieldData>();
-    public List<string> namespaceList = new List<string>();
 }
 
 public class FieldData
 {
-    public string name;
-    public Type type;
-    public string path;
+    public string fieldName;
+    public string typeName;
+    public string fieldPath;
 }
 
 /// <summary>

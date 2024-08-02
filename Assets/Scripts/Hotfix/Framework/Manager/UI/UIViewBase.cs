@@ -50,7 +50,7 @@ namespace Framework
             }
         }
 
-        public void InternalInit(string viewName, UIViewConfig uiViewCfg, object viewData)
+        public void InternalInit(string viewName, UIViewConfig uiViewCfg, object viewData = null)
         {
             this.viewData = viewData;
             this.uiViewCfg = uiViewCfg;
@@ -108,7 +108,7 @@ namespace Framework
 
         #endregion Callback
 
-        protected void Close(bool isDestory)
+        protected void Close(bool isDestory = true)
         {
             GameGlobal.UIMgr.Close(ViewId, isDestory);
         }
