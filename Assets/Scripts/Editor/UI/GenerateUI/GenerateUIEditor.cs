@@ -167,7 +167,7 @@ public class GenerateUIEditor
             }
             if (namePrefix == PREFIX_UISUBVIEW)
             {
-                AddGenUIData(genUIData, genUIType, trans, null, trans.name, rootTrans);
+                AddGenUIData(genUIData, genUIType, EGenUIType.Subview, trans, null, trans.name, rootTrans);
                 CollectGenUIData(genUIData, trans, trans, EGenUIType.Subview); //UISubView的子物体只能是UISubView，UIView只能有一个
                 continue;
             }
@@ -180,21 +180,21 @@ public class GenerateUIEditor
                 genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的{transName}节点找不到{type.Name}组件\n");
                 continue;
             }
-            AddGenUIData(GenerateUIEditor.genUIData, genUIType, trans, type, type.Name, rootTrans);
+            AddGenUIData(genUIData, genUIType, genUIType, trans, type, type.Name, rootTrans);
         }
     }
 
     /// <summary>
     /// 添加生成UI数据
     /// </summary>
-    private static void AddGenUIData(GenUIData genUIData, EGenUIType genUIType, Transform trans, Type type, string typeName, Transform rootTrans)
+    private static void AddGenUIData(GenUIData genUIData, EGenUIType parentGenUIType, EGenUIType genUIType, Transform trans, Type type, string typeName, Transform rootTrans)
     {
         string transName = trans.name;
-        if (genUIType == EGenUIType.Common)
+        if (parentGenUIType == EGenUIType.Common)
         {
             AddFieldData(genUIData.uiViewData, genUIType, trans, type, typeName, rootTrans);
         }
-        else if (genUIType == EGenUIType.Subview)
+        else if (parentGenUIType == EGenUIType.Subview)
         {
             string uiSubViewName = rootTrans.name;
             if (!genUIData.uiSubViewDataDict.TryGetValue(uiSubViewName, out var uiSubViewData))
