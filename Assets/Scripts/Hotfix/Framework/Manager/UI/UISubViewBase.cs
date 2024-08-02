@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Framework
@@ -9,27 +7,27 @@ namespace Framework
     /// </summary>
     public abstract class UISubViewBase : UIBase
     {
-        private string uiSubViewName;
-        public string UISubViewName => uiSubViewName;
+        private string subViewName; //子界面名字
 
-        public void InternalInit(string uiSubViewName, object viewData)
+        public void InternalInit(UIBase parent, string subViewName, object viewData = null)
         {
-            this.uiSubViewName = uiSubViewName;
+            this.viewData = viewData;
+            this.subViewName = subViewName;
+            this.parent = parent;
+            uiViewHolder = parent.uiViewHolder;
+            parent.SubViews.Add(subViewName, this);
             OnInit(viewData);
         }
 
         public void InternalCreate(GameObject go)
         {
-            Transform uiSubViewTrans = GameUtils.FindTrans(go.transform, uiSubViewName);
-            if (uiSubViewTrans == null)
-            {
-                Debug.LogError($"{go.name}下找不到{uiSubViewName}节点！！！！！");
-            }
-            else
-            {
-                this.go = uiSubViewTrans.gameObject;
-            }
+            this.go = go;
             OnCreate();
+        }
+
+        public void InternalShow()
+        {
+            OnShow();
         }
     }
 }

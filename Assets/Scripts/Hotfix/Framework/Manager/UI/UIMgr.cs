@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Hotfix;
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -66,29 +66,19 @@ namespace Framework
         private Camera uiCamera; //UI相机
         public Camera UICamera => uiCamera;
 
-        private GraphicRaycaster raycaster; //UI射线检测组件
-        public GraphicRaycaster Raycaster => raycaster;
-
-        private Dictionary<string, UIViewInfo> uiCfgs = new Dictionary<string, UIViewInfo>(); //缓存所有UI表配置
+        private EventSystem eventSystem; //EventSystem
 
         private List<UIViewBase> viewStack = new List<UIViewBase>();
         private Dictionary<EUILayerType, UILayer> layerType2Layer = new Dictionary<EUILayerType, UILayer>();
 
-        private void CollectUIConfig()
-        {
-            //todo test
-            UIViewInfo viewInfo = new UIViewInfo("UIView_Main", EUILayerType.Window, EUIType.Main);
-            uiCfgs.Add(viewInfo.viewName, viewInfo);
-            UIViewInfo viewInfo1 = new UIViewInfo("UIView_Shop", EUILayerType.Window, EUIType.Main);
-            uiCfgs.Add(viewInfo1.viewName, viewInfo1);
-        }
+        private Dictionary<object, bool> setEventSystemStateCache = new Dictionary<object, bool>();
 
         /// <summary>
         /// 同步打开界面
         /// </summary>
-        public UIViewBase ShowSync(string viewName, object viewData = null)
+        public UIViewBase ShowSync(int viewId, object viewData = null)
         {
-            var curView = FindView(viewName);
+            var curView = FindView(viewId);
             if (curView != null)
             {
                 Pop(curView);
@@ -98,26 +88,32 @@ namespace Framework
             }
             else
             {
-                var viewInfo = FindViewInfo(viewName);
-                if (viewInfo == null)
-                    return null;
-                var layer = FindLayer(viewInfo.layerType);
-                if (layer == null)
-                    return null;
-                var type = Type.GetType(viewName);
-                if (type == null)
+                //todo 通过读表获取UIViewCfg
+                if (!UIViewTemp.UIViewConfigs.TryGetValue(viewId, out UIViewConfig uiViewCfg))
                 {
-                    Debug.LogError($"脚本绑定{viewName}界面失败，没有生成UI脚本");
+                    Debug.LogError($"UIView表中没有配置Id为{viewId}的界面");
                     return null;
                 }
-                UIViewBase view = Activator.CreateInstance(type) as UIViewBase;
+                string viewName = Path.GetFileName(uiViewCfg.Path);
+                var layer = FindLayer((EUILayerType)uiViewCfg.LayerType);
+                if (layer == null)
+                    return null;
+                var classType = Type.GetType(viewName);
+                if (classType == null)
+                {
+                    Debug.LogError($"代码绑定{viewName}界面失败，界面路径错误或者没有生成界面代码");
+                    return null;
+                }
+                UIViewBase view = Activator.CreateInstance(classType) as UIViewBase;
+                if (view == null)
+                    return null;
+
                 //初始化
-                view.InternalInit(viewInfo, viewData);
-                //GameObject viewGo = TMGame.GameGlobal.GetManager<ResMgr>().GetGameObject(viewName).GetInstance();
-                GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(viewName)); //todo test
+                view.InternalInit(viewName, uiViewCfg, viewData);
+                GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(viewName)); //todo 通过资源管理器加载
                 if (viewGo == null)
                 {
-                    Debug.LogError($"{viewName}界面打开失败");
+                    Debug.LogError($"{viewName}界面资源实例化失败");
                     return null;
                 }
                 viewGo.transform.SetParent(layer.LayerGo.transform, false);
@@ -130,9 +126,9 @@ namespace Framework
             }
         }
 
-        public bool Close(string viewName, bool isDestory = true)
+        public bool Close(int viewId, bool isDestory = true)
         {
-            var curView = FindView(viewName);
+            var curView = FindView(viewId);
             if (curView == null)
                 return false;
             var layer = FindLayer(curView.LayerType);
@@ -148,21 +144,21 @@ namespace Framework
         }
 
         /// <summary>
-        /// 设置是否开启射线检测（当前Canvas下的UI能否接收射线检测）
+        /// 设置UI是否可交互
         /// </summary>
-        public void SetRaycastEnable(bool enable)
+        public void SetEventSystemEnable(bool enable, object type)
         {
-            raycaster.enabled = enable;
+            eventSystem.enabled = enable; //todo logic
         }
 
         /// <summary>
         /// 查找界面
         /// </summary>
-        public UIViewBase FindView(string viewName)
+        public UIViewBase FindView(int viewId)
         {
             foreach (var uiView in viewStack)
             {
-                if (uiView.ViewName == viewName)
+                if (uiView.ViewId == viewId)
                     return uiView;
             }
             return null;
@@ -193,23 +189,9 @@ namespace Framework
 
         #region private
 
-        /// <summary>
-        /// 查找界面数据
-        /// </summary>
-        private UIViewInfo FindViewInfo(string viewName)
-        {
-            foreach (var kvp in uiCfgs)
-            {
-                if (kvp.Key == viewName)
-                    return kvp.Value;
-            }
-            Debug.LogError($"请先在配置表中添加 {viewName} 界面数据");
-            return null;
-        }
-
         private void Push(UIViewBase view)
         {
-            if (FindView(view.ViewName) != null)
+            if (FindView(view.ViewId) != null)
                 return;
             var layer = FindLayer(view.LayerType);
             layer.AddView(view);
@@ -218,7 +200,7 @@ namespace Framework
 
         private void Pop(UIViewBase view)
         {
-            if (FindView(view.ViewName) == null)
+            if (FindView(view.ViewId) == null)
                 return;
             var layer = FindLayer(view.LayerType);
             layer.RemoveView(view);
@@ -242,7 +224,6 @@ namespace Framework
             Canvas canvas = uiCanvasGo.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             canvas.worldCamera = uiCamera;
-            raycaster = uiCanvasGo.GetComponent<GraphicRaycaster>();
             CanvasScaler canvasScaler = uiCanvasGo.GetComponent<CanvasScaler>();
             canvasScaler.matchWidthOrHeight = ScreenMatchValue;
             canvasScaler.referenceResolution = referenceResolution;
@@ -267,9 +248,9 @@ namespace Framework
 
         private EventSystem CreateEventSystem()
         {
-            GameObject eventSystemGo = GameUtils.CreateGameObject("UICanvas", uiRootGo.transform, false,
-                typeof(EventSystem), typeof(StandaloneInputModule), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            EventSystem eventSystem = eventSystemGo.GetComponent<EventSystem>();
+            GameObject eventSystemGo = GameUtils.CreateGameObject("EventSystem", uiRootGo.transform, false,
+                typeof(EventSystem), typeof(StandaloneInputModule));
+            eventSystem = eventSystemGo.GetComponent<EventSystem>();
             return eventSystem;
         }
 
@@ -279,8 +260,6 @@ namespace Framework
 
         public void Init()
         {
-            //收集UI表中的数据
-            CollectUIConfig();
             //创建UI结构
             uiRootGo = GameUtils.CreateGameObject("UIRoot", null, true);
             Object.DontDestroyOnLoad(uiRootGo);

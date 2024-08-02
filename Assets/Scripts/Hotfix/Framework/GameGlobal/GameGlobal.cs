@@ -13,6 +13,9 @@ namespace Hotfix
         public static TestHotfix test;
         public static TestHotfix Test => test;
 
+        private static UIMgr uiMgr;
+        public static UIMgr UIMgr => uiMgr;
+
         private static bool initComplete;
 
         private static void Start()
@@ -31,6 +34,10 @@ namespace Hotfix
             //
             test = new TestHotfix();
             test.Register();
+
+            uiMgr = new UIMgr();
+            uiMgr.Init();
+            uiMgr.ShowSync(1);
 
             //
             initComplete = true;

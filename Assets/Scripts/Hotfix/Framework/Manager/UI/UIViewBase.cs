@@ -1,4 +1,4 @@
-using System;
+using Hotfix;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,20 +9,17 @@ namespace Framework
     /// </summary>
     public abstract class UIViewBase : UIBase
     {
-        private EUILayerType layerType;
-        public EUILayerType LayerType => layerType;
+        private UIViewConfig uiViewCfg; //UIView表
 
-        private EUIType type;
-        private EUIType Type => type;
+        private string viewName; //界面名字
 
-        private string viewName;
-        public string ViewName => viewName;
+        public int ViewId => uiViewCfg.Id; //界面id
+        public EUILayerType LayerType => (EUILayerType)uiViewCfg.LayerType; //层级类型
+        private EUIType Type => (EUIType)uiViewCfg.Type; //类型
 
         private Canvas canvas; //当前界面的Canvas
         private Canvas[] childCanvas; //当前界面下的所有子Canvas
         private int[] childCanvasOriginSortingOrder;
-        private GraphicRaycaster raycaster; //当前界面的UI射线检测组件
-        private GraphicRaycaster[] childRaycaster; //当前界面下的所有子UI射线检测组件
 
         public int OrderInLayer //排序顺序
         {
@@ -53,34 +50,14 @@ namespace Framework
             }
         }
 
-        [Obsolete]
-        public bool Interactable //可交互性（会使下层的界面可以接收射线，先别用，还没想到好的实现思路）
+        public void InternalInit(string viewName, UIViewConfig uiViewCfg, object viewData = null)
         {
-            get
-            {
-                if (raycaster == null)
-                    return false;
-                return raycaster.enabled;
-            }
-            set
-            {
-                if (raycaster == null)
-                    return;
-                raycaster.enabled = value;
-                for (int i = 0; i < childRaycaster.Length; i++)
-                {
-                    childRaycaster[i].enabled = value;
-                }
-                OnSetInteractable(value);
-            }
-        }
-
-        public void InternalInit(UIViewInfo uiViewInfo, object viewData)
-        {
-            viewName = uiViewInfo.viewName;
-            layerType = uiViewInfo.layerType;
-            type = uiViewInfo.type;
             this.viewData = viewData;
+            this.uiViewCfg = uiViewCfg;
+            this.viewName = viewName;
+            uiViewHolder = this;
+            parent = this;
+
             OnInit(viewData);
         }
 
@@ -88,6 +65,7 @@ namespace Framework
         {
             this.go = go;
             canvas = go.GetComponent<Canvas>(true);
+            go.GetComponent<GraphicRaycaster>(true);
             canvas.overrideSorting = true;
             childCanvas = go.GetComponentsInChildren<Canvas>(true);
             childCanvasOriginSortingOrder = new int[childCanvas.Length];
@@ -96,8 +74,6 @@ namespace Framework
                 childCanvasOriginSortingOrder[i] = childCanvas[i].sortingOrder;
             }
 
-            raycaster = go.GetComponent<GraphicRaycaster>(true);
-            childRaycaster = go.GetComponentsInChildren<GraphicRaycaster>(true);
             OnCreate();
         }
 
@@ -130,15 +106,12 @@ namespace Framework
 
         #region Callback
 
-        /// <summary>
-        /// 设置界面的可交互性回调
-        /// </summary>
-        [Obsolete]
-        public virtual void OnSetInteractable(bool b)
-        {
-        }
-
         #endregion Callback
+
+        protected void Close(bool isDestory = true)
+        {
+            GameGlobal.UIMgr.Close(ViewId, isDestory);
+        }
 
         private void PlayAni(bool isOpen)
         {

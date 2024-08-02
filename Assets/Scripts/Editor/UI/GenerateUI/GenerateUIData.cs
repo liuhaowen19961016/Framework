@@ -20,9 +20,20 @@ public class ClassData
 
 public class FieldData
 {
-    public string name;
-    public Type type;
-    public string path;
+    public EGenUIType genUIType;
+    public string fieldName;
+    public string fieldTypeName;
+    public string fieldPath;
+}
+
+/// <summary>
+/// 生成UI的类型
+/// </summary>
+public enum EGenUIType
+{
+    Common = 1, //通用的（UGUI组件等）
+    Subview, //子界面
+    Container,
 }
 
 /// <summary>

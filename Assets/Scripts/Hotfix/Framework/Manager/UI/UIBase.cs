@@ -1,31 +1,58 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Framework
 {
+    /// <summary>
+    /// 所有UI基类
+    /// </summary>
     public abstract class UIBase
     {
-        protected GameObject go;
+        public UIViewBase uiViewHolder; //属于哪个界面
+
+        protected UIBase parent; //父对象
+
+        protected GameObject go; //自身GameObject
         public GameObject Go => go;
 
         protected object viewData;
 
-        protected Dictionary<string, UISubViewBase> subViews = new Dictionary<string, UISubViewBase>(); //所有子界面
-        private HashSet<string> subViewNameList = new HashSet<string>();
+        public Dictionary<string, UISubViewBase> SubViews = new Dictionary<string, UISubViewBase>(); //所有子界面
+
+        /// <summary>
+        /// 添加子界面
+        /// </summary>
+        protected T AddUISubview<T>(Transform trans, object viewData = null)
+            where T : UISubViewBase
+        {
+            Type type = typeof(T);
+            string subViewName = type.Name;
+            var classType = Type.GetType(subViewName);
+            T subView = Activator.CreateInstance(classType) as T;
+            if (subView == null)
+                return null;
+
+            subView.InternalInit(this, subViewName, viewData);
+            GameObject subViewGo = Object.Instantiate(Resources.Load<GameObject>(subViewName)); //todo 通过资源管理器加载
+            if (subViewGo == null)
+            {
+                Debug.LogError($"{subViewName}子界面资源实例化失败");
+                return null;
+            }
+            subViewGo.transform.SetParent(trans, false);
+            subViewGo.ResetLocal();
+            subView.InternalCreate(subViewGo);
+            subView.InternalShow();
+            return subView;
+        }
 
         #region 生命周期
 
         protected virtual void OnInit(object viewData)
         {
             this.viewData = viewData;
-            
-            foreach (var subViewName in subViewNameList)
-            {
-                var subView = Activator.CreateInstance(Type.GetType(subViewName)) as UISubViewBase;
-                subViews.Add(subViewName, subView);
-                subView.InternalInit(subViewName, viewData);
-            }
         }
 
         protected virtual void OnCreate()
@@ -33,16 +60,11 @@ namespace Framework
             BindComponent();
             RegisterUIEvent();
             RegisterGameEvent();
-            
-            foreach (var subView in subViews.Values)
-            {
-                subView.InternalCreate(go);
-            }
         }
 
         protected virtual void OnShow()
         {
-            foreach (var subView in subViews.Values)
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnShow();
             }
@@ -53,7 +75,7 @@ namespace Framework
         /// </summary>
         protected virtual void OnRefresh()
         {
-            foreach (var subView in subViews.Values)
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnRefresh();
             }
@@ -64,7 +86,7 @@ namespace Framework
         /// </summary>
         protected virtual void OnClose()
         {
-            foreach (var subView in subViews.Values)
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnClose();
             }
@@ -72,7 +94,7 @@ namespace Framework
 
         protected virtual void OnDestroy()
         {
-            foreach (var subView in subViews.Values)
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnDestroy();
             }
@@ -91,10 +113,5 @@ namespace Framework
         }
 
         #endregion 生命周期
-
-        protected void AddSubViewName(string subViewName)
-        {
-            subViewNameList.Add(subViewName);
-        }
     }
 }

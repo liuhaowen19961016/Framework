@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 /// </summary>
 public class GenerateUIEditor
 {
-    //**********只有按照以下规范命名的节点才会生成，不区分大小写，可扩展
+    //**********只有按照以下规范命名的节点才会生成，可扩展
     private static Dictionary<string, Type> Name2ComponentType = new Dictionary<string, Type>()
     {
         { "UIBtn", typeof(Button) },
@@ -36,24 +36,27 @@ public class GenerateUIEditor
     private static string UIGENINFOARCHIVEPATH = Application.dataPath + "/../UIGenInfo.json"; //已经生成过的逻辑代码序列化成json存项目根目录下，防止覆盖生成逻辑代码
 
     //模板路径
-    private const string UIVIEW_LOGIC_TEMPLATEPATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIViewLogicTemplate.txt"; //UIView逻辑模板路径
-    private const string UIVIEW_VIEW_TEMPLATEPATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIViewViewTemplate.txt"; //UIView界面模板路径
-    private const string UISUBVIEW_LOGIC_TEMPLATEPATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UISubViewLogicTemplate.txt"; //UISubView逻辑模板路径
-    private const string UISUBVIEW_VIEW_TEMPLATEPATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UISubViewViewTemplate.txt"; //UISubView界面模板路径
+    private const string UIVIEW_LOGIC_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIViewLogicTemplate.txt"; //UIView逻辑模板路径
+    private const string UIVIEW_VIEW_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIViewViewTemplate.txt"; //UIView界面模板路径
+    private const string UISUBVIEW_LOGIC_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UISubViewLogicTemplate.txt"; //UISubView逻辑模板路径
+    private const string UISUBVIEW_VIEW_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UISubViewViewTemplate.txt"; //UISubView界面模板路径
 
     //生成代码文件夹
-    private const string UIVIEW_LOGIC_GENCODEDIR = "Assets/Scripts/Hotfix/UI/Logic/View/"; //自动生成UIView逻辑代码的文件夹
-    private const string UIVIEW_VIEW_GENCODEDIR = "Assets/Scripts/Hotfix/UI/AutoGen/View/"; //自动生成UIView界面代码的文件夹
-    private const string UISUBVIEW_LOGIC_GENCODEDIR = "Assets/Scripts/Hotfix/UI/Logic/SubView/"; //自动生成UISubView逻辑代码的文件夹
-    private const string UISUBVIEW_VIEW_GENCODEDIR = "Assets/Scripts/Hotfix/UI/AutoGen/SubView/"; //自动生成UISubView界面代码的文件夹
+    private const string UIVIEW_LOGIC_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/Logic/View/"; //自动生成UIView逻辑代码的文件夹
+    private const string UIVIEW_VIEW_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/AutoGen/View/"; //自动生成UIView界面代码的文件夹
+    private const string UISUBVIEW_LOGIC_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/Logic/SubView/"; //自动生成UISubView逻辑代码的文件夹
+    private const string UISUBVIEW_VIEW_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/AutoGen/SubView/"; //自动生成UISubView界面代码的文件夹
 
     private const string SUFFIX_CS = ".cs";
     private const string EXTRANAME_AUTOGEN = "Base";
     private const string PREFIX_UISUBVIEW = "UISubView";
     private const string PREFIX_UICONTAINER = "UIContainer";
-    private const string NAMESPACEDEFINE_TEMPLATE = "using #Namespace#;"; //命名空间定义模板
-    private const string FIELDDEFINE_TEMPLATE = "\tprotected #FieldType# #FieldName#;"; //字段定义模板
-    private const string FIELDBIND_TEMPLATE = "\t\t#FieldName# = go.transform.Find(\"#FieldPath#\").GetComponent<#ComponentType#>();"; //字段绑定模板
+    private const string NAMESPACE_DEFINE_TEMPLATE = "using #Namespace#;"; //命名空间定义模板
+    private const string FIELD_DEFINE_TEMPLATE = "\tprotected #FieldType# #FieldName#;"; //字段定义模板
+    private const string COMMON_FIELD_BIND_TEMPLATE = "\t\t#FieldName# = go.transform.Find(\"#FieldPath#\").GetComponent<#ComponentType#>();"; //通用字段绑定模板
+    private const string SUBVIEW_FIELD_BIND_TEMPLATE = "\t\t#FieldName# =new #FieldName#();\n" +
+                                                       "\t\t#FieldName#.InternalInit(this, \"#FieldName#\");\n" +
+                                                       "\t\t#FieldName#.InternalCreate(go.transform.Find(\"#FieldPath#\").gameObject);"; //子界面字段绑定模板
 
     private static GenUIData genUIData;
     private static List<string> genSuccessClassNameList = new List<string>();
@@ -107,7 +110,7 @@ public class GenerateUIEditor
 
         //收集生成UI的数据
         Transform root = go.transform;
-        CollectGenUIData(root, root, false);
+        CollectGenUIData(genUIData, root, root, EGenUIType.Common);
         //生成UIView代码
         GenUIViewCode_Logic(genUIData.uiViewData);
         GenUIViewCode_View(genUIData.uiViewData);
@@ -137,7 +140,7 @@ public class GenerateUIEditor
 
         //收集生成UI的数据
         Transform root = go.transform;
-        CollectGenUIData(root, root, true);
+        CollectGenUIData(genUIData, root, root, EGenUIType.Subview);
         //生成UISubView代码
         foreach (var uiSubViewData in genUIData.uiSubViewDataDict.Values)
         {
@@ -150,7 +153,7 @@ public class GenerateUIEditor
         EditorUtils.ShowDialogWindow("生成UISubView完成", GenResultStr(), "确定");
     }
 
-    private static void CollectGenUIData(Transform targetTrans, Transform rootTrans, bool isSubView)
+    private static void CollectGenUIData(GenUIData genUIData, Transform targetTrans, Transform rootTrans, EGenUIType genUIType)
     {
         for (int i = 0; i < targetTrans.childCount; i++)
         {
@@ -164,11 +167,11 @@ public class GenerateUIEditor
             }
             if (namePrefix == PREFIX_UISUBVIEW)
             {
-                //UISubView的子物体只能是UISubView，UIView只能有一个
-                CollectGenUIData(trans, trans, true);
+                AddGenUIData(genUIData, genUIType, EGenUIType.Subview, trans, null, trans.name, rootTrans);
+                CollectGenUIData(genUIData, trans, trans, EGenUIType.Subview); //UISubView的子物体只能是UISubView，UIView只能有一个
                 continue;
             }
-            CollectGenUIData(trans, rootTrans, isSubView);
+            CollectGenUIData(genUIData, trans, rootTrans, genUIType);
             if (!Name2ComponentType.TryGetValue(namePrefix, out var type))
                 continue;
             Component component = trans.GetComponent(type);
@@ -177,38 +180,59 @@ public class GenerateUIEditor
                 genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的{transName}节点找不到{type.Name}组件\n");
                 continue;
             }
-
-            if (!isSubView)
-            {
-                if (genUIData.uiViewData.fieldDataDict.ContainsKey(transName))
-                {
-                    genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中存在相同{transName}名字的{type.Name}组件\n");
-                    continue;
-                }
-                genUIData.uiViewData.namespaceList.Add(type.Namespace);
-                FieldData fieldData = new FieldData();
-                fieldData.name = transName;
-                fieldData.type = type;
-                fieldData.path = GameUtils.CalculateTransPath(trans, rootTrans);
-                genUIData.uiViewData.fieldDataDict.Add(transName, fieldData);
-            }
-            else
-            {
-                string uiSubViewName = rootTrans.name;
-                if (!genUIData.uiSubViewDataDict.TryGetValue(uiSubViewName, out var uiSubViewData))
-                {
-                    uiSubViewData = new ClassData();
-                    uiSubViewData.className = uiSubViewName;
-                    genUIData.uiSubViewDataDict.Add(uiSubViewName, uiSubViewData);
-                }
-                uiSubViewData.namespaceList.Add(type.Namespace);
-                FieldData fieldData = new FieldData();
-                fieldData.name = transName;
-                fieldData.type = type;
-                fieldData.path = GameUtils.CalculateTransPath(trans, rootTrans);
-                uiSubViewData.fieldDataDict.Add(transName, fieldData);
-            }
+            AddGenUIData(genUIData, genUIType, EGenUIType.Common, trans, type, type.Name, rootTrans);
         }
+    }
+
+    /// <summary>
+    /// 添加生成UI数据
+    /// </summary>
+    private static void AddGenUIData(GenUIData genUIData, EGenUIType parentGenUIType, EGenUIType genUIType, Transform trans, Type type, string typeName, Transform rootTrans)
+    {
+        string transName = trans.name;
+        if (!RegexUtils.IsCSValidName(transName))
+        {
+            genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的{transName}节点命名不符合C#规则\n");
+            return;
+        }
+        if (parentGenUIType == EGenUIType.Common)
+        {
+            AddFieldData(genUIData.uiViewData, genUIType, trans, type, typeName, rootTrans);
+        }
+        else if (parentGenUIType == EGenUIType.Subview)
+        {
+            string uiSubViewName = rootTrans.name;
+            if (!genUIData.uiSubViewDataDict.TryGetValue(uiSubViewName, out var uiSubViewData))
+            {
+                uiSubViewData = new ClassData();
+                uiSubViewData.className = uiSubViewName;
+                genUIData.uiSubViewDataDict.Add(uiSubViewName, uiSubViewData);
+            }
+            AddFieldData(uiSubViewData, genUIType, trans, type, typeName, rootTrans);
+        }
+    }
+
+    /// <summary>
+    /// 添加字段数据
+    /// </summary>
+    private static void AddFieldData(ClassData classData, EGenUIType genUIType, Transform trans, Type type, string typeName, Transform rootTrans)
+    {
+        string transName = trans.name;
+        if (classData.fieldDataDict.ContainsKey(transName))
+        {
+            genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中存在相同{transName}名字的{typeName}组件\n");
+            return;
+        }
+        if (type != null)
+        {
+            classData.namespaceList.Add(type.Namespace);
+        }
+        FieldData fieldData = new FieldData();
+        fieldData.genUIType = genUIType;
+        fieldData.fieldName = transName;
+        fieldData.fieldTypeName = typeName;
+        fieldData.fieldPath = GameUtils.CalculateTransPath(trans, rootTrans);
+        classData.fieldDataDict.Add(transName, fieldData);
     }
 
     /// <summary>
@@ -216,18 +240,18 @@ public class GenerateUIEditor
     /// </summary>
     private static void GenUIViewCode_Logic(ClassData classData)
     {
-        if (!IOUtils.FileExist(UIVIEW_LOGIC_TEMPLATEPATH))
+        if (!IOUtils.FileExist(UIVIEW_LOGIC_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{UIVIEW_LOGIC_TEMPLATEPATH}中不存在UIView逻辑模板");
+            genUIData.errorStr.Append($"{UIVIEW_LOGIC_TEMPLATE_PATH}中不存在UIView逻辑模板");
             genFailClassNameList.Add(classData.className);
             return;
         }
         if (HasGenLogicCode(classData.className))
             return;
-        string logicCode = File.ReadAllText(UIVIEW_LOGIC_TEMPLATEPATH);
+        string logicCode = File.ReadAllText(UIVIEW_LOGIC_TEMPLATE_PATH);
         logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EXTRANAME_AUTOGEN}");
-        string filePath = $"{UIVIEW_LOGIC_GENCODEDIR}{classData.className}{SUFFIX_CS}";
+        string filePath = $"{UIVIEW_LOGIC_GENCODE_DIR}{classData.className}{SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
         SaveToGenUIInfoArchive(classData, filePath);
         genSuccessClassNameList.Add(classData.className);
@@ -239,19 +263,19 @@ public class GenerateUIEditor
     private static void GenUIViewCode_View(ClassData classData)
     {
         string className = $"{classData.className}{EXTRANAME_AUTOGEN}";
-        if (!IOUtils.FileExist(UIVIEW_VIEW_TEMPLATEPATH))
+        if (!IOUtils.FileExist(UIVIEW_VIEW_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{UIVIEW_VIEW_TEMPLATEPATH}中不存在UIView界面模板");
+            genUIData.errorStr.Append($"{UIVIEW_VIEW_TEMPLATE_PATH}中不存在UIView界面模板");
             genFailClassNameList.Add(className);
             return;
         }
-        string viewCode = File.ReadAllText(UIVIEW_VIEW_TEMPLATEPATH);
+        string viewCode = File.ReadAllText(UIVIEW_VIEW_TEMPLATE_PATH);
         viewCode = viewCode.Replace("#GENDATETIME#", GenCurDateTimeStr());
         viewCode = viewCode.Replace("#NAMESPACE#", GenNamespaceCode(classData));
         viewCode = viewCode.Replace("#CLASSNAME#", className);
         viewCode = viewCode.Replace("#FIELDDEFINECODE#", GenFieldDefineCode(classData.fieldDataDict.Values.ToList()));
         viewCode = viewCode.Replace("#FIELDBINDCODE#", GenFieldBindCode(classData.fieldDataDict.Values.ToList()));
-        string filePath = $"{UIVIEW_VIEW_GENCODEDIR}{className}{SUFFIX_CS}";
+        string filePath = $"{UIVIEW_VIEW_GENCODE_DIR}{className}{SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, viewCode);
         genSuccessClassNameList.Add(className);
     }
@@ -261,18 +285,18 @@ public class GenerateUIEditor
     /// </summary>
     private static void GenUISubViewCode_Logic(ClassData classData)
     {
-        if (!IOUtils.FileExist(UISUBVIEW_LOGIC_TEMPLATEPATH))
+        if (!IOUtils.FileExist(UISUBVIEW_LOGIC_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{UISUBVIEW_LOGIC_TEMPLATEPATH}中不存在UISubView逻辑模板");
+            genUIData.errorStr.Append($"{UISUBVIEW_LOGIC_TEMPLATE_PATH}中不存在UISubView逻辑模板");
             genFailClassNameList.Add(classData.className);
             return;
         }
         if (HasGenLogicCode(classData.className))
             return;
-        string logicCode = File.ReadAllText(UISUBVIEW_LOGIC_TEMPLATEPATH);
+        string logicCode = File.ReadAllText(UISUBVIEW_LOGIC_TEMPLATE_PATH);
         logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EXTRANAME_AUTOGEN}");
-        string filePath = $"{UISUBVIEW_LOGIC_GENCODEDIR}{classData.className}{SUFFIX_CS}";
+        string filePath = $"{UISUBVIEW_LOGIC_GENCODE_DIR}{classData.className}{SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
         SaveToGenUIInfoArchive(classData, filePath);
         genSuccessClassNameList.Add(classData.className);
@@ -284,19 +308,19 @@ public class GenerateUIEditor
     private static void GenUISubViewCode_View(ClassData classData)
     {
         string className = $"{classData.className}{EXTRANAME_AUTOGEN}";
-        if (!IOUtils.FileExist(UISUBVIEW_VIEW_TEMPLATEPATH))
+        if (!IOUtils.FileExist(UISUBVIEW_VIEW_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{UISUBVIEW_VIEW_TEMPLATEPATH}中不存在UISubView界面模板");
+            genUIData.errorStr.Append($"{UISUBVIEW_VIEW_TEMPLATE_PATH}中不存在UISubView界面模板");
             genFailClassNameList.Add(className);
             return;
         }
-        string viewCode = File.ReadAllText(UISUBVIEW_VIEW_TEMPLATEPATH);
+        string viewCode = File.ReadAllText(UISUBVIEW_VIEW_TEMPLATE_PATH);
         viewCode = viewCode.Replace("#GENDATETIME#", GenCurDateTimeStr());
         viewCode = viewCode.Replace("#NAMESPACE#", GenNamespaceCode(classData));
         viewCode = viewCode.Replace("#CLASSNAME#", className);
         viewCode = viewCode.Replace("#FIELDDEFINECODE#", GenFieldDefineCode(classData.fieldDataDict.Values.ToList()));
         viewCode = viewCode.Replace("#FIELDBINDCODE#", GenFieldBindCode(classData.fieldDataDict.Values.ToList()));
-        string filePath = $"{UISUBVIEW_VIEW_GENCODEDIR}{className}{SUFFIX_CS}";
+        string filePath = $"{UISUBVIEW_VIEW_GENCODE_DIR}{className}{SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, viewCode);
         genSuccessClassNameList.Add(className);
     }
@@ -310,7 +334,7 @@ public class GenerateUIEditor
         HashSet<string> hashSet = new HashSet<string>(classData.namespaceList);
         foreach (var nameSpace in hashSet)
         {
-            string namespaceDefineStr = NAMESPACEDEFINE_TEMPLATE;
+            string namespaceDefineStr = NAMESPACE_DEFINE_TEMPLATE;
             namespaceDefineStr = namespaceDefineStr.Replace("#Namespace#", nameSpace);
             str.Append(namespaceDefineStr + "\n");
         }
@@ -325,9 +349,9 @@ public class GenerateUIEditor
         StringBuilder str = new StringBuilder();
         foreach (var fieldData in fieldDatas)
         {
-            string fieldDefineStr = FIELDDEFINE_TEMPLATE;
-            fieldDefineStr = fieldDefineStr.Replace("#FieldType#", fieldData.type.Name);
-            fieldDefineStr = fieldDefineStr.Replace("#FieldName#", fieldData.name);
+            string fieldDefineStr = FIELD_DEFINE_TEMPLATE;
+            fieldDefineStr = fieldDefineStr.Replace("#FieldType#", fieldData.fieldTypeName);
+            fieldDefineStr = fieldDefineStr.Replace("#FieldName#", fieldData.fieldName);
             str.Append(fieldDefineStr + "\n");
         }
         return str.ToString();
@@ -341,11 +365,24 @@ public class GenerateUIEditor
         StringBuilder str = new StringBuilder();
         foreach (var fieldData in fieldDatas)
         {
-            string fieldBindStr = FIELDBIND_TEMPLATE;
-            fieldBindStr = fieldBindStr.Replace("#FieldName#", fieldData.name);
-            fieldBindStr = fieldBindStr.Replace("#FieldPath#", fieldData.path);
-            fieldBindStr = fieldBindStr.Replace("#ComponentType#", fieldData.type.Name);
-            str.Append(fieldBindStr + "\n");
+            string fieldBindStr = string.Empty;
+            switch (fieldData.genUIType)
+            {
+                case EGenUIType.Common:
+                    fieldBindStr = COMMON_FIELD_BIND_TEMPLATE;
+                    fieldBindStr = fieldBindStr.Replace("#FieldName#", fieldData.fieldName);
+                    fieldBindStr = fieldBindStr.Replace("#FieldPath#", fieldData.fieldPath);
+                    fieldBindStr = fieldBindStr.Replace("#ComponentType#", fieldData.fieldTypeName);
+                    str.Append(fieldBindStr + "\n");
+                    break;
+
+                case EGenUIType.Subview:
+                    fieldBindStr = SUBVIEW_FIELD_BIND_TEMPLATE;
+                    fieldBindStr = fieldBindStr.Replace("#FieldName#", fieldData.fieldName);
+                    fieldBindStr = fieldBindStr.Replace("#FieldPath#", fieldData.fieldPath);
+                    str.Append(fieldBindStr + "\n");
+                    break;
+            }
         }
         return str.ToString();
     }
