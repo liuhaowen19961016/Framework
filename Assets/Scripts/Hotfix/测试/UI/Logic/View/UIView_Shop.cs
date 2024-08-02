@@ -11,9 +11,9 @@ public class UIView_Shop : UIView_ShopBase
         Debug.LogError("UIView_Shop OnShow ");
         Debug.LogError("UIView_Shop OnShow " + parent);
         Debug.LogError("UIView_Shop OnShow " + uiViewHolder);
-        AddUISubview(1, UINode_ResourceBar,"611");
+        AddUISubview<UISubView_ResourceBar>(UINode_ResourceBar, "611");
     }
-    
+
     protected override void OnInit(object viewData)
     {
         base.OnInit(viewData);
@@ -24,7 +24,6 @@ public class UIView_Shop : UIView_ShopBase
     {
         base.OnCreate();
         Debug.LogError("UIView_Shop OnCreate");
-     
     }
 
     protected override void OnRefresh()

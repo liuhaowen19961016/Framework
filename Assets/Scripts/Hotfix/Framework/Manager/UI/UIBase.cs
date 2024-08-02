@@ -22,26 +22,17 @@ namespace Framework
         /// <summary>
         /// 添加子界面
         /// </summary>
-        protected UISubViewBase AddUISubview(int uiSubViewId, Transform trans, object viewData = null)
+        protected T AddUISubview<T>(Transform trans, object viewData = null)
+               where T :UISubViewBase
         {
-            //todo 通过读表获取UIViewCfg
-            if (!UISubviewTemp.UISubViewConfigs.TryGetValue(uiSubViewId, out UISubViewConfig uiSubViewCfg))
-            {
-                Debug.LogError($"UISubView表中没有配置Id为{uiSubViewId}的界面");
-                return null;
-            }
-            string subViewName = Path.GetFileName(uiSubViewCfg.Path);
+            Type type = typeof(T);
+            string subViewName = type.Name;
             var classType = Type.GetType(subViewName);
-            if (classType == null)
-            {
-                Debug.LogError($"脚本绑定{subViewName}子界面失败，请先生成子界面脚本");
-                return null;
-            }
-            UISubViewBase subView = Activator.CreateInstance(classType) as UISubViewBase;
+            T subView = Activator.CreateInstance(classType) as T;
             if (subView == null)
                 return null;
 
-            subView.InternalInit(this, subViewName, uiSubViewCfg, viewData);
+            subView.InternalInit(this, subViewName, viewData);
             subViews.Add(subViewName, subView);
             GameObject subViewGo = Object.Instantiate(Resources.Load<GameObject>(subViewName)); //todo 通过资源管理器加载
             if (subViewGo == null)

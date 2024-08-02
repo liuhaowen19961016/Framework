@@ -1,3 +1,4 @@
+using Hotfix;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -109,9 +110,9 @@ namespace Framework
 
         protected void Close(bool isDestory)
         {
-            
+            GameGlobal.UIMgr.Close(ViewId, isDestory);
         }
-        
+
         private void PlayAni(bool isOpen)
         {
         }

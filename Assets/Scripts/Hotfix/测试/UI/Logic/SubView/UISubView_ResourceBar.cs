@@ -11,7 +11,7 @@ public class UISubView_ResourceBar : UISubView_ResourceBarBase
         Debug.LogError("ResourceBar OnShow");
         Debug.LogError("ResourceBar OnShow " + parent);
         Debug.LogError("ResourceBar OnShow " + uiViewHolder);
-        AddUISubview(2, UIImg_Bg.transform, "hh");
+        AddUISubview<UISubView_ResourceBarItem>(UIImg_Bg.transform, "hh");
     }
 
     protected override void OnInit(object viewData)

@@ -7,14 +7,11 @@ namespace Framework
     /// </summary>
     public abstract class UISubViewBase : UIBase
     {
-        private UISubViewConfig uiSubViewCfg; //UISubView表
-
         private string subViewName; //子界面名字
 
-        public void InternalInit(UIBase parent, string subViewName, UISubViewConfig uiSubViewCfg, object viewData)
+        public void InternalInit(UIBase parent, string subViewName, object viewData)
         {
             this.viewData = viewData;
-            this.uiSubViewCfg = uiSubViewCfg;
             this.subViewName = subViewName;
             this.parent = parent;
             uiViewHolder = parent.uiViewHolder;
