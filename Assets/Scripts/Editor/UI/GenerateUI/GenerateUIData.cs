@@ -15,13 +15,25 @@ public class ClassData
 {
     public string className;
     public Dictionary<string, FieldData> fieldDataDict = new Dictionary<string, FieldData>();
+    public List<string> namespaceList = new List<string>();
 }
 
 public class FieldData
 {
+    public EGenUIType genUIType;
     public string fieldName;
-    public string typeName;
+    public string fieldTypeName;
     public string fieldPath;
+}
+
+/// <summary>
+/// 生成UI的类型
+/// </summary>
+public enum EGenUIType
+{
+    Common = 1, //通用的（UGUI组件等）
+    Subview, //子界面
+    Container,
 }
 
 /// <summary>
