@@ -10,7 +10,7 @@ public class UIMenuOption
     private const string UI_LAYER = "UI";
 
     [MenuItem("GameObject/Framework/UI/GameImage", priority = 0)]
-    public static void AddGameImage()
+    public static void CreateGameImage()
     {
         GameObject componentGo = CreateUIComponent("GameImage");
         Image gameImage = componentGo.AddComponent<Image>();
@@ -18,7 +18,7 @@ public class UIMenuOption
     }
 
     [MenuItem("GameObject/Framework/UI/GameButton", priority = 1)]
-    public static void AddGameButton()
+    public static void CreateGameButton()
     {
         GameObject componentGo = CreateUIComponent("GameButton");
         componentGo.AddComponent<GameButton>();
@@ -26,7 +26,7 @@ public class UIMenuOption
     }
 
     [MenuItem("GameObject/Framework/UI/EmptyGraphic", priority = 2)]
-    public static void AddEmptyGraphic()
+    public static void CreateEmptyGraphic()
     {
         GameObject componentGo = CreateUIComponent("EmptyGraphic");
         componentGo.AddComponent<EmptyGraphic>();
