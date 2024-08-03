@@ -27,12 +27,22 @@ public class FieldData
 }
 
 /// <summary>
+/// 生成UI的结构类型
+/// </summary>
+public enum EGenUIStructureType
+{
+    View = 1,
+    SubView,
+    Container,
+}
+
+/// <summary>
 /// 生成UI的类型
 /// </summary>
 public enum EGenUIType
 {
     Common = 1, //通用的（UGUI组件等）
-    Subview, //子界面
+    SubView, //子界面
     Container,
 }
 
