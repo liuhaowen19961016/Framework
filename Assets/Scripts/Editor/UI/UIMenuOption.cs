@@ -1,66 +1,88 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UIMenuOption
 {
-    private const string UI_LAYER = "UI";
+    private const string UI_GAMEIMAGE_MENU_PATH = "GameObject/Framework/UI/GameImage";
+    private const string UI_GAMEBUTTON_MENU_PATH = "GameObject/Framework/UI/GameButton";
+    private const string UI_EMPTYGRAPHIC_MENU_PATH = "GameObject/Framework/UI/EmptyGraphic";
 
-    [MenuItem("GameObject/Framework/UI/GameImage", priority = 0)]
+    [MenuItem(UI_GAMEIMAGE_MENU_PATH, priority = 0)]
     public static void CreateGameImage()
     {
-        GameObject componentGo = CreateUIComponent("GameImage");
+        GameObject componentGo = CreateUIComponent(Path.GetFileName(UI_GAMEIMAGE_MENU_PATH));
+        if (componentGo == null)
+            return;
         Image gameImage = componentGo.AddComponent<Image>();
         gameImage.raycastTarget = false;
     }
 
-    [MenuItem("GameObject/Framework/UI/GameButton", priority = 1)]
+    [MenuItem(UI_GAMEBUTTON_MENU_PATH, priority = 1)]
     public static void CreateGameButton()
     {
-        GameObject componentGo = CreateUIComponent("GameButton");
+        GameObject componentGo = CreateUIComponent(Path.GetFileName(UI_GAMEBUTTON_MENU_PATH));
+        if (componentGo == null)
+            return;
         componentGo.AddComponent<GameButton>();
         componentGo.AddComponent<Image>();
     }
 
-    [MenuItem("GameObject/Framework/UI/EmptyGraphic", priority = 2)]
+    [MenuItem(UI_EMPTYGRAPHIC_MENU_PATH, priority = 2)]
     public static void CreateEmptyGraphic()
     {
-        GameObject componentGo = CreateUIComponent("EmptyGraphic");
+        GameObject componentGo = CreateUIComponent(Path.GetFileName(UI_EMPTYGRAPHIC_MENU_PATH));
+        if (componentGo == null)
+            return;
         componentGo.AddComponent<EmptyGraphic>();
         componentGo.AddComponent<CanvasRenderer>();
     }
+
+    #region
 
     /// <summary>
     /// 创建UI组件
     /// </summary>
     private static GameObject CreateUIComponent(string componentName)
     {
-        GameObject componentGo = new GameObject(componentName);
-        componentGo.layer = LayerMask.NameToLayer(UI_LAYER);
-        componentGo.AddComponent<RectTransform>();
+        if (Selection.activeGameObject == null)
+        {
+            Debug.LogError("必须选择一个节点");
+            return null;
+        }
 
-        Canvas canvas;
-        if (Selection.activeGameObject != null
-            && LayerMask.LayerToName(Selection.activeGameObject.layer) != UI_LAYER)
+        GameObject componentGo = new GameObject(componentName);
+        componentGo.layer = LayerMask.NameToLayer("UI");
+        componentGo.AddComponent<RectTransform>();
+        Transform parent;
+        Canvas canvas = Selection.activeGameObject.GetComponentInParent<Canvas>(true);
+        PrefabStage prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+        if (canvas == null)
         {
             canvas = CreateCanvas();
             canvas.transform.SetParent(Selection.activeGameObject.transform, false);
+            parent = canvas.transform;
+            if (prefabStage == null)
+            {
+                if (Object.FindObjectOfType<EventSystem>() == null)
+                {
+                    CreateEventSystem();
+                }
+            }
         }
         else
         {
-            canvas = Object.FindObjectOfType<Canvas>();
-            if (canvas == null)
-                canvas = CreateCanvas();
+            parent = Selection.activeGameObject.transform;
         }
-        EventSystem eventSystem = Object.FindObjectOfType<EventSystem>();
-        if (eventSystem == null)
-            CreateEventSystem();
-        componentGo.transform.SetParent(canvas.transform, false);
+        componentGo.transform.SetParent(parent, false);
         componentGo.transform.localPosition = Vector3.zero;
         componentGo.transform.localScale = Vector3.one;
+
+        Undo.RegisterFullObjectHierarchyUndo(componentGo, ""); //触发一次预制体的变更，为了保存预制体变更
+
         return componentGo;
     }
 
@@ -70,7 +92,7 @@ public class UIMenuOption
     private static Canvas CreateCanvas()
     {
         GameObject canvasGo = new GameObject("Canvas");
-        canvasGo.layer = LayerMask.NameToLayer(UI_LAYER);
+        canvasGo.layer = LayerMask.NameToLayer("UI");
         canvasGo.AddComponent<RectTransform>();
         Canvas canvas = canvasGo.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -86,4 +108,6 @@ public class UIMenuOption
         eventSystemGo.AddComponent<StandaloneInputModule>();
         return eventSystem;
     }
+
+    #endregion
 }

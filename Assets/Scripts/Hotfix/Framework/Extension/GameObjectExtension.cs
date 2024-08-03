@@ -208,11 +208,24 @@ public static class GameObjectExtension
         go.transform.rotation = Quaternion.identity;
         go.transform.localScale = Vector3.one;
     }
-    
+
     public static void ResetLocal(this GameObject go)
     {
         go.transform.localPosition = Vector3.zero;
         go.transform.localRotation = Quaternion.identity;
         go.transform.localScale = Vector3.one;
+    }
+
+    /// <summary>
+    /// 获取根父节点
+    /// </summary>
+    public static GameObject GetParentRoot(this GameObject go)
+    {
+        Transform parent = go.transform;
+        while (parent.parent != null)
+        {
+            parent = parent.parent;
+        }
+        return parent.gameObject;
     }
 }
