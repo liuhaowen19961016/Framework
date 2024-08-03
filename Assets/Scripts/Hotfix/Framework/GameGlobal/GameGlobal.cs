@@ -60,6 +60,7 @@ namespace Hotfix
 
             timer?.Update();
             test.Update();
+            uiMgr?.Update();
         }
 
         public static void LateUpdate()

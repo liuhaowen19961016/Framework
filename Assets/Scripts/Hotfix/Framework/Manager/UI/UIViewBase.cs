@@ -86,6 +86,16 @@ namespace Framework
 
             OnShow();
         }
+        
+        public void InternalRefresh()
+        {
+            OnRefresh();
+        }
+
+        public void InternalUpdate()
+        {
+            OnUpdate();
+        }
 
         public void InternalClose(bool destory = true)
         {
@@ -97,11 +107,6 @@ namespace Framework
             {
                 OnDestroy();
             }
-        }
-
-        public void InternalRefresh()
-        {
-            OnRefresh();
         }
 
         #region Callback

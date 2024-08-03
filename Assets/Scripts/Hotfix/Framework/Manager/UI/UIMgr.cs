@@ -271,6 +271,16 @@ namespace Framework
         {
         }
 
+        public void Update()
+        {
+            for (int i = viewStack.Count - 1; i >= 0; i--)
+            {
+                if (viewStack[i] == null)
+                    continue;
+                viewStack[i].InternalUpdate();
+            }
+        }
+
         public void Dispose()
         {
         }

@@ -81,6 +81,14 @@ namespace Framework
             }
         }
 
+        protected virtual void OnUpdate()
+        {
+            foreach (var subView in SubViews.Values)
+            {
+                subView.OnUpdate();
+            }
+        }
+
         /// <summary>
         /// 关闭界面时调用（无论是否销毁）
         /// </summary>
