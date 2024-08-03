@@ -144,11 +144,26 @@ namespace Framework
         }
 
         /// <summary>
-        /// 设置UI是否可交互
+        /// 设置所有UI是否可交互
         /// </summary>
-        public void SetEventSystemEnable(bool enable, object type)
+        public void SetEventSystemEnable(bool enable, object sender)
         {
-            eventSystem.enabled = enable; //todo logic
+            if (setEventSystemStateCache.ContainsKey(sender))
+            {
+                if (enable)
+                {
+                    setEventSystemStateCache.Remove(sender);
+                    eventSystem.enabled = true;
+                }
+            }
+            else
+            {
+                if (!enable)
+                {
+                    setEventSystemStateCache.Add(sender, false);
+                    eventSystem.enabled = false;
+                }
+            }
         }
 
         /// <summary>
