@@ -25,11 +25,11 @@ public class UIMenuOption
         componentGo.AddComponent<Image>();
     }
 
-    [MenuItem("GameObject/Framework/UI/EmptyGraphics", priority = 2)]
+    [MenuItem("GameObject/Framework/UI/EmptyGraphic", priority = 2)]
     public static void AddEmptyGraphic()
     {
-        GameObject componentGo = CreateUIComponent("EmptyGraphics");
-        componentGo.AddComponent<EmptyGraphics>();
+        GameObject componentGo = CreateUIComponent("EmptyGraphic");
+        componentGo.AddComponent<EmptyGraphic>();
         componentGo.AddComponent<CanvasRenderer>();
     }
 
