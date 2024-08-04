@@ -95,6 +95,7 @@ public class GenerateUIEditor
             GenUISubViewCode_View(uiSubViewData);
         }
 
+        AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
         EditorUtils.ShowDialogWindow("生成UIView完成", GenResultStr(), "确定");
@@ -122,6 +123,7 @@ public class GenerateUIEditor
             GenUISubViewCode_View(uiSubViewData);
         }
 
+        AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
         EditorUtils.ShowDialogWindow("生成UISubView完成", GenResultStr(), "确定");
@@ -245,7 +247,7 @@ public class GenerateUIEditor
             return;
         }
         string viewCode = File.ReadAllText(EditorConst.UIVIEW_VIEW_TEMPLATE_PATH);
-        viewCode = viewCode.Replace("#GENDATETIME#", GenCurDateTimeStr());
+        viewCode = viewCode.Replace("#GENDATETIME#", EditorUtils.GenCurDateTimeStr());
         viewCode = viewCode.Replace("#NAMESPACE#", GenNamespaceCode(classData));
         viewCode = viewCode.Replace("#CLASSNAME#", className);
         viewCode = viewCode.Replace("#FIELDDEFINECODE#", GenFieldDefineCode(classData.fieldDataDict.Values.ToList()));
@@ -290,7 +292,7 @@ public class GenerateUIEditor
             return;
         }
         string viewCode = File.ReadAllText(EditorConst.UISUBVIEW_VIEW_TEMPLATE_PATH);
-        viewCode = viewCode.Replace("#GENDATETIME#", GenCurDateTimeStr());
+        viewCode = viewCode.Replace("#GENDATETIME#", EditorUtils.GenCurDateTimeStr());
         viewCode = viewCode.Replace("#NAMESPACE#", GenNamespaceCode(classData));
         viewCode = viewCode.Replace("#CLASSNAME#", className);
         viewCode = viewCode.Replace("#FIELDDEFINECODE#", GenFieldDefineCode(classData.fieldDataDict.Values.ToList()));
@@ -360,12 +362,6 @@ public class GenerateUIEditor
             }
         }
         return str.ToString();
-    }
-
-    private static string GenCurDateTimeStr()
-    {
-        string dateTimeStr = DateTime.Now.ToString("yyyy-M-d H:m:s");
-        return dateTimeStr;
     }
 
     private static string GenResultStr()

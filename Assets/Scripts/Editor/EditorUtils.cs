@@ -26,4 +26,14 @@ public static class EditorUtils
         }
         return assetPaths;
     }
+    
+    /// <summary>
+    /// 获取当前时间
+    /// </summary>
+    /// <returns></returns>
+    public static string GenCurDateTimeStr()
+    {
+        string dateTimeStr = DateTime.Now.ToString("yyyy-M-d H:m:s");
+        return dateTimeStr;
+    }
 }

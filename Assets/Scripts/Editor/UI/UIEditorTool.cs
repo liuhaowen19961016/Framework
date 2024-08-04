@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +9,9 @@ using Object = UnityEngine.Object;
 
 public class UIEditorTool
 {
+    /// <summary>
+    ///  替换组件 Button->GameButton
+    /// </summary>
     [MenuItem(EditorConst.ReplaceButton2GameButton, false, 100)]
     private static void ReplaceButton2GameButton()
     {
@@ -47,7 +53,6 @@ public class UIEditorTool
             EditorUtility.ClearProgressBar();
         }
     }
-
     [MenuItem(EditorConst.ReplaceButton2GameButton, true, 100)]
     private static bool ValidateReplaceButton2GameButton()
     {
@@ -57,9 +62,32 @@ public class UIEditorTool
         return true;
     }
 
+    /// <summary>
+    /// 生成UIViewName
+    /// </summary>
     [MenuItem(EditorConst.GenUIViewName, false, 200)]
     private static void GenUIViewName()
     {
-        
+        if (!IOUtils.FileExist(EditorConst.UIVIEWNAME_TEMPLATE_PATH))
+        {
+            EditorUtils.ShowDialogWindow("生成失败", $"{EditorConst.UIVIEWNAME_TEMPLATE_PATH}中不存在UIViewName模板", "确定");
+            return;
+        }
+        StringBuilder str = new StringBuilder();
+        foreach (var uiViewCfg in UIViewTemp.UIViewConfigs.Values) //todo test
+        {
+            string uiViewNameDefineStr = EditorConst.UIVIEWNAME_DEFINE_TEMPLATE;
+            uiViewNameDefineStr = uiViewNameDefineStr.Replace("#VIEWNAME#", uiViewCfg.Path);
+            uiViewNameDefineStr = uiViewNameDefineStr.Replace("#VIEWID#", uiViewCfg.Id.ToString());
+            str.Append(uiViewNameDefineStr + "\n");
+        }
+        string uiViewNmaeCode = File.ReadAllText(EditorConst.UIVIEWNAME_TEMPLATE_PATH);
+        uiViewNmaeCode = uiViewNmaeCode.Replace("#GENDATETIME#", EditorUtils.GenCurDateTimeStr());
+        uiViewNmaeCode = uiViewNmaeCode.Replace("#UIVIEWNAMEDEFINE#", str.ToString());
+        string filePath = $"{EditorConst.UIVIEWNAME_GENCODE_PATH}{EditorConst.SUFFIX_CS}";
+        IOUtils.WirteToFile(filePath, uiViewNmaeCode);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        EditorUtils.ShowDialogWindow("生成成功", $"生成路径\n{filePath}", "确定");
     }
 }
