@@ -1,6 +1,7 @@
 using Hotfix;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace Framework
 {
@@ -86,7 +87,7 @@ namespace Framework
 
             OnShow();
         }
-        
+
         public void InternalRefresh()
         {
             OnRefresh();
@@ -118,11 +119,27 @@ namespace Framework
             GameGlobal.UIMgr.Close(ViewId, isDestory);
         }
 
-        private void PlayAni(bool isOpen)
+        // private Sequence showAniSeq;
+        // private Sequence closeAniSeq;
+        private void PlayAni(bool isShow)
         {
+            // showAniSeq?.Kill(true);
+            // showAniSeq = DOTween.Sequence();
+            // if (isShow)
+            // {
+            //     showAniSeq.Append(go.transform.DOScale(Vector3.zero, 0));
+            //     showAniSeq.Append(go.transform.DOScale(Vector3.one * 1.1f, 0.1f));
+            //     showAniSeq.Append(go.transform.DOScale(Vector3.one, 0.1f));
+            // }
+            // else
+            // {
+            //     showAniSeq.Append(go.transform.DOScale(Vector3.one * 1.1f, 0.1f));
+            //     showAniSeq.Append(go.transform.DOScale(Vector3.one, 0.1f));
+            //     showAniSeq.Append(go.transform.DOScale(Vector3.zero, 0));
+            // }
         }
 
-        private void PlayAudio(bool isOpen)
+        private void PlayAudio(bool isShow)
         {
         }
     }
