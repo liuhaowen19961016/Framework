@@ -60,5 +60,6 @@ public class UIEditorTool
     [MenuItem(EditorConst.GenUIViewName, false, 200)]
     private static void GenUIViewName()
     {
+        
     }
 }
