@@ -29,25 +29,4 @@ public static class EditorUtils
         }
         return assetPaths;
     }
-
-    /// <summary>
-    /// 获取指定路径中预制体下的某个组件列表
-    /// </summary>
-    public static List<T> GetComponents<T>(string[] paths)
-        where T : Component
-    {
-        List<T> components = new List<T>();
-        foreach (var path in paths)
-        {
-            string[] assetGUIDs = AssetDatabase.FindAssets("t:prefab", new[] { path });
-            foreach (var assetGUID in assetGUIDs)
-            {
-                string assetPath = AssetDatabase.GUIDToAssetPath(assetGUID);
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                var coms = prefab.GetComponentsInChildren<T>();
-                components.AddRange(coms);
-            }
-        }
-        return components;
-    }
 }

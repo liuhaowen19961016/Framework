@@ -9,29 +9,40 @@ using Object = UnityEngine.Object;
 
 public class UIEditorTool
 {
-    [MenuItem("Assets/UI工具/预制体中的Button替换为GameButton", false, 100)]
+    [MenuItem("Assets/UI工具/替换组件 Button->GameButton", false, 100)]
     private static void ReplaceButton2GameButton()
     {
         try
         {
             string[] selectPathArray = EditorUtils.GetSelectPathArray();
-            var components = EditorUtils.GetComponents<Button>(selectPathArray);
-            for (int i = 0; i < components.Count; i++)
+            for (int i = 0; i < selectPathArray.Length; i++)
             {
-                if (EditorUtility.DisplayCancelableProgressBar("替换Button -> GameButton", $"正在替换{components[i].name}", (i + 1) * 1f / components.Count))
+                string[] assetGUIDs = AssetDatabase.FindAssets("t:prefab", new[] { selectPathArray[i] });
+                for (int j = 0; j < assetGUIDs.Length; j++)
                 {
-                    EditorUtility.ClearProgressBar();
-                    return;
+                    string prefabPath = AssetDatabase.GUIDToAssetPath(assetGUIDs[j]);
+                    GameObject instance = PrefabUtility.LoadPrefabContents(prefabPath);
+                    Button[] buttons = instance.GetComponentsInChildren<Button>(true);
+                    for (int k = 0; k < buttons.Length; k++)
+                    {
+                        if (EditorUtility.DisplayCancelableProgressBar("Button替换为GameButton", $"正在替换{prefabPath}中的{buttons[i]}", (k + 1) * 1f / buttons.Length))
+                        {
+                            EditorUtility.ClearProgressBar();
+                            return;
+                        }
+                        Transform componentTrans = buttons[k].transform;
+                        Object.DestroyImmediate(buttons[k]);
+                        componentTrans.gameObject.AddComponent<GameButton>();
+                    }
+                    PrefabUtility.SaveAsPrefabAsset(instance, prefabPath);
+                    PrefabUtility.UnloadPrefabContents(instance);
                 }
-                Transform componentTrans = components[i].transform;
-                Object.Destroy(components[i]);
-                componentTrans.gameObject.AddComponent<GameButton>();
             }
-            AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
         catch (Exception e)
         {
+            Debug.LogError(e);
             EditorUtility.ClearProgressBar();
         }
         finally
