@@ -26,18 +26,27 @@ public class UIEditorTool
                     string prefabPath = AssetDatabase.GUIDToAssetPath(assetGUIDs[j]);
                     GameObject instance = PrefabUtility.LoadPrefabContents(prefabPath);
                     Button[] buttons = instance.GetComponentsInChildren<Button>(true);
+                    if (buttons == null || buttons.Length <= 0)
+                        continue;
+                    bool hasModify = false;
                     for (int k = 0; k < buttons.Length; k++)
                     {
+                        if (buttons[k].GetType() != typeof(Button))
+                            continue;
                         if (EditorUtility.DisplayCancelableProgressBar("Button替换为GameButton", $"正在替换{prefabPath}中的{buttons[i]}", (k + 1) * 1f / buttons.Length))
                         {
                             EditorUtility.ClearProgressBar();
                             return;
                         }
+                        hasModify = true;
                         Transform componentTrans = buttons[k].transform;
                         Object.DestroyImmediate(buttons[k]);
                         componentTrans.gameObject.AddComponent<GameButton>();
                     }
-                    PrefabUtility.SaveAsPrefabAsset(instance, prefabPath);
+                    if (hasModify)
+                    {
+                        PrefabUtility.SaveAsPrefabAsset(instance, prefabPath);
+                    }
                     PrefabUtility.UnloadPrefabContents(instance);
                 }
             }
