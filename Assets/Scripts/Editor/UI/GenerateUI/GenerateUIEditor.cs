@@ -25,7 +25,7 @@ public class GenerateUIEditor
         { "UIToggle", typeof(Toggle) },
         { "UITG", typeof(ToggleGroup) },
         { "UILayoutH", typeof(HorizontalLayoutGroup) },
-        { "UILayooutV", typeof(VerticalLayoutGroup) },
+        { "UILayoutV", typeof(VerticalLayoutGroup) },
         { "UILayoutHV", typeof(GridLayoutGroup) },
         { "UIIF", typeof(InputField) },
         { "UISlider", typeof(Slider) },
