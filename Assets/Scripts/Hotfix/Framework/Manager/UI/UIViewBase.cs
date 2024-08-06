@@ -90,6 +90,8 @@ namespace Framework
 
         public void InternalRefresh()
         {
+            go.SetActive(true);
+            
             OnRefresh();
         }
 
