@@ -30,6 +30,7 @@ public class GenerateUIEditor
         { "UIIF", typeof(InputField) },
         { "UISlider", typeof(Slider) },
         { "UINode", typeof(RectTransform) },
+        { "UISV", typeof(ScrollRect) },
     };
 
     private static GenUIData genUIData;
