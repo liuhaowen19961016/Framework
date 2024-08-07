@@ -90,7 +90,7 @@ namespace Framework
             go.SetActive(true);
 
             PlayAudio(true);
-            PlayAni(true);
+            PlayAni(true, () => { OnAniComplete(true); });
 
             OnShow();
         }
@@ -109,22 +109,28 @@ namespace Framework
 
         public void InternalClose(bool destory = true)
         {
+            OnClose();
+            PlayAudio(false);
             PlayAni(false, () =>
             {
                 go.SetActive(false);
-                OnClose();
+                OnAniComplete(false);
+
+                showAniSeq?.Kill(true);
+                closeAniSeq?.Kill(true);
 
                 if (destory)
                 {
-                    showAniSeq?.Kill(true);
-                    closeAniSeq?.Kill(true);
-
                     OnDestroy();
                 }
             });
         }
 
         #region Callback
+
+        public virtual void OnAniComplete(bool isShow)
+        {
+        }
 
         #endregion Callback
 
