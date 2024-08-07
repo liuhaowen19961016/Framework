@@ -137,7 +137,6 @@ namespace Framework
             curView.InternalClose(isDestory);
             if (isDestory)
             {
-                Object.Destroy(curView.Go);
                 Pop(curView);
             }
             return true;

@@ -20,7 +20,7 @@ namespace UnityEngine.UI
         protected override void OnEnable()
         {
             base.OnEnable();
-            clickAniSeq.Kill(true);
+            clickAniSeq?.Kill(true);
         }
 
         public override void OnPointerClick(PointerEventData eventData)
@@ -52,7 +52,7 @@ namespace UnityEngine.UI
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            clickAniSeq.Kill(true);
+            clickAniSeq?.Kill(true);
         }
     }
 }
