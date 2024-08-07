@@ -128,7 +128,7 @@ namespace Framework
 
         #region Callback
 
-        public virtual void OnAniComplete(bool isShow)
+        protected virtual void OnAniComplete(bool isShow)
         {
         }
 
