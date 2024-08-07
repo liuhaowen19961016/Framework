@@ -3,6 +3,7 @@ using Hotfix;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Object = UnityEngine.Object;
 
 namespace Framework
 {
@@ -122,6 +123,7 @@ namespace Framework
                 if (destory)
                 {
                     OnDestroy();
+                    Object.Destroy(go);
                 }
             });
         }
