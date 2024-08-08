@@ -83,7 +83,14 @@ namespace Framework
             {
                 Pop(curView);
                 Push(curView);
-                curView.InternalRefresh();
+                if (!curView.Go.activeSelf)
+                {
+                    curView.InternalShow();
+                }
+                else
+                {
+                    curView.InternalRefresh();   
+                }
                 return curView;
             }
             else
