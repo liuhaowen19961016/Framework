@@ -67,9 +67,17 @@ namespace Framework
             OnInit(viewData);
         }
 
-        public void InternalCreate(GameObject go)
+        public bool InternalCreate(Transform trans)
         {
-            this.go = go;
+            GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(viewName)); //todo 通过资源管理器加载
+            if (viewGo == null)
+            {
+                Debug.LogError($"{viewName}界面资源实例化失败");
+                return false;
+            }
+            viewGo.transform.SetParent(trans, false);
+
+            go = viewGo;
             rootRect = go.transform.Find("Root")?.GetComponent<RectTransform>();
             canvas = go.GetComponent<Canvas>(true);
             go.GetComponent<GraphicRaycaster>(true);
@@ -82,6 +90,7 @@ namespace Framework
             }
 
             OnCreate();
+            return true;
         }
 
         public void InternalShow()

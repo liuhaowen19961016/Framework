@@ -19,12 +19,15 @@ namespace Framework
 
         protected object viewData;
 
-        public List<UISubViewBase> SubViews = new List<UISubViewBase>(); //所有子界面
+        public Dictionary<string, UISubViewBase> SubViews = new Dictionary<string, UISubViewBase>(); //所有子界面
+        public List<UIWidgetBase> Widgets = new List<UIWidgetBase>(); //所有控件
+
+        #region 子界面
 
         /// <summary>
         /// 添加子界面
         /// </summary>
-        public T AddUISubview<T>(Transform trans, object viewData = null)
+        protected T AddUISubview<T>(Transform trans, object viewData = null)
             where T : UISubViewBase
         {
             Type type = typeof(T);
@@ -35,15 +38,11 @@ namespace Framework
                 return null;
 
             subView.InternalInit(this, subViewName, viewData);
-            GameObject subViewGo = Object.Instantiate(Resources.Load<GameObject>(subViewName)); //todo 通过资源管理器加载
-            if (subViewGo == null)
+            bool createRet = subView.InternalCreate(trans);
+            if (!createRet)
             {
-                Debug.LogError($"{subViewName}子界面资源实例化失败");
                 return null;
             }
-            subViewGo.transform.SetParent(trans, false);
-            subViewGo.ResetLocal();
-            subView.InternalCreate(subViewGo);
             subView.InternalShow();
             return subView;
         }
@@ -51,19 +50,88 @@ namespace Framework
         /// <summary>
         /// 移除子界面
         /// </summary>
-        public bool RemoveUISubView(UISubViewBase subView)
+        public bool RemoveUISubView<T>()
+            where T : UISubViewBase
         {
-            for (int i = 0; i < SubViews.Count; i++)
+            string subViewName = typeof(T).Name;
+            if (SubViews.TryGetValue(subViewName, out var subView))
             {
-                if (SubViews[i] == subView)
+                subView.InternalDestory();
+                SubViews.Remove(subViewName);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 查找子界面
+        /// </summary>
+        public T FindUISubView<T>()
+            where T : UISubViewBase
+        {
+            string subViewName = typeof(T).Name;
+            if (SubViews.TryGetValue(subViewName, out var subView))
+            {
+                return subView as T;
+            }
+            return null;
+        }
+
+        public void RemoveAllUISubView()
+        {
+            foreach (var subView in SubViews.Values)
+            {
+                subView.InternalDestory();
+            }
+            SubViews.Clear();
+        }
+
+        #endregion 子界面
+
+        #region 控件
+
+        /// <summary>
+        /// 添加控件
+        /// </summary>
+        /// reusable：为true则进池子
+        protected T AddUIWidget<T>(Transform trans, bool reusable, object viewData = null)
+            where T : UIWidgetBase
+        {
+            Type type = typeof(T);
+            string widgetName = type.Name;
+            var classType = Type.GetType(widgetName);
+            T widget = Activator.CreateInstance(classType) as T;
+            if (widget == null)
+                return null;
+
+            widget.InternalInit(this, widgetName, reusable, viewData);
+            bool createRet = widget.InternalCreate(trans);
+            if (!createRet)
+            {
+                return null;
+            }
+            widget.InternalShow();
+            return widget;
+        }
+
+        /// <summary>
+        /// 移除控件
+        /// </summary>
+        public bool RemoveUIWidget(UIWidgetBase widget)
+        {
+            for (int i = 0; i < Widgets.Count; i++)
+            {
+                if (Widgets[i] == widget)
                 {
-                    subView.InternalDestory();
-                    SubViews.RemoveAt(i);
+                    widget.InternalDestory();
+                    Widgets.RemoveAt(i);
                     return true;
                 }
             }
             return false;
         }
+
+        #endregion 控件
 
         #region 生命周期
 
@@ -81,7 +149,11 @@ namespace Framework
 
         protected virtual void OnShow()
         {
-            foreach (var subView in SubViews)
+            foreach (var widget in Widgets)
+            {
+                widget.OnShow();
+            }
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnShow();
             }
@@ -92,7 +164,11 @@ namespace Framework
         /// </summary>
         protected virtual void OnRefresh()
         {
-            foreach (var subView in SubViews)
+            foreach (var widget in Widgets)
+            {
+                widget.OnRefresh();
+            }
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnRefresh();
             }
@@ -100,7 +176,11 @@ namespace Framework
 
         protected virtual void OnUpdate()
         {
-            foreach (var subView in SubViews)
+            foreach (var widget in Widgets)
+            {
+                widget.OnUpdate();
+            }
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnUpdate();
             }
@@ -111,7 +191,11 @@ namespace Framework
         /// </summary>
         protected virtual void OnClose()
         {
-            foreach (var subView in SubViews)
+            foreach (var widget in Widgets)
+            {
+                widget.OnClose();
+            }
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnClose();
             }
@@ -119,7 +203,11 @@ namespace Framework
 
         protected virtual void OnDestroy()
         {
-            foreach (var subView in SubViews)
+            foreach (var widget in Widgets)
+            {
+                widget.InternalDestory();
+            }
+            foreach (var subView in SubViews.Values)
             {
                 subView.OnDestroy();
             }

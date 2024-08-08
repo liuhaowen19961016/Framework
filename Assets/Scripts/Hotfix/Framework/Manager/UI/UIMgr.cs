@@ -89,7 +89,7 @@ namespace Framework
                 }
                 else
                 {
-                    curView.InternalRefresh();   
+                    curView.InternalRefresh();
                 }
                 return curView;
             }
@@ -115,16 +115,12 @@ namespace Framework
                 if (view == null)
                     return null;
 
-                //初始化
                 view.InternalInit(viewName, uiViewCfg, viewData);
-                GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(viewName)); //todo 通过资源管理器加载
-                if (viewGo == null)
+                bool createRet = view.InternalCreate(layer.LayerGo.transform);
+                if (!createRet)
                 {
-                    Debug.LogError($"{viewName}界面资源实例化失败");
                     return null;
                 }
-                viewGo.transform.SetParent(layer.LayerGo.transform, false);
-                view.InternalCreate(viewGo);
                 //入栈
                 Push(view);
                 //显示

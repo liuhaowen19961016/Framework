@@ -15,14 +15,23 @@ namespace Framework
             this.subViewName = subViewName;
             this.parent = parent;
             uiViewHolder = parent.uiViewHolder;
-            parent.SubViews.Add(this);
+            parent.SubViews.Add(this.subViewName, this);
             OnInit(viewData);
         }
 
-        public void InternalCreate(GameObject go)
+        public bool InternalCreate(Transform trans)
         {
-            this.go = go;
+            GameObject subViewGo = Object.Instantiate(Resources.Load<GameObject>(subViewName)); //todo 通过资源管理器加载
+            if (subViewGo == null)
+            {
+                Debug.LogError($"{subViewName}子界面资源实例化失败");
+                return false;
+            }
+            subViewGo.transform.SetParent(trans, false);
+            subViewGo.ResetLocal();
+            go = subViewGo;
             OnCreate();
+            return true;
         }
 
         public void InternalShow()
