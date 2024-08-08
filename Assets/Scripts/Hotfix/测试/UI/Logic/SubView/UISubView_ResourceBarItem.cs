@@ -10,6 +10,12 @@ public class UISubView_ResourceBarItem : UISubView_ResourceBarItemBase
         Debug.LogError("UISubView_ResourceBarItem OnShow ");
         Debug.LogError("UISubView_ResourceBarItem OnShow " + parent);
         Debug.LogError("UISubView_ResourceBarItem OnShow " + uiViewHolder);
+
+        for (int i = 0; i < 5; i++)
+        {
+            AddUIWidget<UIWidget_RewardItem>(UILayoutH_CC.transform,false);
+        }
+ 
     }
 
     protected override void OnClose()
