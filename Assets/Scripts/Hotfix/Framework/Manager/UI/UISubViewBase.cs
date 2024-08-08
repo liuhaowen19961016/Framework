@@ -47,7 +47,6 @@ namespace Framework
 
         public void InternalDestory()
         {
-            OnClose();
             OnDestroy();
             Object.Destroy(go);
         }

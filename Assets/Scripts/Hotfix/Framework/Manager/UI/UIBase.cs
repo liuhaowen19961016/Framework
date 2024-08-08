@@ -207,10 +207,13 @@ namespace Framework
             {
                 widget.InternalDestory();
             }
+            Widgets.Clear();
+
             foreach (var subView in SubViews.Values)
             {
                 subView.OnDestroy();
             }
+            SubViews.Clear();
         }
 
         protected virtual void BindComponent()

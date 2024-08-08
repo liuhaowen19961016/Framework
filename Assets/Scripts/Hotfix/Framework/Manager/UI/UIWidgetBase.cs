@@ -52,7 +52,6 @@ namespace Framework
 
         public void InternalDestory()
         {
-            OnClose();
             if (reusable)
             {
                 //todo 通过对象池管理
