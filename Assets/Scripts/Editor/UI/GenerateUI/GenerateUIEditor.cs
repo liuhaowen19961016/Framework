@@ -69,6 +69,22 @@ public class GenerateUIEditor
         return PrefabUtility.GetPrefabAssetType(Selection.activeObject) != PrefabAssetType.NotAPrefab;
     }
 
+    [MenuItem("Assets/UI工具/生成UIWidget", false, 13)]
+    private static void GenUIWidget()
+    {
+        GameObject selectedGo = Selection.activeObject as GameObject;
+        GenUIWidget(selectedGo);
+    }
+
+    [MenuItem("Assets/UI工具/生成UIWidget", true, 13)]
+    private static bool ValidateGenGenUIWidget()
+    {
+        GameObject selectedGo = Selection.activeGameObject;
+        if (selectedGo == null || selectedGo.GetComponent<RectTransform>() == null)
+            return false;
+        return PrefabUtility.GetPrefabAssetType(Selection.activeObject) != PrefabAssetType.NotAPrefab;
+    }
+
     /// <summary>
     /// 生成UIView
     /// </summary>
@@ -130,6 +146,31 @@ public class GenerateUIEditor
         EditorUtils.ShowDialogWindow("生成UISubView完成", GenResultStr(), "确定");
     }
 
+    /// <summary>
+    /// 生成UIWidget
+    /// </summary>
+    private static void GenUIWidget(GameObject go)
+    {
+        genSuccessClassNameList.Clear();
+        genFailClassNameList.Clear();
+
+        genUIData = new GenUIData();
+        genUIData.prefab = go;
+        genUIData.uiViewData = null;
+
+        //收集生成UI的数据
+        Transform root = go.transform;
+        CollectGenUIData(genUIData, root, root, EGenUIType.Widget);
+        //生成UIWidget代码
+        GenUIWidgetCode_Logic(genUIData.uiWidgetData);
+        GenUIWidgetCode_View(genUIData.uiWidgetData);
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        EditorUtils.ShowDialogWindow("生成UIWidget完成", GenResultStr(), "确定");
+    }
+
     private static void CollectGenUIData(GenUIData genUIData, Transform targetTrans, Transform rootTrans, EGenUIType genUIType)
     {
         for (int i = 0; i < targetTrans.childCount; i++)
@@ -187,6 +228,13 @@ public class GenerateUIEditor
                 genUIData.uiSubViewDataDict.Add(uiSubViewName, uiSubViewData);
             }
             AddFieldData(uiSubViewData, genUIFieldType, trans, type, typeName, rootTrans);
+        }
+        else if (genUIType == EGenUIType.Widget)
+        {
+            string uiWidgetName = rootTrans.name;
+            genUIData.uiWidgetData = new ClassData();
+            genUIData.uiWidgetData.className = uiWidgetName;
+            AddFieldData(genUIData.uiWidgetData, genUIFieldType, trans, type, typeName, rootTrans);
         }
     }
 
@@ -299,6 +347,51 @@ public class GenerateUIEditor
         viewCode = viewCode.Replace("#FIELDDEFINECODE#", GenFieldDefineCode(classData.fieldDataDict.Values.ToList()));
         viewCode = viewCode.Replace("#FIELDBINDCODE#", GenFieldBindCode(classData.fieldDataDict.Values.ToList()));
         string filePath = $"{EditorConst.UISUBVIEW_VIEW_GENCODE_DIR}{className}{EditorConst.SUFFIX_CS}";
+        IOUtils.WirteToFile(filePath, viewCode);
+        genSuccessClassNameList.Add(className);
+    }
+
+    /// <summary>
+    /// 生成UIWidget逻辑代码
+    /// </summary>
+    private static void GenUIWidgetCode_Logic(ClassData classData)
+    {
+        if (!IOUtils.FileExist(EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH))
+        {
+            genUIData.errorStr.Append($"{EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH}中不存在UIWidget逻辑模板");
+            genFailClassNameList.Add(classData.className);
+            return;
+        }
+        if (HasGenLogicCode(classData.className))
+            return;
+        string logicCode = File.ReadAllText(EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH);
+        logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
+        logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
+        string filePath = $"{EditorConst.UIWIDGET_LOGIC_GENCODE_DIR}{classData.className}{EditorConst.SUFFIX_CS}";
+        IOUtils.WirteToFile(filePath, logicCode);
+        SaveToGenUIInfoArchive(classData, filePath);
+        genSuccessClassNameList.Add(classData.className);
+    }
+
+    /// <summary>
+    /// 生成UIWidget界面代码
+    /// </summary>
+    private static void GenUIWidgetCode_View(ClassData classData)
+    {
+        string className = $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}";
+        if (!IOUtils.FileExist(EditorConst.UIWIDGET_VIEW_TEMPLATE_PATH))
+        {
+            genUIData.errorStr.Append($"{EditorConst.UIWIDGET_VIEW_TEMPLATE_PATH}中不存在UIWidget界面模板");
+            genFailClassNameList.Add(className);
+            return;
+        }
+        string viewCode = File.ReadAllText(EditorConst.UIWIDGET_VIEW_TEMPLATE_PATH);
+        viewCode = viewCode.Replace("#GENDATETIME#", EditorUtils.GenCurDateTimeStr());
+        viewCode = viewCode.Replace("#NAMESPACE#", GenNamespaceCode(classData));
+        viewCode = viewCode.Replace("#CLASSNAME#", className);
+        viewCode = viewCode.Replace("#FIELDDEFINECODE#", GenFieldDefineCode(classData.fieldDataDict.Values.ToList()));
+        viewCode = viewCode.Replace("#FIELDBINDCODE#", GenFieldBindCode(classData.fieldDataDict.Values.ToList()));
+        string filePath = $"{EditorConst.UIWIDGET_VIEW_GENCODE_DIR}{className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, viewCode);
         genSuccessClassNameList.Add(className);
     }

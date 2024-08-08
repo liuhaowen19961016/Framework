@@ -15,6 +15,7 @@ namespace Framework
         private UIViewConfig uiViewCfg; //UIView表
 
         private string viewName; //界面名字
+        public string ViewName => viewName;
 
         public int ViewId => uiViewCfg.Id; //界面id
         public EUILayerType LayerType => (EUILayerType)uiViewCfg.LayerType; //层级类型

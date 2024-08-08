@@ -25,6 +25,8 @@ public class EditorConst
     public const string UIVIEW_VIEW_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIViewViewTemplate.txt"; //UIView界面模板路径
     public const string UISUBVIEW_LOGIC_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UISubViewLogicTemplate.txt"; //UISubView逻辑模板路径
     public const string UISUBVIEW_VIEW_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UISubViewViewTemplate.txt"; //UISubView界面模板路径
+    public const string UIWIDGET_LOGIC_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIWidgetLogicTemplate.txt"; //UIWidget逻辑模板路径
+    public const string UIWIDGET_VIEW_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIWidgetViewTemplate.txt"; //UIWidget界面模板路径
     public const string UIVIEWNAME_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIViewNameTemplate.txt"; //UIViewName模板路径
 
     //生成代码文件夹
@@ -32,6 +34,8 @@ public class EditorConst
     public const string UIVIEW_VIEW_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/AutoGen/View/"; //自动生成UIView界面代码的文件夹
     public const string UISUBVIEW_LOGIC_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/Logic/SubView/"; //自动生成UISubView逻辑代码的文件夹
     public const string UISUBVIEW_VIEW_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/AutoGen/SubView/"; //自动生成UISubView界面代码的文件夹
+    public const string UIWIDGET_LOGIC_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/Logic/Widget/"; //自动生成UIWidget逻辑代码的文件夹
+    public const string UIWIDGET_VIEW_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/AutoGen/Widget/"; //自动生成UIWidget界面代码的文件夹
     public const string UIVIEWNAME_GENCODE_PATH = "Assets/Scripts/Hotfix/Logic/UI/UIViewName"; //自动生成UIViewName的文件夹
 
     public const string SUFFIX_CS = ".cs";

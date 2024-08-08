@@ -8,6 +8,7 @@ public class GenUIData
     public GameObject prefab;
     public ClassData uiViewData;
     public Dictionary<string, ClassData> uiSubViewDataDict = new Dictionary<string, ClassData>();
+    public ClassData uiWidgetData;
     public StringBuilder errorStr = new StringBuilder();
 }
 
@@ -31,8 +32,9 @@ public class FieldData
 /// </summary>
 public enum EGenUIType
 {
-    View = 1,
-    SubView,
+    View = 1, //界面
+    SubView, //子界面
+    Widget, //控件
     Container,
 }
 
