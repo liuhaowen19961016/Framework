@@ -34,6 +34,12 @@ namespace Framework
             return true;
         }
 
+        public void InternalCreateWithoutInstantiate(GameObject go)
+        {
+            this.go = go;
+            OnCreate();
+        }
+
         public void InternalShow()
         {
             OnShow();
