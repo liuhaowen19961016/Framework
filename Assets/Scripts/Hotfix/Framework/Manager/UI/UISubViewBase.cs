@@ -15,7 +15,7 @@ namespace Framework
             this.subViewName = subViewName;
             this.parent = parent;
             uiViewHolder = parent.uiViewHolder;
-            parent.SubViews.Add(subViewName, this);
+            parent.SubViews.Add(this);
             OnInit(viewData);
         }
 
@@ -28,6 +28,13 @@ namespace Framework
         public void InternalShow()
         {
             OnShow();
+        }
+
+        public void InternalDestory()
+        {
+            OnClose();
+            OnDestroy();
+            Object.Destroy(go);
         }
     }
 }

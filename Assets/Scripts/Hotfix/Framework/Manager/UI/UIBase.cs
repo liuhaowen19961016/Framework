@@ -19,12 +19,12 @@ namespace Framework
 
         protected object viewData;
 
-        public Dictionary<string, UISubViewBase> SubViews = new Dictionary<string, UISubViewBase>(); //所有子界面
+        public List<UISubViewBase> SubViews = new List<UISubViewBase>(); //所有子界面
 
         /// <summary>
         /// 添加子界面
         /// </summary>
-        protected T AddUISubview<T>(Transform trans, object viewData = null)
+        public T AddUISubview<T>(Transform trans, object viewData = null)
             where T : UISubViewBase
         {
             Type type = typeof(T);
@@ -48,6 +48,23 @@ namespace Framework
             return subView;
         }
 
+        /// <summary>
+        /// 移除子界面
+        /// </summary>
+        public bool RemoveUISubView(UISubViewBase subView)
+        {
+            for (int i = 0; i < SubViews.Count; i++)
+            {
+                if (SubViews[i] == subView)
+                {
+                    subView.InternalDestory();
+                    SubViews.RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         #region 生命周期
 
         protected virtual void OnInit(object viewData)
@@ -64,7 +81,7 @@ namespace Framework
 
         protected virtual void OnShow()
         {
-            foreach (var subView in SubViews.Values)
+            foreach (var subView in SubViews)
             {
                 subView.OnShow();
             }
@@ -75,7 +92,7 @@ namespace Framework
         /// </summary>
         protected virtual void OnRefresh()
         {
-            foreach (var subView in SubViews.Values)
+            foreach (var subView in SubViews)
             {
                 subView.OnRefresh();
             }
@@ -83,7 +100,7 @@ namespace Framework
 
         protected virtual void OnUpdate()
         {
-            foreach (var subView in SubViews.Values)
+            foreach (var subView in SubViews)
             {
                 subView.OnUpdate();
             }
@@ -94,7 +111,7 @@ namespace Framework
         /// </summary>
         protected virtual void OnClose()
         {
-            foreach (var subView in SubViews.Values)
+            foreach (var subView in SubViews)
             {
                 subView.OnClose();
             }
@@ -102,7 +119,7 @@ namespace Framework
 
         protected virtual void OnDestroy()
         {
-            foreach (var subView in SubViews.Values)
+            foreach (var subView in SubViews)
             {
                 subView.OnDestroy();
             }
