@@ -158,10 +158,7 @@ namespace Framework
                 subView.OnShow();
             }
         }
-
-        /// <summary>
-        /// 界面每次打开时调用
-        /// </summary>
+        
         protected virtual void OnRefresh()
         {
             foreach (var widget in Widgets)

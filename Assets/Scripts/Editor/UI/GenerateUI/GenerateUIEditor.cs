@@ -18,8 +18,8 @@ public class GenerateUIEditor
     private static Dictionary<string, Type> Name2ComponentType = new Dictionary<string, Type>()
     {
         { "UIBtn", typeof(Button) },
-        { "UITxt", typeof(Text) },
-        //{ "UITxt", typeof(TextMeshProUGUI) },
+        //{ "UITxt", typeof(Text) },
+        { "UITxt", typeof(TextMeshProUGUI) },
         { "UIImg", typeof(Image) },
         { "UIRawImg", typeof(RawImage) },
         { "UIToggle", typeof(Toggle) },
@@ -103,13 +103,28 @@ public class GenerateUIEditor
         Transform root = go.transform;
         CollectGenUIData(genUIData, root, root, EGenUIType.View);
         //生成UIView代码
-        GenUIViewCode_Logic(genUIData.uiViewData);
-        GenUIViewCode_View(genUIData.uiViewData);
+        if (!RegexUtils.IsCSValidName(genUIData.uiViewData.className))
+        {
+            genUIData.errorStr.Append($"UIView预制体{genUIData.uiViewData.className}命名不符合C#规则\n");
+        }
+        else
+        {
+            GenUIViewCode_Logic(genUIData.uiViewData);
+            GenUIViewCode_View(genUIData.uiViewData);
+        }
+
         //生成UISubView代码
         foreach (var uiSubViewData in genUIData.uiSubViewDataDict.Values)
         {
-            GenUISubViewCode_Logic(uiSubViewData);
-            GenUISubViewCode_View(uiSubViewData);
+            if (!RegexUtils.IsCSValidName(uiSubViewData.className))
+            {
+                genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的SubView节点{uiSubViewData.className}命名不符合C#规则\n");
+            }
+            else
+            {
+                GenUISubViewCode_Logic(uiSubViewData);
+                GenUISubViewCode_View(uiSubViewData);
+            }
         }
 
         AssetDatabase.SaveAssets();
@@ -136,8 +151,15 @@ public class GenerateUIEditor
         //生成UISubView代码
         foreach (var uiSubViewData in genUIData.uiSubViewDataDict.Values)
         {
-            GenUISubViewCode_Logic(uiSubViewData);
-            GenUISubViewCode_View(uiSubViewData);
+            if (!RegexUtils.IsCSValidName(uiSubViewData.className))
+            {
+                genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的SubView节点{uiSubViewData.className}命名不符合C#规则\n");
+            }
+            else
+            {
+                GenUISubViewCode_Logic(uiSubViewData);
+                GenUISubViewCode_View(uiSubViewData);
+            }
         }
 
         AssetDatabase.SaveAssets();
@@ -216,18 +238,35 @@ public class GenerateUIEditor
         }
         if (genUIType == EGenUIType.View)
         {
+            //先把UISubView加进去，防止UISubView下面没有可生成的节点时不会生成此UISubView
+            if (genUIFieldType == EGenUIFieldType.SubView)
+            {
+                string uiSubViewName = trans.name;
+                ClassData uiSubViewData = new ClassData();
+                uiSubViewData.className = uiSubViewName;
+                genUIData.uiSubViewDataDict.Add(uiSubViewName, uiSubViewData);
+            }
             AddFieldData(genUIData.uiViewData, genUIFieldType, trans, type, typeName, rootTrans);
         }
         else if (genUIType == EGenUIType.SubView)
         {
-            string uiSubViewName = rootTrans.name;
-            if (!genUIData.uiSubViewDataDict.TryGetValue(uiSubViewName, out var uiSubViewData))
+            //先把UISubView加进去，防止UISubView下面没有可生成的节点时不会生成此UISubView
+            if (genUIFieldType == EGenUIFieldType.SubView)
             {
-                uiSubViewData = new ClassData();
+                string uiSubViewName = trans.name;
+                ClassData uiSubViewData = new ClassData();
                 uiSubViewData.className = uiSubViewName;
                 genUIData.uiSubViewDataDict.Add(uiSubViewName, uiSubViewData);
             }
-            AddFieldData(uiSubViewData, genUIFieldType, trans, type, typeName, rootTrans);
+
+            string belongUISubViewName = rootTrans.name;
+            if (!genUIData.uiSubViewDataDict.TryGetValue(belongUISubViewName, out var subViewData))
+            {
+                subViewData = new ClassData();
+                subViewData.className = belongUISubViewName;
+                genUIData.uiSubViewDataDict.Add(belongUISubViewName, subViewData);
+            }
+            AddFieldData(subViewData, genUIFieldType, trans, type, typeName, rootTrans);
         }
         else if (genUIType == EGenUIType.Widget)
         {
