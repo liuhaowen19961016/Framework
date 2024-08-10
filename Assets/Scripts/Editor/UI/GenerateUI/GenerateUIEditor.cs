@@ -214,15 +214,15 @@ public class GenerateUIEditor
             Transform trans = targetTrans.GetChild(i);
             string transName = trans.name;
             string namePrefix = transName.Split('_')[0];
-            if (namePrefix == EditorConst.PREFIX_UICONTAINER)
-            {
-                //todo logic 后续加上，还有滚动列表相关的
-                continue;
-            }
             if (namePrefix == EditorConst.PREFIX_UISUBVIEW)
             {
                 AddGenUIData(genUIData, genUIType, EGenUIFieldType.SubView, trans, null, trans.name, rootTrans);
                 CollectGenUIData(genUIData, trans, trans, EGenUIType.SubView);
+                continue;
+            }
+            if (namePrefix == EditorConst.PREFIX_UICONTAINER)
+            {
+                //todo logic 后续加上，还有滚动列表相关的
                 continue;
             }
 
@@ -330,7 +330,8 @@ public class GenerateUIEditor
         string logicCode = File.ReadAllText(EditorConst.UIVIEW_LOGIC_TEMPLATE_PATH);
         logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
-        string filePath = $"{EditorConst.UIVIEW_LOGIC_GENCODE_DIR}{classData.className}{EditorConst.SUFFIX_CS}";
+        string logicFileDir = EditorUtility.OpenFolderPanel($"选择UIView：{classData.className} 逻辑脚本路径", Application.dataPath + "/Scripts", "");
+        string filePath = $"{logicFileDir}/{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
         SaveToGenUIInfoArchive(classData, filePath, EGenUIType.View);
         genSuccessClassNameList.Add(classData.className);
@@ -375,7 +376,8 @@ public class GenerateUIEditor
         string logicCode = File.ReadAllText(EditorConst.UISUBVIEW_LOGIC_TEMPLATE_PATH);
         logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
-        string filePath = $"{EditorConst.UISUBVIEW_LOGIC_GENCODE_DIR}{classData.className}{EditorConst.SUFFIX_CS}";
+        string logicFileDir = EditorUtility.OpenFolderPanel($"选择UISubView：{classData.className} 逻辑脚本路径", Application.dataPath + "/Scripts", "");
+        string filePath = $"{logicFileDir}/{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
         SaveToGenUIInfoArchive(classData, filePath, EGenUIType.SubView);
         genSuccessClassNameList.Add(classData.className);
@@ -420,7 +422,8 @@ public class GenerateUIEditor
         string logicCode = File.ReadAllText(EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH);
         logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
-        string filePath = $"{EditorConst.UIWIDGET_LOGIC_GENCODE_DIR}{classData.className}{EditorConst.SUFFIX_CS}";
+        string logicFileDir = EditorUtility.OpenFolderPanel($"选择UIWidget：{classData.className} 逻辑脚本路径", Application.dataPath + "/Scripts", "");
+        string filePath = $"{logicFileDir}/{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
         SaveToGenUIInfoArchive(classData, filePath, EGenUIType.Widget);
         genSuccessClassNameList.Add(classData.className);
