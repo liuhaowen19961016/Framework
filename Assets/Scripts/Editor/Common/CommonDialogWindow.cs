@@ -30,7 +30,11 @@ public class CommonDialogWindow : EditorWindow
     private void OnGUI()
     {
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
-        EditorGUILayout.SelectableLabel(content, GUILayout.ExpandHeight(true));
+        string[] conentArray = content.Split('\n');
+        foreach (var content in conentArray)
+        {
+            EditorGUILayout.SelectableLabel(content, GUILayout.Height(15));
+        }
         EditorGUILayout.EndScrollView();
         if (!string.IsNullOrEmpty(btn1Name))
         {

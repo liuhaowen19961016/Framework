@@ -105,7 +105,7 @@ public class GenerateUIEditor
         //生成UIView代码
         if (!RegexUtils.IsCSValidName(genUIData.uiViewData.className))
         {
-            genUIData.errorStr.Append($"UIView预制体{genUIData.uiViewData.className}命名不符合C#规则\n");
+            genUIData.errorStr.AppendLine($"生成UIView失败，预制体{genUIData.uiViewData.className}命名不符合C#规则");
         }
         else
         {
@@ -118,7 +118,7 @@ public class GenerateUIEditor
         {
             if (!RegexUtils.IsCSValidName(uiSubViewData.className))
             {
-                genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的SubView节点{uiSubViewData.className}命名不符合C#规则\n");
+                genUIData.errorStr.AppendLine($"生成UISubView失败，预制体{genUIData.prefab.name}中的SubView节点{uiSubViewData.className}命名不符合C#规则");
             }
             else
             {
@@ -153,7 +153,14 @@ public class GenerateUIEditor
         {
             if (!RegexUtils.IsCSValidName(uiSubViewData.className))
             {
-                genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的SubView节点{uiSubViewData.className}命名不符合C#规则\n");
+                if (uiSubViewData.className == genUIData.prefab.name)
+                {
+                    genUIData.errorStr.AppendLine($"生成UISubView失败，预制体{genUIData.prefab.name}命名不符合C#规则");
+                }
+                else
+                {
+                    genUIData.errorStr.AppendLine($"生成UISubView失败，预制体{genUIData.prefab.name}中的SubView节点{uiSubViewData.className}命名不符合C#规则");
+                }
             }
             else
             {
@@ -184,8 +191,15 @@ public class GenerateUIEditor
         Transform root = go.transform;
         CollectGenUIData(genUIData, root, root, EGenUIType.Widget);
         //生成UIWidget代码
-        GenUIWidgetCode_Logic(genUIData.uiWidgetData);
-        GenUIWidgetCode_View(genUIData.uiWidgetData);
+        if (!RegexUtils.IsCSValidName(genUIData.uiWidgetData.className))
+        {
+            genUIData.errorStr.AppendLine($"生成UIWidget失败，预制体{genUIData.prefab.name}命名不符合C#规则");
+        }
+        else
+        {
+            GenUIWidgetCode_Logic(genUIData.uiWidgetData);
+            GenUIWidgetCode_View(genUIData.uiWidgetData);
+        }
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -208,7 +222,7 @@ public class GenerateUIEditor
             if (namePrefix == EditorConst.PREFIX_UISUBVIEW)
             {
                 AddGenUIData(genUIData, genUIType, EGenUIFieldType.SubView, trans, null, trans.name, rootTrans);
-                CollectGenUIData(genUIData, trans, trans, EGenUIType.SubView); //UISubView的子物体只能是UISubView，UIView只能有一个
+                CollectGenUIData(genUIData, trans, trans, EGenUIType.SubView);
                 continue;
             }
 
@@ -218,7 +232,7 @@ public class GenerateUIEditor
             Component component = trans.GetComponent(type);
             if (component == null)
             {
-                genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的{transName}节点找不到{type.Name}组件\n");
+                genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}中的{transName}节点找不到{type.Name}组件");
                 continue;
             }
             AddGenUIData(genUIData, genUIType, EGenUIFieldType.Common, trans, type, type.Name, rootTrans);
@@ -230,15 +244,9 @@ public class GenerateUIEditor
     /// </summary>
     private static void AddGenUIData(GenUIData genUIData, EGenUIType genUIType, EGenUIFieldType genUIFieldType, Transform trans, Type type, string typeName, Transform rootTrans)
     {
-        string transName = trans.name;
-        if (!RegexUtils.IsCSValidName(transName))
-        {
-            genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中的{transName}节点命名不符合C#规则\n");
-            return;
-        }
         if (genUIType == EGenUIType.View)
         {
-            //先把UISubView加进去，防止UISubView下面没有可生成的节点时不会生成此UISubView
+            //先创建UISubView，防止UISubView下面没有可生成的节点时不会生成此UISubView
             if (genUIFieldType == EGenUIFieldType.SubView)
             {
                 string uiSubViewName = trans.name;
@@ -246,11 +254,12 @@ public class GenerateUIEditor
                 uiSubViewData.className = uiSubViewName;
                 genUIData.uiSubViewDataDict.Add(uiSubViewName, uiSubViewData);
             }
+            //给UIView中添加数据
             AddFieldData(genUIData.uiViewData, genUIFieldType, trans, type, typeName, rootTrans);
         }
         else if (genUIType == EGenUIType.SubView)
         {
-            //先把UISubView加进去，防止UISubView下面没有可生成的节点时不会生成此UISubView
+            //先创建UISubView，防止UISubView下面没有可生成的节点时不会生成此UISubView
             if (genUIFieldType == EGenUIFieldType.SubView)
             {
                 string uiSubViewName = trans.name;
@@ -258,7 +267,7 @@ public class GenerateUIEditor
                 uiSubViewData.className = uiSubViewName;
                 genUIData.uiSubViewDataDict.Add(uiSubViewName, uiSubViewData);
             }
-
+            //给UISubView中添加数据
             string belongUISubViewName = rootTrans.name;
             if (!genUIData.uiSubViewDataDict.TryGetValue(belongUISubViewName, out var subViewData))
             {
@@ -283,9 +292,14 @@ public class GenerateUIEditor
     private static void AddFieldData(ClassData classData, EGenUIFieldType genUIFieldType, Transform trans, Type type, string typeName, Transform rootTrans)
     {
         string transName = trans.name;
+        if (!RegexUtils.IsCSValidName(transName))
+        {
+            genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}中的{transName}节点命名不符合C#规则");
+            return;
+        }
         if (classData.fieldDataDict.ContainsKey(transName))
         {
-            genUIData.errorStr.Append($"预制体{genUIData.prefab.name}中存在相同{transName}名字的{typeName}组件\n");
+            genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}中存在相同{transName}名字的{typeName}组件");
             return;
         }
         if (type != null)
@@ -307,7 +321,7 @@ public class GenerateUIEditor
     {
         if (!IOUtils.FileExist(EditorConst.UIVIEW_LOGIC_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{EditorConst.UIVIEW_LOGIC_TEMPLATE_PATH}中不存在UIView逻辑模板");
+            genUIData.errorStr.AppendLine($"{EditorConst.UIVIEW_LOGIC_TEMPLATE_PATH}中不存在UIView逻辑模板");
             genFailClassNameList.Add(classData.className);
             return;
         }
@@ -330,7 +344,7 @@ public class GenerateUIEditor
         string className = $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}";
         if (!IOUtils.FileExist(EditorConst.UIVIEW_VIEW_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{EditorConst.UIVIEW_VIEW_TEMPLATE_PATH}中不存在UIView界面模板");
+            genUIData.errorStr.AppendLine($"{EditorConst.UIVIEW_VIEW_TEMPLATE_PATH}中不存在UIView界面模板");
             genFailClassNameList.Add(className);
             return;
         }
@@ -352,7 +366,7 @@ public class GenerateUIEditor
     {
         if (!IOUtils.FileExist(EditorConst.UISUBVIEW_LOGIC_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{EditorConst.UISUBVIEW_LOGIC_TEMPLATE_PATH}中不存在UISubView逻辑模板");
+            genUIData.errorStr.AppendLine($"{EditorConst.UISUBVIEW_LOGIC_TEMPLATE_PATH}中不存在UISubView逻辑模板");
             genFailClassNameList.Add(classData.className);
             return;
         }
@@ -375,7 +389,7 @@ public class GenerateUIEditor
         string className = $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}";
         if (!IOUtils.FileExist(EditorConst.UISUBVIEW_VIEW_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{EditorConst.UISUBVIEW_VIEW_TEMPLATE_PATH}中不存在UISubView界面模板");
+            genUIData.errorStr.AppendLine($"{EditorConst.UISUBVIEW_VIEW_TEMPLATE_PATH}中不存在UISubView界面模板");
             genFailClassNameList.Add(className);
             return;
         }
@@ -397,7 +411,7 @@ public class GenerateUIEditor
     {
         if (!IOUtils.FileExist(EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH}中不存在UIWidget逻辑模板");
+            genUIData.errorStr.AppendLine($"{EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH}中不存在UIWidget逻辑模板");
             genFailClassNameList.Add(classData.className);
             return;
         }
@@ -420,7 +434,7 @@ public class GenerateUIEditor
         string className = $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}";
         if (!IOUtils.FileExist(EditorConst.UIWIDGET_VIEW_TEMPLATE_PATH))
         {
-            genUIData.errorStr.Append($"{EditorConst.UIWIDGET_VIEW_TEMPLATE_PATH}中不存在UIWidget界面模板");
+            genUIData.errorStr.AppendLine($"{EditorConst.UIWIDGET_VIEW_TEMPLATE_PATH}中不存在UIWidget界面模板");
             genFailClassNameList.Add(className);
             return;
         }
@@ -446,7 +460,7 @@ public class GenerateUIEditor
         {
             string namespaceDefineStr = EditorConst.NAMESPACE_DEFINE_TEMPLATE;
             namespaceDefineStr = namespaceDefineStr.Replace("#Namespace#", nameSpace);
-            str.Append(namespaceDefineStr + "\n");
+            str.AppendLine(namespaceDefineStr + "");
         }
         return str.ToString();
     }
@@ -462,7 +476,7 @@ public class GenerateUIEditor
             string fieldDefineStr = EditorConst.FIELD_DEFINE_TEMPLATE;
             fieldDefineStr = fieldDefineStr.Replace("#FieldType#", fieldData.fieldTypeName);
             fieldDefineStr = fieldDefineStr.Replace("#FieldName#", fieldData.fieldName);
-            str.Append(fieldDefineStr + "\n");
+            str.AppendLine(fieldDefineStr + "");
         }
         return str.ToString();
     }
@@ -483,14 +497,14 @@ public class GenerateUIEditor
                     fieldBindStr = fieldBindStr.Replace("#FieldName#", fieldData.fieldName);
                     fieldBindStr = fieldBindStr.Replace("#FieldPath#", fieldData.fieldPath);
                     fieldBindStr = fieldBindStr.Replace("#ComponentType#", fieldData.fieldTypeName);
-                    str.Append(fieldBindStr + "\n");
+                    str.AppendLine(fieldBindStr + "");
                     break;
 
                 case EGenUIFieldType.SubView:
                     fieldBindStr = EditorConst.SUBVIEW_FIELD_BIND_TEMPLATE;
                     fieldBindStr = fieldBindStr.Replace("#FieldName#", fieldData.fieldName);
                     fieldBindStr = fieldBindStr.Replace("#FieldPath#", fieldData.fieldPath);
-                    str.Append(fieldBindStr + "\n");
+                    str.AppendLine(fieldBindStr + "");
                     break;
             }
         }
