@@ -332,7 +332,7 @@ public class GenerateUIEditor
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
         string filePath = $"{EditorConst.UIVIEW_LOGIC_GENCODE_DIR}{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
-        SaveToGenUIInfoArchive(classData, filePath);
+        SaveToGenUIInfoArchive(classData, filePath, EGenUIType.View);
         genSuccessClassNameList.Add(classData.className);
     }
 
@@ -377,7 +377,7 @@ public class GenerateUIEditor
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
         string filePath = $"{EditorConst.UISUBVIEW_LOGIC_GENCODE_DIR}{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
-        SaveToGenUIInfoArchive(classData, filePath);
+        SaveToGenUIInfoArchive(classData, filePath, EGenUIType.SubView);
         genSuccessClassNameList.Add(classData.className);
     }
 
@@ -422,7 +422,7 @@ public class GenerateUIEditor
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
         string filePath = $"{EditorConst.UIWIDGET_LOGIC_GENCODE_DIR}{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
-        SaveToGenUIInfoArchive(classData, filePath);
+        SaveToGenUIInfoArchive(classData, filePath, EGenUIType.Widget);
         genSuccessClassNameList.Add(classData.className);
     }
 
@@ -541,7 +541,7 @@ public class GenerateUIEditor
         return hasGen;
     }
 
-    private static void SaveToGenUIInfoArchive(ClassData classData, string logicCodePath)
+    private static void SaveToGenUIInfoArchive(ClassData classData, string logicCodePath, EGenUIType genUIType)
     {
         List<GenUIArchive> genUIArchives;
         if (!IOUtils.FileExist(EditorConst.UIGENINFOARCHIVEPATH))
@@ -557,6 +557,7 @@ public class GenerateUIEditor
             return;
         GenUIArchive genUIArchive = new GenUIArchive();
         genUIArchive.className = classData.className;
+        genUIArchive.genUITypeStr = genUIType.ToString();
         genUIArchive.filePath = logicCodePath;
         genUIArchives.Add(genUIArchive);
         string content = JsonConvert.SerializeObject(genUIArchives, Formatting.Indented);

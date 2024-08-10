@@ -93,7 +93,7 @@ namespace Framework
         /// <summary>
         /// 添加控件
         /// </summary>
-        /// reusable：为true则进池子
+        /// reusable：为true则通过对象池管理
         protected T AddUIWidget<T>(Transform trans, bool reusable, object viewData = null)
             where T : UIWidgetBase
         {
@@ -158,7 +158,7 @@ namespace Framework
                 subView.OnShow();
             }
         }
-        
+
         protected virtual void OnRefresh()
         {
             foreach (var widget in Widgets)

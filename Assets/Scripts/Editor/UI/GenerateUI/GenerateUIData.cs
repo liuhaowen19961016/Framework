@@ -54,5 +54,6 @@ public enum EGenUIFieldType
 public struct GenUIArchive
 {
     public string className;
+    public string genUITypeStr;
     public string filePath;
 }
