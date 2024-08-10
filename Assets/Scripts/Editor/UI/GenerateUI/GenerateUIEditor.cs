@@ -130,7 +130,7 @@ public class GenerateUIEditor
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        EditorUtils.ShowDialogWindow("生成UIView完成", GenResultStr(), "确定");
+        EditorUtils.ShowDialogWindow("生成UIView结果", GenResultStr(), "确定");
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public class GenerateUIEditor
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        EditorUtils.ShowDialogWindow("生成UISubView完成", GenResultStr(), "确定");
+        EditorUtils.ShowDialogWindow("生成UISubView结果", GenResultStr(), "确定");
     }
 
     /// <summary>
@@ -204,7 +204,7 @@ public class GenerateUIEditor
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        EditorUtils.ShowDialogWindow("生成UIWidget完成", GenResultStr(), "确定");
+        EditorUtils.ShowDialogWindow("生成UIWidget结果", GenResultStr(), "确定");
     }
 
     private static void CollectGenUIData(GenUIData genUIData, Transform targetTrans, Transform rootTrans, EGenUIType genUIType)
@@ -559,7 +559,7 @@ public class GenerateUIEditor
         genUIArchive.className = classData.className;
         genUIArchive.filePath = logicCodePath;
         genUIArchives.Add(genUIArchive);
-        string content = JsonConvert.SerializeObject(genUIArchives);
+        string content = JsonConvert.SerializeObject(genUIArchives, Formatting.Indented);
         IOUtils.WirteToFile(EditorConst.UIGENINFOARCHIVEPATH, content);
     }
 }
