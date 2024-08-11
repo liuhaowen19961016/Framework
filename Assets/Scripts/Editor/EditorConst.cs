@@ -49,7 +49,7 @@ public class EditorConst
                                                       "\t\t#FieldName#.InternalInit(this, \"#FieldName#\");\n" +
                                                       "\t\t#FieldName#.InternalCreateWithoutInstantiate(go.transform.Find(\"#FieldPath#\").gameObject);"; //子界面字段绑定模板
     public const string CONTAINER_FIELD_BIND_TEMPLATE = "\t\t#FieldName# =new UIContainer();\n" +
-                                                        "\t\t#FieldName#.InternalInit(go.transform.Find(\"#FieldPath#\").gameObject);"; //容器字段绑定模版
+                                                        "\t\t#FieldName#.InternalInit(go.transform.Find(\"#FieldPath#\").gameObject , this);"; //容器字段绑定模版
     public const string UIVIEWNAME_DEFINE_TEMPLATE = "\tpublic const int #VIEWNAME# = #VIEWID#;\n"; //界面名称定义模板
 
     #endregion 自动生成UI工具

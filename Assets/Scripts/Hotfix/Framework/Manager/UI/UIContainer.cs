@@ -10,9 +10,10 @@ public class UIContainer
 
     private List<UIWidgetBase> widgets = new List<UIWidgetBase>();
 
-    public void InternalInit(GameObject go)
+    public void InternalInit(GameObject go, UIBase holder)
     {
         this.go = go;
+        this.holder = holder;
     }
 
     public void Refresh<T>(object[] viewDatas, bool reusable)
