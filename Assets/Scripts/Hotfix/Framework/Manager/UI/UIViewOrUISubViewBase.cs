@@ -90,6 +90,15 @@ public class UIViewOrUISubViewBase : UIBase
             subView.OnRefresh();
         }
     }
+    
+    protected override void OnUpdate()
+    {
+        base.OnUpdate();
+        foreach (var subView in SubViews.Values)
+        {
+            subView.OnUpdate();
+        }
+    }
 
     protected override void OnClose()
     {
