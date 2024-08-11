@@ -13,7 +13,26 @@ public class UISubView_ResourceBar : UISubView_ResourceBarBase
         Debug.LogError("UISubView_ResourceBar OnShow " + uiViewHolder);
 
         object[] objs = new object[3] { 11, 22, 33 };
-        UIContainer_ResourceBar.Refresh<UIWidget_ResourceBar>(objs,false);
+        UIContainer_ResourceBar.Refresh<UIWidget_ResourceBar>(objs, false);
+    }
+
+    protected override void OnUpdate()
+    {
+        base.OnUpdate();
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            UIContainer_ResourceBar.Refresh<UIWidget_ResourceBar>(null, false);
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            object[] objs = new object[2] { 111, 222 };
+            UIContainer_ResourceBar.Refresh<UIWidget_ResourceBar>(objs, false);
+        }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            object[] objs = new object[5] { 1, 2, 3, 4, 5 };
+            UIContainer_ResourceBar.Refresh<UIWidget_ResourceBar>(objs, false);
+        }
     }
 
     protected override void OnInit(object viewData)
