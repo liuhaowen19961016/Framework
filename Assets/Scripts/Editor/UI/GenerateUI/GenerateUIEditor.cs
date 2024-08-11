@@ -12,6 +12,13 @@ using Newtonsoft.Json;
 /// <summary>
 /// 生成UI工具
 /// </summary>
+/*****
+ 生成规则
+ 1.UIView下可以生成UISubView
+ 2.UISubView下可以生成UISubView
+ 3.UIWidget只能作为单独预制体生成自身
+ 4.UIContainer只能在UIView或UISubView下生成自身
+ *****/
 public class GenerateUIEditor
 {
     //**********只有按照以下规范命名的节点才会生成，可扩展
@@ -118,7 +125,7 @@ public class GenerateUIEditor
         {
             if (!RegexUtils.IsCSValidName(uiSubViewData.className))
             {
-                genUIData.errorStr.AppendLine($"生成UISubView失败，预制体{genUIData.prefab.name}中的SubView节点{uiSubViewData.className}命名不符合C#规则");
+                genUIData.errorStr.AppendLine($"生成UISubView失败，预制体{genUIData.prefab.name}下的SubView节点{uiSubViewData.className}命名不符合C#规则");
             }
             else
             {
@@ -159,7 +166,7 @@ public class GenerateUIEditor
                 }
                 else
                 {
-                    genUIData.errorStr.AppendLine($"生成UISubView失败，预制体{genUIData.prefab.name}中的SubView节点{uiSubViewData.className}命名不符合C#规则");
+                    genUIData.errorStr.AppendLine($"生成UISubView失败，预制体{genUIData.prefab.name}下的SubView节点{uiSubViewData.className}命名不符合C#规则");
                 }
             }
             else
@@ -186,6 +193,9 @@ public class GenerateUIEditor
         genUIData = new GenUIData();
         genUIData.prefab = go;
         genUIData.uiViewData = null;
+        ClassData uiWidgetData = new ClassData();
+        uiWidgetData.className = go.name;
+        genUIData.uiWidgetData = uiWidgetData;
 
         //收集生成UI的数据
         Transform root = go.transform;
@@ -214,15 +224,17 @@ public class GenerateUIEditor
             Transform trans = targetTrans.GetChild(i);
             string transName = trans.name;
             string namePrefix = transName.Split('_')[0];
-            if (namePrefix == EditorConst.PREFIX_UISUBVIEW)
+            bool canGenSub = genUIType == EGenUIType.View || genUIType == EGenUIType.SubView;
+            if (namePrefix == EditorConst.PREFIX_UISUBVIEW && canGenSub)
             {
                 AddGenUIData(genUIData, genUIType, EGenUIFieldType.SubView, trans, null, trans.name, rootTrans);
                 CollectGenUIData(genUIData, trans, trans, EGenUIType.SubView);
                 continue;
             }
-            if (namePrefix == EditorConst.PREFIX_UICONTAINER)
+            if (namePrefix == EditorConst.PREFIX_UICONTAINER && canGenSub)
             {
-                //todo logic 后续加上，还有滚动列表相关的
+                AddGenUIData(genUIData, genUIType, EGenUIFieldType.Container, trans, null, trans.name, rootTrans);
+                CollectGenUIData(genUIData, trans, trans, genUIType);
                 continue;
             }
 
@@ -232,7 +244,7 @@ public class GenerateUIEditor
             Component component = trans.GetComponent(type);
             if (component == null)
             {
-                genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}中的{transName}节点找不到{type.Name}组件");
+                genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}下的{transName}节点找不到{type.Name}组件");
                 continue;
             }
             AddGenUIData(genUIData, genUIType, EGenUIFieldType.Common, trans, type, type.Name, rootTrans);
@@ -279,9 +291,6 @@ public class GenerateUIEditor
         }
         else if (genUIType == EGenUIType.Widget)
         {
-            string uiWidgetName = rootTrans.name;
-            genUIData.uiWidgetData = new ClassData();
-            genUIData.uiWidgetData.className = uiWidgetName;
             AddFieldData(genUIData.uiWidgetData, genUIFieldType, trans, type, typeName, rootTrans);
         }
     }
@@ -294,12 +303,26 @@ public class GenerateUIEditor
         string transName = trans.name;
         if (!RegexUtils.IsCSValidName(transName))
         {
-            genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}中的{transName}节点命名不符合C#规则");
+            if (classData.className == genUIData.prefab.name)
+            {
+                genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}下的{transName}节点命名不符合C#规则");
+            }
+            else
+            {
+                genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}下的{classData.className}下的{transName}节点命名不符合C#规则");
+            }
             return;
         }
         if (classData.fieldDataDict.ContainsKey(transName))
         {
-            genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}中存在相同{transName}名字的{typeName}组件");
+            if (classData.className == genUIData.prefab.name)
+            {
+                genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}下存在相同{transName}名字的{typeName}组件");
+            }
+            else
+            {
+                genUIData.errorStr.AppendLine($"预制体{genUIData.prefab.name}下的{classData.className}下存在相同{transName}名字的{typeName}组件");
+            }
             return;
         }
         if (type != null)
@@ -476,9 +499,26 @@ public class GenerateUIEditor
         StringBuilder str = new StringBuilder();
         foreach (var fieldData in fieldDatas)
         {
-            string fieldDefineStr = EditorConst.FIELD_DEFINE_TEMPLATE;
-            fieldDefineStr = fieldDefineStr.Replace("#FieldType#", fieldData.fieldTypeName);
-            fieldDefineStr = fieldDefineStr.Replace("#FieldName#", fieldData.fieldName);
+            string fieldDefineStr = string.Empty;
+            switch (fieldData.GenUIFieldType)
+            {
+                case EGenUIFieldType.Common:
+                    fieldDefineStr = EditorConst.COMMON_FIELD_DEFINE_TEMPLATE;
+                    fieldDefineStr = fieldDefineStr.Replace("#FieldType#", fieldData.fieldTypeName);
+                    fieldDefineStr = fieldDefineStr.Replace("#FieldName#", fieldData.fieldName);
+                    break;
+
+                case EGenUIFieldType.SubView:
+                    fieldDefineStr = EditorConst.SUBVIEW_FIELD_DEFINE_TEMPLATE;
+                    fieldDefineStr = fieldDefineStr.Replace("#FieldType#", fieldData.fieldTypeName);
+                    fieldDefineStr = fieldDefineStr.Replace("#FieldName#", fieldData.fieldName);
+                    break;
+
+                case EGenUIFieldType.Container:
+                    fieldDefineStr = EditorConst.CONTAINER_FIELD_DEFINE_TEMPLATE;
+                    fieldDefineStr = fieldDefineStr.Replace("#FieldName#", fieldData.fieldName);
+                    break;
+            }
             str.AppendLine(fieldDefineStr + "");
         }
         return str.ToString();
@@ -505,6 +545,13 @@ public class GenerateUIEditor
 
                 case EGenUIFieldType.SubView:
                     fieldBindStr = EditorConst.SUBVIEW_FIELD_BIND_TEMPLATE;
+                    fieldBindStr = fieldBindStr.Replace("#FieldName#", fieldData.fieldName);
+                    fieldBindStr = fieldBindStr.Replace("#FieldPath#", fieldData.fieldPath);
+                    str.AppendLine(fieldBindStr + "");
+                    break;
+
+                case EGenUIFieldType.Container:
+                    fieldBindStr = EditorConst.CONTAINER_FIELD_BIND_TEMPLATE;
                     fieldBindStr = fieldBindStr.Replace("#FieldName#", fieldData.fieldName);
                     fieldBindStr = fieldBindStr.Replace("#FieldPath#", fieldData.fieldPath);
                     str.AppendLine(fieldBindStr + "");

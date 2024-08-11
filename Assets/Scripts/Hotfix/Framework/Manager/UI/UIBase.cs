@@ -94,7 +94,7 @@ namespace Framework
         /// 添加控件
         /// </summary>
         /// reusable：为true则通过对象池管理
-        protected T AddUIWidget<T>(Transform trans, bool reusable, object viewData = null)
+        public T AddUIWidget<T>(Transform trans, bool reusable, object viewData = null)
             where T : UIWidgetBase
         {
             Type type = typeof(T);
