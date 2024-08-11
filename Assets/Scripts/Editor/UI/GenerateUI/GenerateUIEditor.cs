@@ -132,7 +132,7 @@ public class GenerateUIEditor
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        EditorUtils.ShowDialogWindow("生成UIView结果", GenResultStr(), "确定", "打开生成UI信息文件夹", onBtn2: () => UIEditorTool.OpenGenUIInfoDir());
+        GenerateUIResultWindow.CreateWindow("生成UIView结果", GenResultStr());
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ public class GenerateUIEditor
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        EditorUtils.ShowDialogWindow("生成UISubView结果", GenResultStr(), "确定", "打开生成UI信息文件夹", onBtn2: () => UIEditorTool.OpenGenUIInfoDir());
+        GenerateUIResultWindow.CreateWindow("生成UISubView结果", GenResultStr());
     }
 
     /// <summary>
@@ -203,7 +203,7 @@ public class GenerateUIEditor
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        EditorUtils.ShowDialogWindow("生成UIWidget结果", GenResultStr(), "确定", "打开生成UI信息文件夹", onBtn2: () => UIEditorTool.OpenGenUIInfoDir());
+        GenerateUIResultWindow.CreateWindow("生成UIWidget结果", GenResultStr());
     }
 
     private static void CollectGenUIData(GenUIData genUIData, Transform targetTrans, Transform rootTrans, EGenUIType genUIType)
