@@ -30,11 +30,8 @@ public class EditorConst
     public const string UIVIEWNAME_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIViewNameTemplate.txt"; //UIViewName模板路径
 
     //生成代码文件夹
-    public const string UIVIEW_LOGIC_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/Logic/View/"; //自动生成UIView逻辑代码的文件夹
     public const string UIVIEW_VIEW_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/AutoGen/View/"; //自动生成UIView界面代码的文件夹
-    public const string UISUBVIEW_LOGIC_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/Logic/SubView/"; //自动生成UISubView逻辑代码的文件夹
     public const string UISUBVIEW_VIEW_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/AutoGen/SubView/"; //自动生成UISubView界面代码的文件夹
-    public const string UIWIDGET_LOGIC_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/Logic/Widget/"; //自动生成UIWidget逻辑代码的文件夹
     public const string UIWIDGET_VIEW_GENCODE_DIR = "Assets/Scripts/Hotfix/测试/UI/AutoGen/Widget/"; //自动生成UIWidget界面代码的文件夹
     public const string UIVIEWNAME_GENCODE_PATH = "Assets/Scripts/Hotfix/Logic/UI/UIViewName"; //自动生成UIViewName的文件夹
 
