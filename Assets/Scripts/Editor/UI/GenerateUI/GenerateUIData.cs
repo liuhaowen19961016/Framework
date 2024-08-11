@@ -6,10 +6,14 @@ using UnityEngine;
 public class GenUIData
 {
     public GameObject prefab;
+
     public ClassData uiViewData;
     public Dictionary<string, ClassData> uiSubViewDataDict = new Dictionary<string, ClassData>();
     public ClassData uiWidgetData;
+
     public StringBuilder errorStr = new StringBuilder();
+    public List<string> genSuccessClassNameList = new List<string>();
+    public List<string> genFailClassNameList = new List<string>();
 }
 
 public class ClassData
@@ -38,7 +42,7 @@ public enum EGenUIType
 }
 
 /// <summary>
-/// 生成UI的类型
+/// 生成UI的字段类型
 /// </summary>
 public enum EGenUIFieldType
 {
