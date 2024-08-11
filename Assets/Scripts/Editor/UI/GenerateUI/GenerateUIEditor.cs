@@ -14,10 +14,10 @@ using Newtonsoft.Json;
 /// </summary>
 /*****
  生成规则
- 1.UIView下可以生成UISubView
- 2.UISubView下可以生成UISubView
+ 1.UIView下可以嵌套UISubView
+ 2.UISubView下可以嵌套UISubView
  3.UIWidget只能作为单独预制体生成自身
- 4.UIContainer只能在UIView或UISubView下生成自身，UIContainer下应该为空，下面的一切节点都不会生成
+ 4.UIContainer只能作为UIView或UISubView下的空节点，它下面的一切节点都不会生成
  *****/
 public class GenerateUIEditor
 {
