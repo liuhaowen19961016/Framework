@@ -10,7 +10,7 @@ namespace Framework
     /// <summary>
     /// UI界面基类
     /// </summary>
-    public abstract class UIViewBase : UIBase
+    public abstract class UIViewBase : UIViewOrUISubViewBase
     {
         private UIViewConfig uiViewCfg; //UIView表
 

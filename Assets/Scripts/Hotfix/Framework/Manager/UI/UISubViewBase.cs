@@ -5,11 +5,11 @@ namespace Framework
     /// <summary>
     /// UI界面的子界面基类
     /// </summary>
-    public abstract class UISubViewBase : UIBase
+    public abstract class UISubViewBase : UIViewOrUISubViewBase
     {
         private string subViewName; //子界面名字
 
-        public void InternalInit(UIBase parent, string subViewName, object viewData = null)
+        public void InternalInit(UIViewOrUISubViewBase parent, string subViewName, object viewData = null)
         {
             this.viewData = viewData;
             this.subViewName = subViewName;
