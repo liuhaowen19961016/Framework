@@ -56,6 +56,7 @@ namespace Framework
             {
                 if (Widgets[i] == widget)
                 {
+                    widget.OnClose();
                     widget.InternalDestory();
                     Widgets.RemoveAt(i);
                     return true;

@@ -11,6 +11,11 @@ namespace Framework
 
         private bool reusable;
 
+        public void SetViewData(object viewData = null)
+        {
+            this.viewData = viewData;
+        }
+
         public void InternalInit(UIBase parent, string widgetName, bool reusable, object viewData = null)
         {
             this.viewData = viewData;
@@ -39,7 +44,6 @@ namespace Framework
                 return false;
             }
             widgetGo.transform.SetParent(trans, false);
-            widgetGo.ResetLocal();
             go = widgetGo;
             OnCreate();
             return true;
@@ -47,6 +51,8 @@ namespace Framework
 
         public void InternalShow()
         {
+            go.SetActive(true);
+
             OnShow();
         }
 

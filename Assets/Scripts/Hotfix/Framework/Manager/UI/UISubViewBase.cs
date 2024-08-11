@@ -42,6 +42,8 @@ namespace Framework
 
         public void InternalShow()
         {
+            go.SetActive(true);
+            
             OnShow();
         }
 

@@ -12,11 +12,16 @@ public class UIViewOrUISubViewBase : UIBase
     /// <summary>
     /// 添加子界面
     /// </summary>
-    protected T AddUISubview<T>(Transform trans, object viewData = null)
+    public T AddUISubview<T>(Transform trans, object viewData = null)
         where T : UISubViewBase
     {
         Type type = typeof(T);
         string subViewName = type.Name;
+        if (SubViews.ContainsKey(subViewName))
+        {
+            Debug.LogError($"SubView：{subViewName}不能重复");
+            return null;
+        }
         var classType = Type.GetType(subViewName);
         T subView = Activator.CreateInstance(classType) as T;
         if (subView == null)
@@ -41,6 +46,7 @@ public class UIViewOrUISubViewBase : UIBase
         string subViewName = typeof(T).Name;
         if (SubViews.TryGetValue(subViewName, out var subView))
         {
+            subView.OnClose();
             subView.InternalDestory();
             SubViews.Remove(subViewName);
             return true;
@@ -66,6 +72,7 @@ public class UIViewOrUISubViewBase : UIBase
     {
         foreach (var subView in SubViews.Values)
         {
+            subView.OnClose();
             subView.InternalDestory();
         }
         SubViews.Clear();
@@ -90,7 +97,7 @@ public class UIViewOrUISubViewBase : UIBase
             subView.OnRefresh();
         }
     }
-    
+
     protected override void OnUpdate()
     {
         base.OnUpdate();
