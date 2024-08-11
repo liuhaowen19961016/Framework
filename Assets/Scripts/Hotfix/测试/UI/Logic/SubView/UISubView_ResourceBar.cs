@@ -12,7 +12,8 @@ public class UISubView_ResourceBar : UISubView_ResourceBarBase
         Debug.LogError("UISubView_ResourceBar OnShow " + parent);
         Debug.LogError("UISubView_ResourceBar OnShow " + uiViewHolder);
 
-        // AddUISubview<UISubView_ResourceBarItem>(UIImg_Bg.rectTransform, 111111);
+        object[] objs = new object[3] { 11, 22, 33 };
+        UIContainer_ResourceBar.Refresh<UIWidget_ResourceBar>(objs,false);
     }
 
     protected override void OnInit(object viewData)
