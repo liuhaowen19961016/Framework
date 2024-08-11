@@ -17,7 +17,7 @@ using Newtonsoft.Json;
  1.UIView下可以生成UISubView
  2.UISubView下可以生成UISubView
  3.UIWidget只能作为单独预制体生成自身
- 4.UIContainer只能在UIView或UISubView下生成自身
+ 4.UIContainer只能在UIView或UISubView下生成自身，UIContainer下应该为空，下面的一切节点都不会生成
  *****/
 public class GenerateUIEditor
 {
@@ -224,17 +224,16 @@ public class GenerateUIEditor
             Transform trans = targetTrans.GetChild(i);
             string transName = trans.name;
             string namePrefix = transName.Split('_')[0];
-            bool canGenSub = genUIType == EGenUIType.View || genUIType == EGenUIType.SubView;
-            if (namePrefix == EditorConst.PREFIX_UISUBVIEW && canGenSub)
+            bool canRecursiveFind = genUIType == EGenUIType.View || genUIType == EGenUIType.SubView;
+            if (namePrefix == EditorConst.PREFIX_UISUBVIEW && canRecursiveFind)
             {
                 AddGenUIData(genUIData, genUIType, EGenUIFieldType.SubView, trans, null, trans.name, rootTrans);
                 CollectGenUIData(genUIData, trans, trans, EGenUIType.SubView);
                 continue;
             }
-            if (namePrefix == EditorConst.PREFIX_UICONTAINER && canGenSub)
+            if (namePrefix == EditorConst.PREFIX_UICONTAINER)
             {
                 AddGenUIData(genUIData, genUIType, EGenUIFieldType.Container, trans, null, trans.name, rootTrans);
-                CollectGenUIData(genUIData, trans, trans, genUIType);
                 continue;
             }
 

@@ -35,7 +35,6 @@ public enum EGenUIType
     View = 1, //界面
     SubView, //子界面
     Widget, //控件
-    Container,
 }
 
 /// <summary>
@@ -45,7 +44,7 @@ public enum EGenUIFieldType
 {
     Common = 1, //通用的（UGUI组件等）
     SubView, //子界面
-    Container,
+    Container, //容器
 }
 
 /// <summary>
