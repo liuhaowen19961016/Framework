@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 1536231105936532236}
   - component: {fileID: 5147742695794343263}
   m_Layer: 5
-  m_Name: UIWidget_RewardItem
+  m_Name: UIWidget_ResourceBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
