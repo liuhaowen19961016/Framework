@@ -74,7 +74,7 @@ public class UIEditorTool
     /// <summary>
     /// 生成UIViewName
     /// </summary>
-    [MenuItem(EditorConst.GenUIViewName, false, 200)]
+    [MenuItem(EditorConst.GenUIViewName, false, 210)]
     private static void GenUIViewName()
     {
         if (!IOUtils.FileExist(EditorConst.UIVIEWNAME_TEMPLATE_PATH))
@@ -98,5 +98,14 @@ public class UIEditorTool
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         EditorUtils.ShowDialogWindow("生成成功", $"生成路径\n{filePath}", "确定");
+    }
+
+    /// <summary>
+    /// 打开生成UI信息文件夹
+    /// </summary>
+    [MenuItem(EditorConst.OpenGenUIInfoDir, false, 200)]
+    public static void OpenGenUIInfoDir()
+    {
+        IOUtils.OpenFolder(Application.dataPath, EditorConst.UIGENINFOARCHIVEPATH);
     }
 }

@@ -32,10 +32,28 @@ public static class IOUtils
     /// <summary>
     /// 打开文件夹
     /// </summary>
-    public static void OpenFolder(string path)
+    public static void OpenFolder(string dirPath, string locationPath = "")
     {
+        if (!DirectoryExist(dirPath))
+        {
+            Debug.LogError($"文件夹不存在：{dirPath}");
+            return;
+        }
         Process process = new Process();
-        process.StartInfo.FileName = path;
+        process.StartInfo.FileName = dirPath;
+        //定位的文件或文件夹
+        string argument = string.Empty;
+        if (!string.IsNullOrEmpty(locationPath)
+            && (DirectoryExist(locationPath) || FileExist(locationPath)))
+        {
+#if UNITY_STANDALONE_WIN
+            argument = "/select, \"" + locationPath + "\"";
+#elif UNITY_STANDALONE_OSX
+            argument = "-R \"" + locationPath + "\"";
+#else
+#endif
+            process.StartInfo.Arguments = argument;
+        }
         process.Start();
     }
 
@@ -157,6 +175,12 @@ public static class IOUtils
     public static bool FileExist(string filePath)
     {
         bool exist = File.Exists(filePath);
+        return exist;
+    }
+
+    public static bool DirectoryExist(string dirPath)
+    {
+        bool exist = Directory.Exists(dirPath);
         return exist;
     }
 }
