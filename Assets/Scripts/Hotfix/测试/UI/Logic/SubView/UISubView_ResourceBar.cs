@@ -33,6 +33,10 @@ public class UISubView_ResourceBar : UISubView_ResourceBarBase
             object[] objs = new object[5] { 1, 2, 3, 4, 5 };
             UIContainer_ResourceBar.Refresh<UIWidget_ResourceBar>(objs, false);
         }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            UIContainer_ResourceBar.ClearAll();
+        }
     }
 
     protected override void OnInit(object viewData)
