@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Framework;
 using UnityEngine;
 
@@ -41,5 +42,29 @@ public static class MathUtils
         Array valueArray = Enum.GetValues(typeof(T));
         List<T> randomEnumList = valueArray.GetRandomValueList<T>(getCount, excludeSame, ignoreList);
         return randomEnumList;
+    }
+    
+    /// <summary>
+    /// 获取随机权重index
+    /// </summary>
+    public static int GetRandomWeightResultIndex(List<int> weight)
+    {
+        var totalWight = weight.Sum();
+            
+        var randomInt = UnityEngine.Random.Range(0, totalWight);
+           
+        for (var i = 0; i < weight.Count; i++)
+        {
+            if (randomInt < weight[i])
+            {
+                return i;
+            }
+            else
+            {
+                randomInt -= weight[i];
+            }
+        }
+
+        return weight.Count;
     }
 }

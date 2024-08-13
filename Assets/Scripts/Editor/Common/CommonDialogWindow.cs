@@ -33,17 +33,3 @@ public class CommonDialogWindow : EditorWindow
         }
     }
 }
-
-public class CommonDialogWindowCallbacks : ScriptableObject
-{
-    public Action OnBtn1;
-    public Action OnBtn2;
-    public Action OnBtn3;
-
-    public void SetCallbacks(Action onBtn1, Action onBtn2, Action onBtn3)
-    {
-        OnBtn1 = onBtn1;
-        OnBtn2 = onBtn2;
-        OnBtn3 = onBtn3;
-    }
-}
