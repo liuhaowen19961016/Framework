@@ -88,7 +88,7 @@ namespace Framework
                 var classType = Type.GetType(viewName);
                 if (classType == null)
                 {
-                    Debug.LogError($"代码绑定{viewName}界面失败，界面路径错误或者没有生成界面代码");
+                    Debug.LogError($"没有界面类{viewName}，请先生成界面类");
                     return null;
                 }
                 UIViewBase view = Activator.CreateInstance(classType) as UIViewBase;
