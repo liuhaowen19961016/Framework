@@ -30,42 +30,22 @@ namespace Framework
         FullScreen, //全屏界面
         NotFullScreen, //非全屏界面
         Popup, //弹窗
-    }
-
-    /// <summary>
-    /// 界面数据
-    /// </summary>
-    public class UIViewInfo
-    {
-        public string viewName;
-        public EUILayerType layerType;
-        public EUIType type;
-
-        public UIViewInfo(string viewName, EUILayerType layerType, EUIType type)
-        {
-            this.viewName = viewName;
-            this.layerType = layerType;
-            this.type = type;
-        }
+        System, //系统
     }
 
     public class UIMgr
     {
         //根据项目进行调整
-        public static Vector2 referenceResolution = new Vector2(768, 1366);
+        public static Vector2 ReferenceResolution = new Vector2(768, 1366);
         public const float ScreenMatchValue = 0;
 
         public const int LAYERSTEP_ORDERINLAYER = 2000;
         public const int VIEWSTEP_ORDERINLAYER = 100;
 
-        private GameObject uiRootGo;
+        private GameObject uiRootGo; //UIRoot物体
 
-        private Canvas uiCanvas; //UI画布
-        public Canvas UICanvas => uiCanvas;
-
-        private Camera uiCamera; //UI相机
-        public Camera UICamera => uiCamera;
-
+        public Canvas UICanvas { get; private set; } //UI画布
+        public Camera UICamera { get; private set; } //UI相机
         private EventSystem eventSystem; //EventSystem
 
         private List<UIViewBase> viewStack = new List<UIViewBase>();
@@ -208,8 +188,6 @@ namespace Framework
 
         private void Push(UIViewBase view)
         {
-            if (FindView(view.ViewId) != null)
-                return;
             var layer = FindLayer(view.LayerType);
             layer.AddView(view);
             viewStack.Add(view);
@@ -217,33 +195,32 @@ namespace Framework
 
         private void Pop(UIViewBase view)
         {
-            if (FindView(view.ViewId) == null)
-                return;
             var layer = FindLayer(view.LayerType);
             layer.RemoveView(view);
             viewStack.Remove(view);
         }
 
-        private Camera CreateUICamera()
+        #region 创建UI结构
+
+        private void CreateUICamera()
         {
             GameObject uiCameraGo = GameUtils.CreateGameObject("UICamera", uiRootGo.transform, false, typeof(Camera));
-            Camera uiCamera = uiCameraGo.GetComponent<Camera>();
-            uiCamera.orthographic = true;
-            uiCamera.cullingMask = LayerMask.GetMask("UI");
-            return uiCamera;
+            UICamera = uiCameraGo.GetComponent<Camera>();
+            UICamera.orthographic = true;
+            UICamera.cullingMask = LayerMask.GetMask("UI");
         }
 
-        private Canvas CreateUICanvas(Camera uiCamera)
+        private void CreateUICanvas()
         {
             GameObject uiCanvasGo = GameUtils.CreateGameObject("UICanvas", uiRootGo.transform, false,
                 typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             uiCanvasGo.layer = LayerMask.NameToLayer("UI");
-            Canvas canvas = uiCanvasGo.GetComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceCamera;
-            canvas.worldCamera = uiCamera;
+            UICanvas = uiCanvasGo.GetComponent<Canvas>();
+            UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
+            UICanvas.worldCamera = UICamera;
             CanvasScaler canvasScaler = uiCanvasGo.GetComponent<CanvasScaler>();
             canvasScaler.matchWidthOrHeight = ScreenMatchValue;
-            canvasScaler.referenceResolution = referenceResolution;
+            canvasScaler.referenceResolution = ReferenceResolution;
             //创建Canvas下的层级结构
             string[] uiLayerNameArray = Enum.GetNames(typeof(EUILayerType));
             foreach (var layerName in uiLayerNameArray)
@@ -260,16 +237,16 @@ namespace Framework
                 layerType2Layer.Add(uiLayerType, layer);
             }
             CreateEventSystem();
-            return canvas;
         }
 
-        private EventSystem CreateEventSystem()
+        private void CreateEventSystem()
         {
             GameObject eventSystemGo = GameUtils.CreateGameObject("EventSystem", uiRootGo.transform, false,
                 typeof(EventSystem), typeof(StandaloneInputModule));
             eventSystem = eventSystemGo.GetComponent<EventSystem>();
-            return eventSystem;
         }
+
+        #endregion 创建UI结构
 
         #endregion Private
 
@@ -278,10 +255,10 @@ namespace Framework
         public void Init()
         {
             //创建UI结构
-            uiRootGo = GameUtils.CreateGameObject("UIRoot", null, true);
+            uiRootGo = GameUtils.CreateGameObject("UIRoot", null);
             Object.DontDestroyOnLoad(uiRootGo);
-            uiCamera = CreateUICamera();
-            uiCanvas = CreateUICanvas(uiCamera);
+            CreateUICamera();
+            CreateUICanvas();
         }
 
         public void Start()
