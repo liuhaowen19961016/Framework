@@ -9,7 +9,7 @@ public class UIViewOrUISubViewBase : UIBase
 
     #region 子界面
 
-    public void InternalAddToSubViews(UISubViewBase subView)
+    public void InternalAddToSubViewList(UISubViewBase subView)
     {
         SubViewList.Add(subView);
     }

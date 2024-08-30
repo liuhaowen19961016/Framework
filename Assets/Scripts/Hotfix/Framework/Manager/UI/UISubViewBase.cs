@@ -15,7 +15,7 @@ namespace Framework
             SubViewName = subViewName;
             Parent = parent;
             UIViewHolder = parent.UIViewHolder;
-            parent.InternalAddToSubViews(this);
+            parent.InternalAddToSubViewList(this);
             OnInit(viewData);
         }
 
@@ -42,8 +42,7 @@ namespace Framework
 
         public void InternalOpen()
         {
-            go.SetActive(true);
-
+            Visible = true;
             OnOpen();
         }
 
@@ -52,8 +51,8 @@ namespace Framework
             OnClose();
             if (isDestroy)
             {
-                OnDestroy();
                 Object.Destroy(go);
+                OnDestroy();
             }
         }
     }

@@ -39,18 +39,6 @@ namespace Framework
         public const string OPEN_ANI_NAME = "Open";
         public const string CLOSE_ANI_NAME = "Close";
 
-        public bool Visible //是否可见
-        {
-            get
-            {
-                return go.activeSelf;
-            }
-            set
-            {
-                go.SetActive(value);
-            }
-        }
-
         public int OrderInLayer //层级排序
         {
             set
@@ -150,8 +138,8 @@ namespace Framework
 
                 if (isDestroy)
                 {
-                    OnDestroy();
                     Object.Destroy(go);
+                    OnDestroy();
                 }
             });
         }

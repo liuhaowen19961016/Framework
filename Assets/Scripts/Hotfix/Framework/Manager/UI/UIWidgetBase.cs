@@ -7,23 +7,23 @@ namespace Framework
     /// </summary>
     public class UIWidgetBase : UIBase
     {
-        private string widgetName; //控件名字
+        public string WidgetName { get; private set; } //控件名字
 
         private bool reusable;
 
         public void SetViewData(object viewData = null)
         {
-            this.ViewData = viewData;
+            ViewData = viewData;
         }
 
         public void InternalInit(UIBase parent, string widgetName, bool reusable, object viewData = null)
         {
-            this.ViewData = viewData;
-            this.widgetName = widgetName;
+            ViewData = viewData;
+            WidgetName = widgetName;
             this.reusable = reusable;
             Parent = parent;
             UIViewHolder = parent.UIViewHolder;
-            parent.WidgetList.Add(this);
+            parent.InternalAddToWidgetList(this);
             OnInit(viewData);
         }
 
@@ -36,11 +36,11 @@ namespace Framework
             }
             else
             {
-                widgetGo = Object.Instantiate(Resources.Load<GameObject>(widgetName)); //todo 通过资源管理器加载
+                widgetGo = Object.Instantiate(Resources.Load<GameObject>(WidgetName)); //todo 通过资源管理器加载
             }
             if (widgetGo == null)
             {
-                Debug.LogError($"{widgetName}控件资源实例化失败");
+                Debug.LogError($"{WidgetName}控件资源实例化失败");
                 return false;
             }
             widgetGo.transform.SetParent(trans, false);
@@ -51,8 +51,7 @@ namespace Framework
 
         public void InternalOpen()
         {
-            go.SetActive(true);
-
+            Visible = true;
             OnOpen();
         }
 

@@ -18,10 +18,27 @@ namespace Framework
         public GameObject Go => go;
 
         protected object ViewData;
+        
+        public bool Visible //是否可见
+        {
+            get
+            {
+                return go.activeSelf;
+            }
+            set
+            {
+                go.SetActive(value);
+            }
+        }
 
         public List<UIWidgetBase> WidgetList = new List<UIWidgetBase>(); //所有控件
 
         #region 控件
+        
+        public void InternalAddToWidgetList(UIWidgetBase widget)
+        {
+            WidgetList.Add(widget);
+        }
 
         /// <summary>
         /// 添加控件
