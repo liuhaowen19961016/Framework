@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class UIViewOrUISubViewBase : UIBase
 {
-    private List<UISubViewBase> SubViews = new List<UISubViewBase>(); //所有子界面
+    private List<UISubViewBase> SubViewList = new List<UISubViewBase>(); //所有子界面
 
     #region 子界面
 
     public void InternalAddToSubViews(UISubViewBase subView)
     {
-        SubViews.Add(subView);
+        SubViewList.Add(subView);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public class UIViewOrUISubViewBase : UIBase
             return false;
 
         subView.InternalClose(true);
-        SubViews.Remove(subView);
+        SubViewList.Remove(subView);
         return true;
     }
 
@@ -52,11 +52,11 @@ public class UIViewOrUISubViewBase : UIBase
     /// </summary>
     public void RemoveAllUISubView()
     {
-        foreach (var subView in SubViews)
+        foreach (var subView in SubViewList)
         {
             subView.InternalClose(true);
         }
-        SubViews.Clear();
+        SubViewList.Clear();
     }
 
     #endregion 子界面
@@ -64,7 +64,7 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnOpen()
     {
         base.OnOpen();
-        foreach (var subView in SubViews)
+        foreach (var subView in SubViewList)
         {
             subView.OnOpen();
         }
@@ -73,7 +73,7 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnRefresh()
     {
         base.OnRefresh();
-        foreach (var subView in SubViews)
+        foreach (var subView in SubViewList)
         {
             subView.OnRefresh();
         }
@@ -82,7 +82,7 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnUpdate()
     {
         base.OnUpdate();
-        foreach (var subView in SubViews)
+        foreach (var subView in SubViewList)
         {
             subView.OnUpdate();
         }
@@ -91,7 +91,7 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnClose()
     {
         base.OnClose();
-        foreach (var subView in SubViews)
+        foreach (var subView in SubViewList)
         {
             subView.OnClose();
         }
@@ -100,10 +100,10 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        foreach (var subView in SubViews)
+        foreach (var subView in SubViewList)
         {
             subView.OnDestroy();
         }
-        SubViews.Clear();
+        SubViewList.Clear();
     }
 }
