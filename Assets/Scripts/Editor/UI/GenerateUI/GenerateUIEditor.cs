@@ -328,26 +328,27 @@ public class GenerateUIEditor
     /// <summary>
     /// 生成UIView逻辑代码
     /// </summary>
-    private static void GenUIViewCode_Logic(ClassData classData)
+    private static bool GenUIViewCode_Logic(ClassData classData)
     {
         if (!IOUtils.FileExist(EditorConst.UIVIEW_LOGIC_TEMPLATE_PATH))
         {
             genUIData.errorStr.AppendLine($"{EditorConst.UIVIEW_LOGIC_TEMPLATE_PATH}中不存在UIView逻辑模板");
             genUIData.genFailClassNameList.Add(classData.className);
-            return;
+            return false;
         }
         if (HasGenLogicCode(classData.className))
-            return;
+            return true;
         string logicCode = File.ReadAllText(EditorConst.UIVIEW_LOGIC_TEMPLATE_PATH);
         logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
         string logicFileDir = EditorUtility.OpenFolderPanel($"选择UIView：{classData.className} 逻辑脚本路径", Application.dataPath + "/Scripts", "");
-        // if (string.IsNullOrEmpty(logicFileDir))
-        //     return;
+        if (string.IsNullOrEmpty(logicFileDir))
+            return false;
         string filePath = $"{logicFileDir}/{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
         SaveToGenUIInfoArchive(classData, filePath, EGenUIType.View);
         genUIData.genSuccessClassNameList.Add(classData.className);
+        return true;
     }
 
     /// <summary>
