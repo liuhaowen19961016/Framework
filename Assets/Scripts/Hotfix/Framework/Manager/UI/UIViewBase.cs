@@ -106,6 +106,7 @@ namespace Framework
             {
                 childCanvasOriginSortingOrder[i] = childCanvas[i].sortingOrder;
             }
+            go.GetComponent<GraphicRaycaster>(true);
 
             OnCreate();
             return true;

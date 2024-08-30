@@ -32,7 +32,7 @@ namespace Hotfix
             Loader.LateUpdate += LateUpdate;
             Loader.OnApplicationQuit += OnApplicationQuit;
 
-            //CreateEventSystem();
+            CreateEventSystem();
 
             //
             timer = new Timer();
