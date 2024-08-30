@@ -145,13 +145,12 @@ namespace Framework
         {
             if (viewStack.Count <= 0)
                 return null;
-            if (ignoreViewList == null)
-                return viewStack[viewStack.Count - 1];
 
             for (int i = viewStack.Count - 1; i >= 0; i--)
             {
                 var view = viewStack[i];
-                if (ignoreViewList.Contains(view.ViewId))
+                if (!view.Visible ||
+                    (ignoreViewList != null && ignoreViewList.Contains(view.ViewId)))
                     continue;
                 return view;
             }

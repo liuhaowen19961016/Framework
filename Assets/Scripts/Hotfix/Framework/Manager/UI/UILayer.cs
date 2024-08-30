@@ -39,13 +39,12 @@ namespace Framework
         {
             if (uiViewList.Count <= 0)
                 return null;
-            if (ignoreViewList == null)
-                return uiViewList[uiViewList.Count - 1];
 
             for (int i = uiViewList.Count - 1; i >= 0; i--)
             {
                 var view = uiViewList[i];
-                if (ignoreViewList.Contains(view.ViewId))
+                if (!view.Visible
+                    || (ignoreViewList != null && ignoreViewList.Contains(view.ViewId)))
                     continue;
                 return view;
             }

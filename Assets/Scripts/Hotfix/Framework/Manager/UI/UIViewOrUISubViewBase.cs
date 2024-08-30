@@ -17,7 +17,7 @@ public class UIViewOrUISubViewBase : UIBase
     /// <summary>
     /// 添加子界面
     /// </summary>
-    public T AddUISubview<T>(Transform trans, object viewData = null)
+    public T AddUISubView<T>(Transform trans, object viewData = null)
         where T : UISubViewBase
     {
         Type classType = typeof(T);
