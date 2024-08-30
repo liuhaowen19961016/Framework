@@ -46,7 +46,6 @@ namespace Framework
         public Canvas UICanvas { get; private set; } //UI画布
         public Camera UICamera { get; private set; } //UI相机
         public RectTransform UIRect => UICanvas.GetComponent<RectTransform>(); //UIRect
-        private GraphicRaycaster graphicRaycaster; //图形射线组件
 
         private List<UIViewBase> viewStack = new List<UIViewBase>();
         private Dictionary<EUILayerType, UILayer> layerType2Layer = new Dictionary<EUILayerType, UILayer>();
@@ -111,27 +110,12 @@ namespace Framework
             var curView = FindView(viewId);
             if (curView == null)
                 return false;
-            var layer = FindLayer(curView.LayerType);
-            if (layer == null)
-                return false;
             curView.InternalClose(isDestory);
             if (isDestory)
             {
                 Pop(curView);
             }
             return true;
-        }
-
-        /// <summary>
-        /// 设置所有UI是否可交互
-        /// </summary>
-        public void SetRaycastEnable(bool enable)
-        {
-            graphicRaycaster.enabled = enable;
-            foreach (var view in viewStack)
-            {
-                view.Interactable = enable;
-            }
         }
 
         /// <summary>
@@ -211,7 +195,6 @@ namespace Framework
             Object.DontDestroyOnLoad(uiRootGo);
             CreateUICamera();
             CreateUICanvas();
-            CreateEventSystem();
         }
 
         private void CreateUICamera()
@@ -226,7 +209,7 @@ namespace Framework
         {
             GameObject uiCanvasGo = GameUtils.CreateGameObject("UICanvas", uiRootGo.transform, false,
                 typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            graphicRaycaster = uiCanvasGo.GetComponent<GraphicRaycaster>();
+            uiCanvasGo.GetComponent<GraphicRaycaster>();
             uiCanvasGo.layer = LayerMask.NameToLayer("UI");
             UICanvas = uiCanvasGo.GetComponent<Canvas>();
             UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
@@ -249,15 +232,6 @@ namespace Framework
                 layer.Init(layerRootGo, uiLayerType);
                 layerType2Layer.Add(uiLayerType, layer);
             }
-        }
-
-        private void CreateEventSystem()
-        {
-            //EventSystem可以不只是管理UI，所以不放在UIRoot下
-            GameObject eventSystemGo = GameUtils.CreateGameObject("EventSystem", null, false,
-                typeof(EventSystem), typeof(StandaloneInputModule));
-            eventSystemGo.GetComponent<EventSystem>();
-            Object.DontDestroyOnLoad(eventSystemGo);
         }
 
         #endregion 创建UI结构

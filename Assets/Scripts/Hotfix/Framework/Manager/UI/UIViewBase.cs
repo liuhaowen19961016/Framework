@@ -29,8 +29,6 @@ namespace Framework
         public EUILayerType LayerType => (EUILayerType)uiViewCfg.LayerType; //层级类型
         public EUIType Type => (EUIType)uiViewCfg.Type; //界面类型
 
-        private GraphicRaycaster graphicRaycaster; //图形射线组件
-        private GraphicRaycaster[] childGraphicRaycaster; //当前界面下的所有图形射线组件
         private Canvas canvas; //当前界面的Canvas
         private Canvas[] childCanvas; //当前界面下的所有子Canvas
         private int[] childCanvasOriginSortingOrder;
@@ -76,21 +74,9 @@ namespace Framework
             }
         }
 
-        public bool Interactable //是否可交互
-        {
-            set
-            {
-                graphicRaycaster.enabled = value;
-                foreach (var graphicRaycaster in childGraphicRaycaster)
-                {
-                    graphicRaycaster.enabled = value;
-                }
-            }
-        }
-
         public void InternalInit(string viewName, UIViewConfig uiViewCfg, UILayer uiLayer, object viewData = null)
         {
-            this.ViewData = viewData;
+            ViewData = viewData;
             this.uiViewCfg = uiViewCfg;
             UILayer = uiLayer;
             ViewName = viewName;
@@ -120,8 +106,6 @@ namespace Framework
             {
                 childCanvasOriginSortingOrder[i] = childCanvas[i].sortingOrder;
             }
-            graphicRaycaster = go.GetComponent<GraphicRaycaster>(true);
-            childGraphicRaycaster = go.GetComponentsInChildren<GraphicRaycaster>(true);
 
             OnCreate();
             return true;

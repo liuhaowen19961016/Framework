@@ -1,4 +1,7 @@
 using Framework;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using Event = Framework.Event;
 
 namespace Hotfix
 {
@@ -18,6 +21,8 @@ namespace Hotfix
 
         private static bool initComplete;
 
+        public static EventSystem EventSystem { get; private set; }
+
         private static void Start()
         {
             Log.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
@@ -26,6 +31,8 @@ namespace Hotfix
             Loader.Update += Update;
             Loader.LateUpdate += LateUpdate;
             Loader.OnApplicationQuit += OnApplicationQuit;
+
+            //CreateEventSystem();
 
             //
             timer = new Timer();
@@ -41,6 +48,14 @@ namespace Hotfix
 
             //
             initComplete = true;
+        }
+
+        private static void CreateEventSystem()
+        {
+            GameObject eventSystemGo = GameUtils.CreateGameObject("EventSystem", null, false,
+                typeof(EventSystem), typeof(StandaloneInputModule));
+            EventSystem = eventSystemGo.GetComponent<EventSystem>();
+            Object.DontDestroyOnLoad(eventSystemGo);
         }
 
         private void Init()
