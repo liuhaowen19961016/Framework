@@ -25,8 +25,8 @@ public class GenerateUIEditor
     private static Dictionary<string, Type> Name2ComponentType = new Dictionary<string, Type>()
     {
         { "UIBtn", typeof(Button) },
-        //{ "UITxt", typeof(Text) },
-        { "UITxt", typeof(TextMeshProUGUI) },
+        { "UITxt", typeof(Text) },
+        { "UITMP", typeof(TextMeshProUGUI) },
         { "UIImg", typeof(Image) },
         { "UIRawImg", typeof(RawImage) },
         { "UIToggle", typeof(Toggle) },
