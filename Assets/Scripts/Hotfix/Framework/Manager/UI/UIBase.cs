@@ -135,7 +135,7 @@ namespace Framework
                 var widget = Widgets[i];
                 if (widget == null)
                     continue;
-                widget.OnDestroy();
+                widget.InternalDestory();
             }
             Widgets.Clear();
         }
