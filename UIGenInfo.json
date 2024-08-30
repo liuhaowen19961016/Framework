@@ -8,5 +8,20 @@
     "className": "UIView_Activity",
     "genUITypeStr": "View",
     "filePath": "E:/WorkSpace/LHW/Framework/Assets/Scripts/Hotfix/测试/UIView_Activity.cs"
+  },
+  {
+    "className": "UISubview_Activity1",
+    "genUITypeStr": "SubView",
+    "filePath": "E:/WorkSpace/LHW/Framework/Assets/Scripts/Hotfix/测试/UISubview_Activity1.cs"
+  },
+  {
+    "className": "UISubview_Activity2",
+    "genUITypeStr": "SubView",
+    "filePath": "E:/WorkSpace/LHW/Framework/Assets/Scripts/Hotfix/测试/UISubview_Activity2.cs"
+  },
+  {
+    "className": "UISubview_Activity3",
+    "genUITypeStr": "SubView",
+    "filePath": "E:/WorkSpace/LHW/Framework/Assets/Scripts/Hotfix/测试/UISubview_Activity3.cs"
   }
 ]
