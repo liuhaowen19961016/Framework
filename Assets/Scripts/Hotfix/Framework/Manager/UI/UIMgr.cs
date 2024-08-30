@@ -97,10 +97,10 @@ namespace Framework
                 }
 
                 view.InternalInit(viewName, uiViewCfg, uiLayer, viewData);
-                Push(view);
                 bool createRet = view.InternalCreate(uiLayer.LayerGo.transform);
                 if (!createRet)
                     return null;
+                Push(view);
                 view.InternalOpen();
                 return view;
             }
