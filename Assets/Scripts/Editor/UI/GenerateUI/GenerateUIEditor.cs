@@ -111,7 +111,8 @@ public class GenerateUIEditor
         }
         else
         {
-            GenUIViewCode_Logic(genUIData.uiViewData);
+            if (!GenUIViewCode_Logic(genUIData.uiViewData))
+                return;
             GenUIViewCode_View(genUIData.uiViewData);
         }
 
@@ -124,8 +125,10 @@ public class GenerateUIEditor
             }
             else
             {
-                GenUISubViewCode_Logic(uiSubViewData);
-                GenUISubViewCode_View(uiSubViewData);
+                if (GenUISubViewCode_Logic(uiSubViewData))
+                {
+                    GenUISubViewCode_View(uiSubViewData);
+                }
             }
         }
 
@@ -163,8 +166,10 @@ public class GenerateUIEditor
             }
             else
             {
-                GenUISubViewCode_Logic(uiSubViewData);
-                GenUISubViewCode_View(uiSubViewData);
+                if (GenUISubViewCode_Logic(uiSubViewData))
+                {
+                    GenUISubViewCode_View(uiSubViewData);
+                }
             }
         }
 
@@ -196,8 +201,10 @@ public class GenerateUIEditor
         }
         else
         {
-            GenUIWidgetCode_Logic(genUIData.uiWidgetData);
-            GenUIWidgetCode_View(genUIData.uiWidgetData);
+            if (GenUIWidgetCode_Logic(genUIData.uiWidgetData))
+            {
+                GenUIWidgetCode_View(genUIData.uiWidgetData);
+            }
         }
 
         AssetDatabase.SaveAssets();
@@ -377,24 +384,27 @@ public class GenerateUIEditor
     /// <summary>
     /// 生成UISubView逻辑代码
     /// </summary>
-    private static void GenUISubViewCode_Logic(ClassData classData)
+    private static bool GenUISubViewCode_Logic(ClassData classData)
     {
         if (!IOUtils.FileExist(EditorConst.UISUBVIEW_LOGIC_TEMPLATE_PATH))
         {
             genUIData.errorStr.AppendLine($"{EditorConst.UISUBVIEW_LOGIC_TEMPLATE_PATH}中不存在UISubView逻辑模板");
             genUIData.genFailClassNameList.Add(classData.className);
-            return;
+            return false;
         }
         if (HasGenLogicCode(classData.className))
-            return;
+            return true;
         string logicCode = File.ReadAllText(EditorConst.UISUBVIEW_LOGIC_TEMPLATE_PATH);
         logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
         string logicFileDir = EditorUtility.OpenFolderPanel($"选择UISubView：{classData.className} 逻辑脚本路径", Application.dataPath + "/Scripts", "");
+        if (string.IsNullOrEmpty(logicFileDir))
+            return false;
         string filePath = $"{logicFileDir}/{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
         SaveToGenUIInfoArchive(classData, filePath, EGenUIType.SubView);
         genUIData.genSuccessClassNameList.Add(classData.className);
+        return true;
     }
 
     /// <summary>
@@ -423,24 +433,27 @@ public class GenerateUIEditor
     /// <summary>
     /// 生成UIWidget逻辑代码
     /// </summary>
-    private static void GenUIWidgetCode_Logic(ClassData classData)
+    private static bool GenUIWidgetCode_Logic(ClassData classData)
     {
         if (!IOUtils.FileExist(EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH))
         {
             genUIData.errorStr.AppendLine($"{EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH}中不存在UIWidget逻辑模板");
             genUIData.genFailClassNameList.Add(classData.className);
-            return;
+            return false;
         }
         if (HasGenLogicCode(classData.className))
-            return;
+            return true;
         string logicCode = File.ReadAllText(EditorConst.UIWIDGET_LOGIC_TEMPLATE_PATH);
         logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
         string logicFileDir = EditorUtility.OpenFolderPanel($"选择UIWidget：{classData.className} 逻辑脚本路径", Application.dataPath + "/Scripts", "");
+        if (string.IsNullOrEmpty(logicFileDir))
+            return false;
         string filePath = $"{logicFileDir}/{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
         SaveToGenUIInfoArchive(classData, filePath, EGenUIType.Widget);
         genUIData.genSuccessClassNameList.Add(classData.className);
+        return true;
     }
 
     /// <summary>
