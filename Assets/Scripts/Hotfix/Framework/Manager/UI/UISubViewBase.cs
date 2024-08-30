@@ -15,7 +15,7 @@ namespace Framework
             SubViewName = subViewName;
             Parent = parent;
             UIViewHolder = parent.UIViewHolder;
-            parent.InternalAddToSubViews(SubViewName, this);
+            parent.InternalAddToSubViews(this);
             OnInit(viewData);
         }
 
