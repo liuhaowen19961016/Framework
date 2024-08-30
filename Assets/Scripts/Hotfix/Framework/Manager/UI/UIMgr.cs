@@ -43,29 +43,27 @@ namespace Framework
         public const int VIEWSTEP_ORDERINLAYER = 100;
 
         private GameObject uiRootGo; //UIRoot物体
-
         public Canvas UICanvas { get; private set; } //UI画布
         public Camera UICamera { get; private set; } //UI相机
-        private EventSystem eventSystem; //EventSystem
+        public RectTransform UIRect => UICanvas.GetComponent<RectTransform>(); //UIRect
+        private GraphicRaycaster graphicRaycaster; //图形射线组件
 
         private List<UIViewBase> viewStack = new List<UIViewBase>();
         private Dictionary<EUILayerType, UILayer> layerType2Layer = new Dictionary<EUILayerType, UILayer>();
 
-        private Dictionary<object, bool> setEventSystemStateCache = new Dictionary<object, bool>();
-
         /// <summary>
         /// 同步打开界面
         /// </summary>
-        public UIViewBase ShowSync(int viewId, object viewData = null)
+        public UIViewBase OpenSync(int viewId, object viewData = null)
         {
             var curView = FindView(viewId);
             if (curView != null)
             {
                 Pop(curView);
                 Push(curView);
-                if (!curView.Go.activeSelf)
+                if (!curView.Visible)
                 {
-                    curView.InternalShow();
+                    curView.InternalOpen();
                 }
                 else
                 {
@@ -82,8 +80,8 @@ namespace Framework
                     return null;
                 }
                 string viewName = Path.GetFileName(uiViewCfg.Path);
-                var layer = FindLayer((EUILayerType)uiViewCfg.LayerType);
-                if (layer == null)
+                var uiLayer = FindLayer((EUILayerType)uiViewCfg.LayerType);
+                if (uiLayer == null)
                     return null;
                 var classType = Type.GetType(viewName);
                 if (classType == null)
@@ -93,18 +91,17 @@ namespace Framework
                 }
                 UIViewBase view = Activator.CreateInstance(classType) as UIViewBase;
                 if (view == null)
-                    return null;
-
-                view.InternalInit(viewName, uiViewCfg, viewData);
-                bool createRet = view.InternalCreate(layer.LayerGo.transform);
-                if (!createRet)
                 {
+                    Debug.LogError($"类{viewName}不是继承UIViewBase的界面类");
                     return null;
                 }
-                //入栈
+
+                view.InternalInit(viewName, uiViewCfg, uiLayer, viewData);
                 Push(view);
-                //显示
-                view.InternalShow();
+                bool createRet = view.InternalCreate(uiLayer.LayerGo.transform);
+                if (!createRet)
+                    return null;
+                view.InternalOpen();
                 return view;
             }
         }
@@ -128,23 +125,12 @@ namespace Framework
         /// <summary>
         /// 设置所有UI是否可交互
         /// </summary>
-        public void SetEventSystemEnable(bool enable, object sender)
+        public void SetRaycastEnable(bool enable)
         {
-            if (setEventSystemStateCache.ContainsKey(sender))
+            graphicRaycaster.enabled = enable;
+            foreach (var view in viewStack)
             {
-                if (enable)
-                {
-                    setEventSystemStateCache.Remove(sender);
-                    eventSystem.enabled = true;
-                }
-            }
-            else
-            {
-                if (!enable)
-                {
-                    setEventSystemStateCache.Add(sender, false);
-                    eventSystem.enabled = false;
-                }
+                view.Interactable = enable;
             }
         }
 
@@ -164,11 +150,28 @@ namespace Framework
         /// <summary>
         /// 查找某一层级下的最顶部界面
         /// </summary>
-        public UIViewBase FindTopView(EUILayerType layerType)
+        public UIViewBase FindTopView(EUILayerType layerType, List<int> ignoreViewList = null)
         {
             var layer = FindLayer(layerType);
-            var view = layer.GetTopView();
+            var view = layer.GetTopView(ignoreViewList);
             return view;
+        }
+
+        public UIViewBase FindTopView(List<int> ignoreViewList = null)
+        {
+            if (viewStack.Count <= 0)
+                return null;
+            if (ignoreViewList == null)
+                return viewStack[viewStack.Count - 1];
+
+            for (int i = viewStack.Count - 1; i >= 0; i--)
+            {
+                var view = viewStack[i];
+                if (ignoreViewList.Contains(view.ViewId))
+                    continue;
+                return view;
+            }
+            return null;
         }
 
         /// <summary>
@@ -202,6 +205,15 @@ namespace Framework
 
         #region 创建UI结构
 
+        private void CreateUIStructure()
+        {
+            uiRootGo = GameUtils.CreateGameObject("UIRoot", null);
+            Object.DontDestroyOnLoad(uiRootGo);
+            CreateUICamera();
+            CreateUICanvas();
+            CreateEventSystem();
+        }
+
         private void CreateUICamera()
         {
             GameObject uiCameraGo = GameUtils.CreateGameObject("UICamera", uiRootGo.transform, false, typeof(Camera));
@@ -214,6 +226,7 @@ namespace Framework
         {
             GameObject uiCanvasGo = GameUtils.CreateGameObject("UICanvas", uiRootGo.transform, false,
                 typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            graphicRaycaster = uiCanvasGo.GetComponent<GraphicRaycaster>();
             uiCanvasGo.layer = LayerMask.NameToLayer("UI");
             UICanvas = uiCanvasGo.GetComponent<Canvas>();
             UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
@@ -236,14 +249,15 @@ namespace Framework
                 layer.Init(layerRootGo, uiLayerType);
                 layerType2Layer.Add(uiLayerType, layer);
             }
-            CreateEventSystem();
         }
 
         private void CreateEventSystem()
         {
-            GameObject eventSystemGo = GameUtils.CreateGameObject("EventSystem", uiRootGo.transform, false,
+            //EventSystem可以不只是管理UI，所以不放在UIRoot下
+            GameObject eventSystemGo = GameUtils.CreateGameObject("EventSystem", null, false,
                 typeof(EventSystem), typeof(StandaloneInputModule));
-            eventSystem = eventSystemGo.GetComponent<EventSystem>();
+            eventSystemGo.GetComponent<EventSystem>();
+            Object.DontDestroyOnLoad(eventSystemGo);
         }
 
         #endregion 创建UI结构
@@ -255,10 +269,7 @@ namespace Framework
         public void Init()
         {
             //创建UI结构
-            uiRootGo = GameUtils.CreateGameObject("UIRoot", null);
-            Object.DontDestroyOnLoad(uiRootGo);
-            CreateUICamera();
-            CreateUICanvas();
+            CreateUIStructure();
         }
 
         public void Start()

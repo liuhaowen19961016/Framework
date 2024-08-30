@@ -33,6 +33,26 @@ namespace Framework
         }
 
         /// <summary>
+        /// 查找当前层级下的最顶部界面
+        /// </summary>
+        public UIViewBase GetTopView(List<int> ignoreViewList = null)
+        {
+            if (uiViewList.Count <= 0)
+                return null;
+            if (ignoreViewList == null)
+                return uiViewList[uiViewList.Count - 1];
+
+            for (int i = uiViewList.Count - 1; i >= 0; i--)
+            {
+                var view = uiViewList[i];
+                if (ignoreViewList.Contains(view.ViewId))
+                    continue;
+                return view;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// 设置当前层级下所有界面的OrderInLayer
         /// </summary>
         private void SetAllViewOrderInLayer()
@@ -43,16 +63,6 @@ namespace Framework
                 uiViewList[i].OrderInLayer = originOrderInLayer;
                 originOrderInLayer += UIMgr.VIEWSTEP_ORDERINLAYER;
             }
-        }
-
-        /// <summary>
-        /// 查找当前层级下的最顶部界面
-        /// </summary>
-        public UIViewBase GetTopView()
-        {
-            if (uiViewList.Count <= 0)
-                return null;
-            return uiViewList[0];
         }
     }
 }

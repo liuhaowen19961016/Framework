@@ -13,16 +13,16 @@ namespace Framework
 
         public void SetViewData(object viewData = null)
         {
-            this.viewData = viewData;
+            this.ViewData = viewData;
         }
 
         public void InternalInit(UIBase parent, string widgetName, bool reusable, object viewData = null)
         {
-            this.viewData = viewData;
+            this.ViewData = viewData;
             this.widgetName = widgetName;
             this.reusable = reusable;
-            this.parent = parent;
-            uiViewHolder = parent.uiViewHolder;
+            Parent = parent;
+            UIViewHolder = parent.UIViewHolder;
             parent.Widgets.Add(this);
             OnInit(viewData);
         }
@@ -53,7 +53,7 @@ namespace Framework
         {
             go.SetActive(true);
 
-            OnShow();
+            OnOpen();
         }
 
         public void InternalDestory()

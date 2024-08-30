@@ -8,33 +8,53 @@ using Object = UnityEngine.Object;
 namespace Framework
 {
     /// <summary>
+    /// 界面动画类型
+    /// </summary>
+    public enum EViewAniType
+    {
+        NoAni = 1, //不播放动画
+        Tween, //通过Tween控制
+        Animator, //通过Animator控制
+    }
+
+    /// <summary>
     /// UI界面基类
     /// </summary>
     public abstract class UIViewBase : UIViewOrUISubViewBase
     {
         private UIViewConfig uiViewCfg; //UIView表
-
-        private string viewName; //界面名字
-        public string ViewName => viewName;
-
+        public string ViewName { get; private set; } //界面名字
+        public UILayer UILayer { get; private set; } //UILayer
         public int ViewId => uiViewCfg.Id; //界面id
         public EUILayerType LayerType => (EUILayerType)uiViewCfg.LayerType; //层级类型
-        private EUIType Type => (EUIType)uiViewCfg.Type; //类型
+        public EUIType Type => (EUIType)uiViewCfg.Type; //界面类型
 
+        private GraphicRaycaster graphicRaycaster; //图形射线组件
+        private GraphicRaycaster[] childGraphicRaycaster; //当前界面下的所有图形射线组件
         private Canvas canvas; //当前界面的Canvas
         private Canvas[] childCanvas; //当前界面下的所有子Canvas
         private int[] childCanvasOriginSortingOrder;
 
-        private RectTransform rootRect; //界面Root根节点，控制动画，适配，可以没有
+        private RectTransform viewRootRect; //界面Root根节点，可以没有（控制动画，适配）
 
-        public int OrderInLayer //排序顺序
+        protected EViewAniType viewAniType = EViewAniType.Tween; //界面动画类型（之后可以改成读表配置）
+        public const string OPEN_ANI_NAME = "Open";
+        public const string CLOSE_ANI_NAME = "Close";
+
+        public bool Visible //是否可见
         {
             get
             {
-                if (canvas == null)
-                    return 0;
-                return canvas.sortingOrder;
+                return go.activeSelf;
             }
+            set
+            {
+                go.SetActive(value);
+            }
+        }
+
+        public int OrderInLayer //层级排序
+        {
             set
             {
                 if (canvas != null)
@@ -56,31 +76,43 @@ namespace Framework
             }
         }
 
-        public void InternalInit(string viewName, UIViewConfig uiViewCfg, object viewData = null)
+        public bool Interactable //是否可交互
         {
-            this.viewData = viewData;
+            set
+            {
+                graphicRaycaster.enabled = value;
+                foreach (var graphicRaycaster in childGraphicRaycaster)
+                {
+                    graphicRaycaster.enabled = value;
+                }
+            }
+        }
+
+        public void InternalInit(string viewName, UIViewConfig uiViewCfg, UILayer uiLayer, object viewData = null)
+        {
+            this.ViewData = viewData;
             this.uiViewCfg = uiViewCfg;
-            this.viewName = viewName;
-            uiViewHolder = this;
-            parent = this;
+            UILayer = uiLayer;
+            ViewName = viewName;
+            UIViewHolder = this;
+            Parent = null;
 
             OnInit(viewData);
         }
 
         public bool InternalCreate(Transform trans)
         {
-            GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(viewName)); //todo 通过资源管理器加载
+            GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(ViewName)); //todo 通过资源管理器加载
             if (viewGo == null)
             {
-                Debug.LogError($"{viewName}界面资源实例化失败");
+                Debug.LogError($"{ViewName}界面资源实例化失败");
                 return false;
             }
             viewGo.transform.SetParent(trans, false);
 
             go = viewGo;
-            rootRect = go.transform.Find("Root")?.GetComponent<RectTransform>();
+            viewRootRect = go.transform.Find("Root")?.GetComponent<RectTransform>();
             canvas = go.GetComponent<Canvas>(true);
-            go.GetComponent<GraphicRaycaster>(true);
             canvas.overrideSorting = true;
             childCanvas = go.GetComponentsInChildren<Canvas>(true);
             childCanvasOriginSortingOrder = new int[childCanvas.Length];
@@ -88,22 +120,24 @@ namespace Framework
             {
                 childCanvasOriginSortingOrder[i] = childCanvas[i].sortingOrder;
             }
+            graphicRaycaster = go.GetComponent<GraphicRaycaster>(true);
+            childGraphicRaycaster = go.GetComponentsInChildren<GraphicRaycaster>(true);
 
             OnCreate();
             return true;
         }
 
-        public void InternalShow()
+        public void InternalOpen()
         {
-            showAniSeq?.Kill(true);
+            openAniSeq?.Kill(true);
             closeAniSeq?.Kill(true);
 
             go.SetActive(true);
 
             PlayAudio(true);
-            PlayAni(true, () => { OnAniComplete(true); });
+            PlayAni(true, () => { OnOpenAniComplete(); });
 
-            OnShow();
+            OnOpen();
         }
 
         public void InternalRefresh()
@@ -118,15 +152,16 @@ namespace Framework
 
         public void InternalClose(bool destory = true)
         {
-            OnClose();
             PlayAudio(false);
             PlayAni(false, () =>
             {
-                go.SetActive(false);
-                OnAniComplete(false);
-
-                showAniSeq?.Kill(true);
+                openAniSeq?.Kill(true);
                 closeAniSeq?.Kill(true);
+
+                go.SetActive(false);
+
+                OnCloseAniComplete();
+                OnClose();
 
                 if (destory)
                 {
@@ -138,7 +173,11 @@ namespace Framework
 
         #region Callback
 
-        protected virtual void OnAniComplete(bool isShow)
+        protected virtual void OnOpenAniComplete()
+        {
+        }
+
+        protected virtual void OnCloseAniComplete()
         {
         }
 
@@ -149,37 +188,51 @@ namespace Framework
             GameGlobal.UIMgr.Close(ViewId, isDestory);
         }
 
-        private Sequence showAniSeq;
+        private Sequence openAniSeq;
         private Sequence closeAniSeq;
-        private void PlayAni(bool isShow, Action onComplete = null)
+        private void PlayAni(bool isOpen, Action onComplete = null)
         {
-            if (rootRect == null)
+            if (viewAniType == EViewAniType.NoAni
+                || (viewAniType == EViewAniType.Animator && viewRootRect.GetComponent<Animator>() == null)
+                || viewRootRect == null)
             {
                 onComplete?.Invoke();
                 return;
             }
-            if (isShow)
+
+            switch (viewAniType)
             {
-                showAniSeq = DOTween.Sequence();
-                rootRect.localScale = Vector3.zero;
-                Tween tween1 = rootRect.DOScale(Vector3.one * 1.1f, 0.16f);
-                Tween tween2 = rootRect.DOScale(Vector3.one * 1f, 0.08f);
-                showAniSeq.Append(tween1);
-                showAniSeq.Append(tween2);
-                showAniSeq.OnComplete(() => { onComplete?.Invoke(); });
-            }
-            else
-            {
-                closeAniSeq = DOTween.Sequence();
-                Tween tween1 = rootRect.DOScale(Vector3.one * 1.1f, 0.08f);
-                Tween tween2 = rootRect.DOScale(Vector3.one * 0, 0.08f);
-                closeAniSeq.Append(tween1);
-                closeAniSeq.Append(tween2);
-                closeAniSeq.OnComplete(() => { onComplete?.Invoke(); });
+                case EViewAniType.Tween:
+                    if (isOpen)
+                    {
+                        openAniSeq = DOTween.Sequence();
+                        viewRootRect.localScale = Vector3.zero;
+                        Tween tween1 = viewRootRect.DOScale(Vector3.one * 1.1f, 0.16f);
+                        Tween tween2 = viewRootRect.DOScale(Vector3.one * 1f, 0.08f);
+                        openAniSeq.Append(tween1);
+                        openAniSeq.Append(tween2);
+                        openAniSeq.OnComplete(() => { onComplete?.Invoke(); });
+                    }
+                    else
+                    {
+                        closeAniSeq = DOTween.Sequence();
+                        Tween tween1 = viewRootRect.DOScale(Vector3.one * 1.1f, 0.08f);
+                        Tween tween2 = viewRootRect.DOScale(Vector3.one * 0, 0.08f);
+                        closeAniSeq.Append(tween1);
+                        closeAniSeq.Append(tween2);
+                        closeAniSeq.OnComplete(() => { onComplete?.Invoke(); });
+                    }
+                    break;
+
+                case EViewAniType.Animator:
+                    var ani = viewRootRect.GetComponent<Animator>();
+                    //todo 
+                    // ani.Play(isOpen ? OPEN_ANI_NAME : CLOSE_ANI_NAME);
+                    break;
             }
         }
 
-        private void PlayAudio(bool isShow)
+        private void PlayAudio(bool isOpen)
         {
         }
     }

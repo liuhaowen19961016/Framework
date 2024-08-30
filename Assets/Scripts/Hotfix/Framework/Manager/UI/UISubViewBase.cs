@@ -7,24 +7,24 @@ namespace Framework
     /// </summary>
     public abstract class UISubViewBase : UIViewOrUISubViewBase
     {
-        private string subViewName; //子界面名字
+        public string SubViewName { get; private set; } //子界面名字
 
         public void InternalInit(UIViewOrUISubViewBase parent, string subViewName, object viewData = null)
         {
-            this.viewData = viewData;
-            this.subViewName = subViewName;
-            this.parent = parent;
-            uiViewHolder = parent.uiViewHolder;
-            parent.SubViews.Add(this.subViewName, this);
+            ViewData = viewData;
+            SubViewName = subViewName;
+            Parent = parent;
+            UIViewHolder = parent.UIViewHolder;
+            parent.InternalAddToSubViews(SubViewName, this);
             OnInit(viewData);
         }
 
         public bool InternalCreate(Transform trans)
         {
-            GameObject subViewGo = Object.Instantiate(Resources.Load<GameObject>(subViewName)); //todo 通过资源管理器加载
+            GameObject subViewGo = Object.Instantiate(Resources.Load<GameObject>(SubViewName)); //todo 通过资源管理器加载
             if (subViewGo == null)
             {
-                Debug.LogError($"{subViewName}子界面资源实例化失败");
+                Debug.LogError($"{SubViewName}子界面资源实例化失败");
                 return false;
             }
             subViewGo.transform.SetParent(trans, false);
@@ -40,17 +40,21 @@ namespace Framework
             OnCreate();
         }
 
-        public void InternalShow()
+        public void InternalOpen()
         {
             go.SetActive(true);
-            
-            OnShow();
+
+            OnOpen();
         }
 
-        public void InternalDestory()
+        public void InternalClose(bool isDestroy)
         {
-            OnDestroy();
-            Object.Destroy(go);
+            OnClose();
+            if (isDestroy)
+            {
+                OnDestroy();
+                Object.Destroy(go);
+            }
         }
     }
 }

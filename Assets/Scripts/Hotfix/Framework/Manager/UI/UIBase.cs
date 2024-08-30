@@ -10,14 +10,14 @@ namespace Framework
     /// </summary>
     public abstract class UIBase
     {
-        public UIViewBase uiViewHolder; //属于哪个界面
+        public UIViewBase UIViewHolder; //属于哪个界面
 
-        protected UIBase parent; //父对象
+        protected UIBase Parent; //父对象
 
         protected GameObject go; //自身GameObject
         public GameObject Go => go;
 
-        protected object viewData;
+        protected object ViewData;
         
         public List<UIWidgetBase> Widgets = new List<UIWidgetBase>(); //所有控件
 
@@ -71,7 +71,7 @@ namespace Framework
 
         protected virtual void OnInit(object viewData)
         {
-            this.viewData = viewData;
+            this.ViewData = viewData;
         }
 
         protected virtual void OnCreate()
@@ -81,11 +81,11 @@ namespace Framework
             RegisterGameEvent();
         }
 
-        protected virtual void OnShow()
+        protected virtual void OnOpen()
         {
             foreach (var widget in Widgets)
             {
-                widget.OnShow();
+                widget.OnOpen();
             }
         }
 
