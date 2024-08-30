@@ -1,32 +1,7 @@
 [
   {
     "className": "UIView_Main",
-    "genUITypeStr": null,
-    "filePath": "Assets/Scripts/Hotfix/测试/UI/Logic/View/UIView_Main.cs"
+    "genUITypeStr": "View",
+    "filePath": "E:/WorkSpace/LHW/Framework/Assets/Scripts/Hotfix/测试/UIView_Main.cs"
   },
-  {
-    "className": "UIView_Shop",
-    "genUITypeStr": null,
-    "filePath": "Assets/Scripts/Hotfix/测试/UI/Logic/View/UIView_Shop.cs"
-  },
-  {
-    "className": "UISubView_ResourceBar",
-    "genUITypeStr": null,
-    "filePath": "Assets/Scripts/Hotfix/测试/UI/Logic/SubView/UISubView_ResourceBar.cs"
-  },
-  {
-    "className": "UISubView_ResourceBarItem",
-    "genUITypeStr": null,
-    "filePath": "Assets/Scripts/Hotfix/测试/UI/Logic/SubView/UISubView_ResourceBarItem.cs"
-  },
-  {
-    "className": "UIWidget_RewardItem",
-    "genUITypeStr": null,
-    "filePath": "Assets/Scripts/Hotfix/测试/UI/Logic/Widget/UIWidget_RewardItem.cs"
-  },
-  {
-    "className": "UIWidget_ResourceBar",
-    "genUITypeStr": "Widget",
-    "filePath": "/Users/liuhaowen/Framework/Assets/Scripts/Hotfix/测试/UI/UIWidget_ResourceBar.cs"
-  }
 ]
