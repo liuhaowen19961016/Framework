@@ -75,14 +75,14 @@ public class GenerateUIEditor
     }
 
     [MenuItem("Assets/UI工具/生成UIWidget", false, 13)]
-    private static void GenUIWidget()
+    private static void GenUIWidgetCode()
     {
         GameObject selectedGo = Selection.activeObject as GameObject;
         GenUIWidget(selectedGo);
     }
 
     [MenuItem("Assets/UI工具/生成UIWidget", true, 13)]
-    private static bool ValidateGenGenUIWidget()
+    private static bool ValidateGenUIWidgetCode()
     {
         GameObject selectedGo = Selection.activeGameObject;
         if (selectedGo == null || selectedGo.GetComponent<RectTransform>() == null)
@@ -342,6 +342,8 @@ public class GenerateUIEditor
         logicCode = logicCode.Replace("#CLASSNAME#", classData.className);
         logicCode = logicCode.Replace("#BASECLASSNAME#", $"{classData.className}{EditorConst.EXTRANAME_AUTOGEN}");
         string logicFileDir = EditorUtility.OpenFolderPanel($"选择UIView：{classData.className} 逻辑脚本路径", Application.dataPath + "/Scripts", "");
+        // if (string.IsNullOrEmpty(logicFileDir))
+        //     return;
         string filePath = $"{logicFileDir}/{classData.className}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, logicCode);
         SaveToGenUIInfoArchive(classData, filePath, EGenUIType.View);
