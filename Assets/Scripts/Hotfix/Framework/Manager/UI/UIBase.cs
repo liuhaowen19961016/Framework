@@ -18,7 +18,7 @@ namespace Framework
         public GameObject Go => go;
 
         protected object ViewData;
-        
+
         public List<UIWidgetBase> Widgets = new List<UIWidgetBase>(); //所有控件
 
         #region 控件
@@ -71,7 +71,7 @@ namespace Framework
 
         protected virtual void OnInit(object viewData)
         {
-            this.ViewData = viewData;
+            ViewData = viewData;
         }
 
         protected virtual void OnCreate()
@@ -83,24 +83,33 @@ namespace Framework
 
         protected virtual void OnOpen()
         {
-            foreach (var widget in Widgets)
+            for (int i = 0, len = Widgets.Count; i < len; i++)
             {
+                var widget = Widgets[i];
+                if (widget == null)
+                    continue;
                 widget.OnOpen();
             }
         }
 
         protected virtual void OnRefresh()
         {
-            foreach (var widget in Widgets)
+            for (int i = 0, len = Widgets.Count; i < len; i++)
             {
+                var widget = Widgets[i];
+                if (widget == null)
+                    continue;
                 widget.OnRefresh();
             }
         }
 
         protected virtual void OnUpdate()
         {
-            foreach (var widget in Widgets)
+            for (int i = 0, len = Widgets.Count; i < len; i++)
             {
+                var widget = Widgets[i];
+                if (widget == null)
+                    continue;
                 widget.OnUpdate();
             }
         }
@@ -110,17 +119,23 @@ namespace Framework
         /// </summary>
         protected virtual void OnClose()
         {
-            foreach (var widget in Widgets)
+            for (int i = 0, len = Widgets.Count; i < len; i++)
             {
+                var widget = Widgets[i];
+                if (widget == null)
+                    continue;
                 widget.OnClose();
             }
         }
 
         protected virtual void OnDestroy()
         {
-            foreach (var widget in Widgets)
+            for (int i = 0, len = Widgets.Count; i < len; i++)
             {
-                widget.InternalDestory();
+                var widget = Widgets[i];
+                if (widget == null)
+                    continue;
+                widget.OnDestroy();
             }
             Widgets.Clear();
         }

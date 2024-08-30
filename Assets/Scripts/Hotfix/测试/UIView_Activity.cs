@@ -73,6 +73,15 @@ public class UIView_Activity : UIView_ActivityBase
         }
     }
 
+    protected override void OnUpdate()
+    {
+        base.OnUpdate();
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            Close();
+        }
+    }
+
     protected override void OnRefresh()
     {
         base.OnRefresh();

@@ -251,11 +251,12 @@ namespace Framework
 
         public void Update()
         {
-            for (int i = viewStack.Count - 1; i >= 0; i--)
+            for (int i = 0, len = viewStack.Count; i < len; i++)
             {
-                if (viewStack[i] == null)
+                var view = viewStack[i];
+                if (view == null)
                     continue;
-                viewStack[i].InternalUpdate();
+                view.InternalUpdate();
             }
         }
 

@@ -52,8 +52,11 @@ public class UIViewOrUISubViewBase : UIBase
     /// </summary>
     public void RemoveAllUISubView()
     {
-        foreach (var subView in SubViewList)
+        for (int i = 0, len = SubViewList.Count; i < len; i++)
         {
+            var subView = SubViewList[i];
+            if (subView == null)
+                continue;
             subView.InternalClose(true);
         }
         SubViewList.Clear();
@@ -64,8 +67,11 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnOpen()
     {
         base.OnOpen();
-        foreach (var subView in SubViewList)
+        for (int i = 0, len = SubViewList.Count; i < len; i++)
         {
+            var subView = SubViewList[i];
+            if (subView == null)
+                continue;
             subView.OnOpen();
         }
     }
@@ -73,8 +79,11 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnRefresh()
     {
         base.OnRefresh();
-        foreach (var subView in SubViewList)
+        for (int i = 0, len = SubViewList.Count; i < len; i++)
         {
+            var subView = SubViewList[i];
+            if (subView == null)
+                continue;
             subView.OnRefresh();
         }
     }
@@ -82,8 +91,11 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnUpdate()
     {
         base.OnUpdate();
-        foreach (var subView in SubViewList)
+        for (int i = 0, len = SubViewList.Count; i < len; i++)
         {
+            var subView = SubViewList[i];
+            if (subView == null)
+                continue;
             subView.OnUpdate();
         }
     }
@@ -91,8 +103,11 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnClose()
     {
         base.OnClose();
-        foreach (var subView in SubViewList)
+        for (int i = 0, len = SubViewList.Count; i < len; i++)
         {
+            var subView = SubViewList[i];
+            if (subView == null)
+                continue;
             subView.OnClose();
         }
     }
@@ -100,8 +115,11 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        foreach (var subView in SubViewList)
+        for (int i = 0, len = SubViewList.Count; i < len; i++)
         {
+            var subView = SubViewList[i];
+            if (subView == null)
+                continue;
             subView.OnDestroy();
         }
         SubViewList.Clear();
