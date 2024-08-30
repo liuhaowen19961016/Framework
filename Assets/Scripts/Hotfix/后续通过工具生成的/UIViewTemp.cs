@@ -10,6 +10,6 @@ public class UIViewTemp
     public static Dictionary<int, UIViewConfig> UIViewConfigs = new Dictionary<int, UIViewConfig>()
     {
         { 1, new UIViewConfig() { Id = 1, Path = "UIView_Main", LayerType = (int)EUILayerType.Window, Type = (int)EUIType.Main } },
-        { 2, new UIViewConfig() { Id = 2, Path = "UIView_Shop", LayerType = (int)EUILayerType.Window, Type = (int)EUIType.FullScreen } },
+        { 2, new UIViewConfig() { Id = 2, Path = "UIView_Activity", LayerType = (int)EUILayerType.Window, Type = (int)EUIType.FullScreen } },
     };
 }

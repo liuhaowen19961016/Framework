@@ -4,4 +4,9 @@
     "genUITypeStr": "View",
     "filePath": "E:/WorkSpace/LHW/Framework/Assets/Scripts/Hotfix/测试/UIView_Main.cs"
   },
+  {
+    "className": "UIView_Activity",
+    "genUITypeStr": "View",
+    "filePath": "E:/WorkSpace/LHW/Framework/Assets/Scripts/Hotfix/测试/UIView_Activity.cs"
+  }
 ]

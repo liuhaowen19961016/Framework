@@ -247,7 +247,7 @@ GameObject:
   - component: {fileID: 682746031878588005}
   - component: {fileID: 8560572758316961272}
   m_Layer: 5
-  m_Name: UIBtn_Shop
+  m_Name: UIBtn_Activity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

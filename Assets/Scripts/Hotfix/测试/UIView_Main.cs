@@ -16,10 +16,7 @@ public class UIView_Main : UIView_MainBase
     protected override void RegisterUIEvent()
     {
         base.RegisterUIEvent();
-        UIBtn_Shop.onClick.AddListener(() =>
-        {
-            Debug.LogError("show shop");
-        });
+        UIBtn_Activity.onClick.AddListener(() => { GameGlobal.UIMgr.OpenSync(2, "2024"); });
     }
 
     protected override void OnRefresh()
