@@ -117,7 +117,7 @@ namespace Framework
             openAniSeq?.Kill(true);
             closeAniSeq?.Kill(true);
 
-            go.SetActive(true);
+            Visible = true;
 
             PlayAudio(true);
             PlayAni(true, () => { OnOpenAniComplete(); });
@@ -135,7 +135,7 @@ namespace Framework
             OnUpdate();
         }
 
-        public void InternalClose(bool destory = true)
+        public void InternalClose(bool isDestroy = true)
         {
             PlayAudio(false);
             PlayAni(false, () =>
@@ -148,7 +148,7 @@ namespace Framework
                 OnCloseAniComplete();
                 OnClose();
 
-                if (destory)
+                if (isDestroy)
                 {
                     OnDestroy();
                     Object.Destroy(go);

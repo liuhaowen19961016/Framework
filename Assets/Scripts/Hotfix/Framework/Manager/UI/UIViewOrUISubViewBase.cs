@@ -39,12 +39,16 @@ public class UIViewOrUISubViewBase : UIBase
     /// </summary>
     public bool RemoveUISubView(UISubViewBase subView)
     {
-        if (subView == null)
-            return false;
-
-        subView.InternalClose(true);
-        SubViewList.Remove(subView);
-        return true;
+        for (int i = 0, len = SubViewList.Count; i < len; i++)
+        {
+            if (SubViewList[i] == subView)
+            {
+                SubViewList[i].InternalClose(true);
+                SubViewList.Remove(subView);
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>

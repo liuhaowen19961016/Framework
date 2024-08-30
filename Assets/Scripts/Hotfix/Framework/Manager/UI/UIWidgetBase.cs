@@ -23,7 +23,7 @@ namespace Framework
             this.reusable = reusable;
             Parent = parent;
             UIViewHolder = parent.UIViewHolder;
-            parent.Widgets.Add(this);
+            parent.WidgetList.Add(this);
             OnInit(viewData);
         }
 
@@ -49,14 +49,14 @@ namespace Framework
             return true;
         }
 
-        public void InternalShow()
+        public void InternalOpen()
         {
             go.SetActive(true);
 
             OnOpen();
         }
 
-        public void InternalDestory()
+        public void InternalDestroy()
         {
             if (reusable)
             {
@@ -64,8 +64,8 @@ namespace Framework
             }
             else
             {
-                OnDestroy();
                 Object.Destroy(go);
+                OnDestroy();
             }
         }
     }

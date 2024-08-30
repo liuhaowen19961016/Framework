@@ -105,13 +105,13 @@ namespace Framework
             }
         }
 
-        public bool Close(int viewId, bool isDestory = true)
+        public bool Close(int viewId, bool isDestroy = true)
         {
             var curView = FindView(viewId);
             if (curView == null)
                 return false;
-            curView.InternalClose(isDestory);
-            if (isDestory)
+            curView.InternalClose(isDestroy);
+            if (isDestroy)
             {
                 Pop(curView);
             }

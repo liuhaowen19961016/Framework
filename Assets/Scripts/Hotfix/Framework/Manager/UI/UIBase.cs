@@ -19,7 +19,7 @@ namespace Framework
 
         protected object ViewData;
 
-        public List<UIWidgetBase> Widgets = new List<UIWidgetBase>(); //所有控件
+        public List<UIWidgetBase> WidgetList = new List<UIWidgetBase>(); //所有控件
 
         #region 控件
 
@@ -43,7 +43,7 @@ namespace Framework
             {
                 return null;
             }
-            widget.InternalShow();
+            widget.InternalOpen();
             return widget;
         }
 
@@ -52,17 +52,33 @@ namespace Framework
         /// </summary>
         public bool RemoveUIWidget(UIWidgetBase widget)
         {
-            for (int i = 0; i < Widgets.Count; i++)
+            for (int i = 0; i < WidgetList.Count; i++)
             {
-                if (Widgets[i] == widget)
+                if (WidgetList[i] == widget)
                 {
                     widget.OnClose();
-                    widget.InternalDestory();
-                    Widgets.RemoveAt(i);
+                    widget.InternalDestroy();
+                    WidgetList.RemoveAt(i);
                     return true;
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// 移除所有控件
+        /// </summary>
+        public void RemoveAllUIWidget()
+        {
+            for (int i = 0, len = WidgetList.Count; i < len; i++)
+            {
+                var widget = WidgetList[i];
+                if (widget == null)
+                    continue;
+                widget.OnClose();
+                widget.InternalDestroy();
+            }
+            WidgetList.Clear();
         }
 
         #endregion 控件
@@ -83,9 +99,9 @@ namespace Framework
 
         protected virtual void OnOpen()
         {
-            for (int i = 0, len = Widgets.Count; i < len; i++)
+            for (int i = 0, len = WidgetList.Count; i < len; i++)
             {
-                var widget = Widgets[i];
+                var widget = WidgetList[i];
                 if (widget == null)
                     continue;
                 widget.OnOpen();
@@ -94,9 +110,9 @@ namespace Framework
 
         protected virtual void OnRefresh()
         {
-            for (int i = 0, len = Widgets.Count; i < len; i++)
+            for (int i = 0, len = WidgetList.Count; i < len; i++)
             {
-                var widget = Widgets[i];
+                var widget = WidgetList[i];
                 if (widget == null)
                     continue;
                 widget.OnRefresh();
@@ -105,9 +121,9 @@ namespace Framework
 
         protected virtual void OnUpdate()
         {
-            for (int i = 0, len = Widgets.Count; i < len; i++)
+            for (int i = 0, len = WidgetList.Count; i < len; i++)
             {
-                var widget = Widgets[i];
+                var widget = WidgetList[i];
                 if (widget == null)
                     continue;
                 widget.OnUpdate();
@@ -119,9 +135,9 @@ namespace Framework
         /// </summary>
         protected virtual void OnClose()
         {
-            for (int i = 0, len = Widgets.Count; i < len; i++)
+            for (int i = 0, len = WidgetList.Count; i < len; i++)
             {
-                var widget = Widgets[i];
+                var widget = WidgetList[i];
                 if (widget == null)
                     continue;
                 widget.OnClose();
@@ -130,14 +146,14 @@ namespace Framework
 
         protected virtual void OnDestroy()
         {
-            for (int i = 0, len = Widgets.Count; i < len; i++)
+            for (int i = 0, len = WidgetList.Count; i < len; i++)
             {
-                var widget = Widgets[i];
+                var widget = WidgetList[i];
                 if (widget == null)
                     continue;
-                widget.InternalDestory();
+                widget.InternalDestroy();
             }
-            Widgets.Clear();
+            WidgetList.Clear();
         }
 
         protected virtual void BindComponent()

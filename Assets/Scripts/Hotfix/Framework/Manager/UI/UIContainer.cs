@@ -29,7 +29,7 @@ public class UIContainer
             {
                 widget = widgets[i];
                 widget.SetViewData(viewDatas[i]);
-                widget.InternalShow();
+                widget.InternalOpen();
             }
             else
             {
