@@ -38,12 +38,12 @@ public class UIContainer
             }
             if (localPos != null && i >= localPos.Count - 1)
             {
-                widget.Go.transform.localPosition = localPos[i];
+                widget.GO.transform.localPosition = localPos[i];
             }
         }
         for (int i = viewDatas.Length; i < widgets.Count; i++)
         {
-            widgets[i].Go.SetActive(false);
+            widgets[i].GO.SetActive(false);
         }
     }
 

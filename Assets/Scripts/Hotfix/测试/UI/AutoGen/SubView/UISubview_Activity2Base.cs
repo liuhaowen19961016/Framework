@@ -13,7 +13,7 @@ public class UISubview_Activity2Base : UISubViewBase
 
     protected override void BindComponent()
     {
-		UITxt_Title2 = go.transform.Find("UITxt_Title2").GetComponent<Text>();
+		UITxt_Title2 = GO.transform.Find("UITxt_Title2").GetComponent<Text>();
 
     }
 }

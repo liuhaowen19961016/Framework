@@ -14,7 +14,7 @@ namespace Framework
 
         protected UIBase Parent; //父对象
 
-        public GameObject GameObject { get; protected set; } //自身GameObject
+        public GameObject GO { get; protected set; } //自身GameObject
 
         protected object ViewData;
 
@@ -22,11 +22,11 @@ namespace Framework
         {
             get
             {
-                return GameObject.activeSelf;
+                return GO.activeSelf;
             }
             set
             {
-                GameObject.SetActive(value);
+                GO.SetActive(value);
             }
         }
 
@@ -64,39 +64,36 @@ namespace Framework
             return widget;
         }
 
-        // /// <summary>
-        // /// 移除控件
-        // /// </summary>
-        // public bool RemoveUIWidget(UIWidgetBase widget)
-        // {
-        //     for (int i = 0; i < WidgetList.Count; i++)
-        //     {
-        //         if (WidgetList[i] == widget)
-        //         {
-        //             widget.OnClose();
-        //             widget.InternalDestroy();
-        //             WidgetList.RemoveAt(i);
-        //             return true;
-        //         }
-        //     }
-        //     return false;
-        // }
-        //
-        // /// <summary>
-        // /// 移除所有控件
-        // /// </summary>
-        // public void RemoveAllUIWidget()
-        // {
-        //     for (int i = 0, len = WidgetList.Count; i < len; i++)
-        //     {
-        //         var widget = WidgetList[i];
-        //         if (widget == null)
-        //             continue;
-        //         widget.OnClose();
-        //         widget.InternalDestroy();
-        //     }
-        //     WidgetList.Clear();
-        // }
+        /// <summary>
+        /// 移除控件
+        /// </summary>
+        public bool RemoveUIWidget(UIWidgetBase widget)
+        {
+            foreach (var temp in WidgetList)
+            {
+                if (temp == widget)
+                {
+                    widget.InternalClose();
+                    widget.InternalDestroy();
+                    WidgetList.Remove(widget);
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        /// <summary>
+        /// 移除所有控件
+        /// </summary>
+        public void RemoveAllUIWidget()
+        {
+            foreach (var widget in WidgetList)
+            {
+                widget.InternalClose();
+                widget.InternalDestroy();
+            }
+            WidgetList.Clear();
+        }
 
         #endregion 控件
 

@@ -18,11 +18,11 @@ public class UIView_ActivityBase : UIViewBase
 
     protected override void BindComponent()
     {
-		UIBtn_Close = go.transform.Find("Root/UIBtn_Close").GetComponent<Button>();
-		UIBtn_Activity1 = go.transform.Find("Root/UIBtn_Activity1").GetComponent<Button>();
-		UIBtn_Activity2 = go.transform.Find("Root/UIBtn_Activity2").GetComponent<Button>();
-		UIBtn_Activity3 = go.transform.Find("Root/UIBtn_Activity3").GetComponent<Button>();
-		UINode_ActivityPage = go.transform.Find("Root/UINode_ActivityPage").GetComponent<RectTransform>();
+		UIBtn_Close = GO.transform.Find("Root/UIBtn_Close").GetComponent<Button>();
+		UIBtn_Activity1 = GO.transform.Find("Root/UIBtn_Activity1").GetComponent<Button>();
+		UIBtn_Activity2 = GO.transform.Find("Root/UIBtn_Activity2").GetComponent<Button>();
+		UIBtn_Activity3 = GO.transform.Find("Root/UIBtn_Activity3").GetComponent<Button>();
+		UINode_ActivityPage = GO.transform.Find("Root/UINode_ActivityPage").GetComponent<RectTransform>();
 
     }
 }

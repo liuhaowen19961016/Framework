@@ -84,17 +84,17 @@ namespace Framework
             }
             viewGo.transform.SetParent(trans, false);
 
-            GameObject = viewGo;
-            viewRootRect = GameObject.transform.Find("Root")?.GetComponent<RectTransform>();
-            canvas = GameObject.GetComponent<Canvas>(true);
+            GO = viewGo;
+            viewRootRect = GO.transform.Find("Root")?.GetComponent<RectTransform>();
+            canvas = GO.GetComponent<Canvas>(true);
             canvas.overrideSorting = true;
-            childCanvas = GameObject.GetComponentsInChildren<Canvas>(true);
+            childCanvas = GO.GetComponentsInChildren<Canvas>(true);
             childCanvasOriginSortingOrder = new int[childCanvas.Length];
             for (int i = 0; i < childCanvasOriginSortingOrder.Length; i++)
             {
                 childCanvasOriginSortingOrder[i] = childCanvas[i].sortingOrder;
             }
-            GameObject.GetComponent<GraphicRaycaster>(true);
+            GO.GetComponent<GraphicRaycaster>(true);
 
             OnCreate();
             return true;
@@ -134,7 +134,7 @@ namespace Framework
 
                 if (isDestroy)
                 {
-                    Object.Destroy(GameObject);
+                    Object.Destroy(GO);
                     OnDestroy();
                 }
             });

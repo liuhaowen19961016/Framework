@@ -15,9 +15,9 @@ public class UIView_MainBase : UIViewBase
 
     protected override void BindComponent()
     {
-		UITxt_Title1 = go.transform.Find("Root/UITxt_Title/UITxt_Title1").GetComponent<Text>();
-		UITxt_Title = go.transform.Find("Root/UITxt_Title").GetComponent<Text>();
-		UIBtn_Activity = go.transform.Find("Root/UIBtn_Activity").GetComponent<Button>();
+		UITxt_Title1 = GO.transform.Find("Root/UITxt_Title/UITxt_Title1").GetComponent<Text>();
+		UITxt_Title = GO.transform.Find("Root/UITxt_Title").GetComponent<Text>();
+		UIBtn_Activity = GO.transform.Find("Root/UIBtn_Activity").GetComponent<Button>();
 
     }
 }

@@ -29,14 +29,14 @@ namespace Framework
             }
             subViewGo.transform.SetParent(trans, false);
             subViewGo.ResetLocal();
-            GameObject = subViewGo;
+            GO = subViewGo;
             OnCreate();
             return true;
         }
 
         public void InternalCreateWithoutInstantiate(GameObject go)
         {
-            GameObject = go;
+            GO = go;
             OnCreate();
         }
 
@@ -50,7 +50,7 @@ namespace Framework
             OnClose();
             if (isDestroy)
             {
-                Object.Destroy(GameObject);
+                Object.Destroy(GO);
                 OnDestroy();
             }
         }

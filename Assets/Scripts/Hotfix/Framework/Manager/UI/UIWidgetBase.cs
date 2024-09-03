@@ -44,7 +44,7 @@ namespace Framework
                 return false;
             }
             widgetGo.transform.SetParent(trans, false);
-            GameObject = widgetGo;
+            GO = widgetGo;
             OnCreate();
             return true;
         }
@@ -52,6 +52,11 @@ namespace Framework
         public void InternalOpen()
         {
             OnOpen();
+        }
+
+        public void InternalClose()
+        {
+            OnClose();
         }
 
         public void InternalDestroy()
@@ -62,7 +67,7 @@ namespace Framework
             }
             else
             {
-                Object.Destroy(GameObject);
+                Object.Destroy(GO);
                 OnDestroy();
             }
         }
