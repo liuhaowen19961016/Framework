@@ -7,12 +7,21 @@ public class UISubview_Activity1 : UISubview_Activity1Base
     protected override void OnClose()
     {
         base.OnClose();
-        Debug.LogError("OnClose UISubview_Activity1");
+        Debug.LogError("OnClose UISubview_Activity1 " + ViewData);
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        Debug.LogError("OnDestroy UISubview_Activity1");
+        Debug.LogError("OnDestroy UISubview_Activity1 " + ViewData);
+    }
+
+    protected override void OnUpdate()
+    {
+        base.OnUpdate();
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            (Parent as UIView_Activity)?.ClosePage(1);
+        }
     }
 }

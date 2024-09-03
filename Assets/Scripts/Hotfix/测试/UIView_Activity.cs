@@ -13,7 +13,6 @@ public class UIView_Activity : UIView_ActivityBase
     protected override void OnInit(object viewData)
     {
         base.OnInit(viewData);
-        viewAniType = EViewAniType.Animator;
         Debug.LogError("UIView_Activity OnInit --" + viewData);
     }
 
@@ -73,13 +72,10 @@ public class UIView_Activity : UIView_ActivityBase
         }
     }
 
-    protected override void OnUpdate()
+    public void ClosePage(int activityId)
     {
-        base.OnUpdate();
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            Close();
-        }
+        RemoveUISubView(pageDict[activityId]);
+        pageDict.Remove(activityId);
     }
 
     protected override void OnRefresh()

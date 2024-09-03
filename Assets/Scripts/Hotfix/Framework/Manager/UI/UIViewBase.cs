@@ -84,17 +84,17 @@ namespace Framework
             }
             viewGo.transform.SetParent(trans, false);
 
-            go = viewGo;
-            viewRootRect = go.transform.Find("Root")?.GetComponent<RectTransform>();
-            canvas = go.GetComponent<Canvas>(true);
+            GameObject = viewGo;
+            viewRootRect = GameObject.transform.Find("Root")?.GetComponent<RectTransform>();
+            canvas = GameObject.GetComponent<Canvas>(true);
             canvas.overrideSorting = true;
-            childCanvas = go.GetComponentsInChildren<Canvas>(true);
+            childCanvas = GameObject.GetComponentsInChildren<Canvas>(true);
             childCanvasOriginSortingOrder = new int[childCanvas.Length];
             for (int i = 0; i < childCanvasOriginSortingOrder.Length; i++)
             {
                 childCanvasOriginSortingOrder[i] = childCanvas[i].sortingOrder;
             }
-            go.GetComponent<GraphicRaycaster>(true);
+            GameObject.GetComponent<GraphicRaycaster>(true);
 
             OnCreate();
             return true;
@@ -104,8 +104,6 @@ namespace Framework
         {
             openAniSeq?.Kill(true);
             closeAniSeq?.Kill(true);
-
-            Visible = true;
 
             PlayAudio(true);
             PlayAni(true, () => { OnOpenAniComplete(); });
@@ -131,14 +129,12 @@ namespace Framework
                 openAniSeq?.Kill(true);
                 closeAniSeq?.Kill(true);
 
-                go.SetActive(false);
-
                 OnCloseAniComplete();
                 OnClose();
 
                 if (isDestroy)
                 {
-                    Object.Destroy(go);
+                    Object.Destroy(GameObject);
                     OnDestroy();
                 }
             });
@@ -156,9 +152,9 @@ namespace Framework
 
         #endregion Callback
 
-        protected void Close(bool isDestory = true)
+        protected void Close(bool isDestroy = true)
         {
-            GameGlobal.UIMgr.Close(ViewId, isDestory);
+            GameGlobal.UIMgr.Close(ViewId, isDestroy);
         }
 
         private Sequence openAniSeq;
@@ -184,6 +180,7 @@ namespace Framework
                         Tween tween2 = viewRootRect.DOScale(Vector3.one * 1f, 0.08f);
                         openAniSeq.Append(tween1);
                         openAniSeq.Append(tween2);
+                        openAniSeq.SetUpdate(true);
                         openAniSeq.OnComplete(() => { onComplete?.Invoke(); });
                     }
                     else
@@ -193,6 +190,7 @@ namespace Framework
                         Tween tween2 = viewRootRect.DOScale(Vector3.one * 0, 0.08f);
                         closeAniSeq.Append(tween1);
                         closeAniSeq.Append(tween2);
+                        closeAniSeq.SetUpdate(true);
                         closeAniSeq.OnComplete(() => { onComplete?.Invoke(); });
                     }
                     break;

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class UIViewOrUISubViewBase : UIBase
 {
+    private List<UISubViewBase> SubViewList_Temp = new List<UISubViewBase>();
     private List<UISubViewBase> SubViewList = new List<UISubViewBase>(); //所有子界面
 
     #region 子界面
@@ -39,11 +40,11 @@ public class UIViewOrUISubViewBase : UIBase
     /// </summary>
     public bool RemoveUISubView(UISubViewBase subView)
     {
-        for (int i = 0, len = SubViewList.Count; i < len; i++)
+        foreach (var temp in SubViewList)
         {
-            if (SubViewList[i] == subView)
+            if (temp == subView)
             {
-                SubViewList[i].InternalClose(true);
+                subView.InternalClose(true);
                 SubViewList.Remove(subView);
                 return true;
             }
@@ -56,11 +57,8 @@ public class UIViewOrUISubViewBase : UIBase
     /// </summary>
     public void RemoveAllUISubView()
     {
-        for (int i = 0, len = SubViewList.Count; i < len; i++)
+        foreach (var subView in SubViewList)
         {
-            var subView = SubViewList[i];
-            if (subView == null)
-                continue;
             subView.InternalClose(true);
         }
         SubViewList.Clear();
@@ -71,11 +69,8 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnOpen()
     {
         base.OnOpen();
-        for (int i = 0, len = SubViewList.Count; i < len; i++)
+        foreach (var subView in SubViewList)
         {
-            var subView = SubViewList[i];
-            if (subView == null)
-                continue;
             subView.OnOpen();
         }
     }
@@ -83,11 +78,8 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnRefresh()
     {
         base.OnRefresh();
-        for (int i = 0, len = SubViewList.Count; i < len; i++)
+        foreach (var subView in SubViewList)
         {
-            var subView = SubViewList[i];
-            if (subView == null)
-                continue;
             subView.OnRefresh();
         }
     }
@@ -95,11 +87,9 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnUpdate()
     {
         base.OnUpdate();
-        for (int i = 0, len = SubViewList.Count; i < len; i++)
+        SubViewList.CopyListNonAlloc(SubViewList_Temp);
+        foreach (var subView in SubViewList_Temp)
         {
-            var subView = SubViewList[i];
-            if (subView == null)
-                continue;
             subView.OnUpdate();
         }
     }
@@ -107,11 +97,8 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnClose()
     {
         base.OnClose();
-        for (int i = 0, len = SubViewList.Count; i < len; i++)
+        foreach (var subView in SubViewList)
         {
-            var subView = SubViewList[i];
-            if (subView == null)
-                continue;
             subView.OnClose();
         }
     }
@@ -119,11 +106,8 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        for (int i = 0, len = SubViewList.Count; i < len; i++)
+        foreach (var subView in SubViewList)
         {
-            var subView = SubViewList[i];
-            if (subView == null)
-                continue;
             subView.OnDestroy();
         }
         SubViewList.Clear();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Framework;
+using UnityEngine;
 
 public static class CollectionExtension
 {
@@ -22,7 +23,7 @@ public static class CollectionExtension
             }
         }
     }
-    
+
     /// <summary>
     /// 从一个列表中获取一个随机元素
     /// </summary>
@@ -39,7 +40,7 @@ public static class CollectionExtension
             });
         return randomValue;
     }
-    
+
     /// <summary>
     /// 从一个列表中获取一个随机元素
     /// </summary>
@@ -48,7 +49,7 @@ public static class CollectionExtension
         var randomValue = GetRandomValue(list.ToArray(), ignoreList);
         return randomValue;
     }
-    
+
     /// <summary>
     /// 从一个列表中获取一个随机元素
     /// </summary>
@@ -65,7 +66,7 @@ public static class CollectionExtension
             });
         return randomValue;
     }
-    
+
     /// <summary>
     /// 从一个列表中获取一个随机元素列表
     /// </summary>
@@ -91,7 +92,7 @@ public static class CollectionExtension
             });
         return randomList;
     }
-    
+
     /// <summary>
     /// 从一个列表中获取一个随机元素列表
     /// </summary>
@@ -100,7 +101,7 @@ public static class CollectionExtension
         var randomList = GetRandomValueList(list.ToArray(), getCount, excludeSame, ignoreList);
         return randomList;
     }
-    
+
     /// <summary>
     /// 从一个列表中获取一个随机元素列表
     /// </summary>
@@ -125,5 +126,17 @@ public static class CollectionExtension
                 }
             });
         return randomList;
+    }
+
+    /// <summary>
+    /// 拷贝列表（无申请内存消耗）
+    /// </summary>
+    public static void CopyListNonAlloc<T>(this List<T> originList, List<T> copyToList)
+    {
+        copyToList.Clear();
+        foreach (var temp in originList)
+        {
+            copyToList.Add(temp);
+        }
     }
 }

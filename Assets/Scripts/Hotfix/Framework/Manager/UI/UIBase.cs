@@ -14,27 +14,27 @@ namespace Framework
 
         protected UIBase Parent; //父对象
 
-        protected GameObject go; //自身GameObject
-        public GameObject Go => go;
+        public GameObject GameObject { get; protected set; } //自身GameObject
 
         protected object ViewData;
-        
+
         public bool Visible //是否可见
         {
             get
             {
-                return go.activeSelf;
+                return GameObject.activeSelf;
             }
             set
             {
-                go.SetActive(value);
+                GameObject.SetActive(value);
             }
         }
 
+        public List<UIWidgetBase> WidgetList_Temp = new List<UIWidgetBase>();
         public List<UIWidgetBase> WidgetList = new List<UIWidgetBase>(); //所有控件
 
         #region 控件
-        
+
         public void InternalAddToWidgetList(UIWidgetBase widget)
         {
             WidgetList.Add(widget);
@@ -64,39 +64,39 @@ namespace Framework
             return widget;
         }
 
-        /// <summary>
-        /// 移除控件
-        /// </summary>
-        public bool RemoveUIWidget(UIWidgetBase widget)
-        {
-            for (int i = 0; i < WidgetList.Count; i++)
-            {
-                if (WidgetList[i] == widget)
-                {
-                    widget.OnClose();
-                    widget.InternalDestroy();
-                    WidgetList.RemoveAt(i);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 移除所有控件
-        /// </summary>
-        public void RemoveAllUIWidget()
-        {
-            for (int i = 0, len = WidgetList.Count; i < len; i++)
-            {
-                var widget = WidgetList[i];
-                if (widget == null)
-                    continue;
-                widget.OnClose();
-                widget.InternalDestroy();
-            }
-            WidgetList.Clear();
-        }
+        // /// <summary>
+        // /// 移除控件
+        // /// </summary>
+        // public bool RemoveUIWidget(UIWidgetBase widget)
+        // {
+        //     for (int i = 0; i < WidgetList.Count; i++)
+        //     {
+        //         if (WidgetList[i] == widget)
+        //         {
+        //             widget.OnClose();
+        //             widget.InternalDestroy();
+        //             WidgetList.RemoveAt(i);
+        //             return true;
+        //         }
+        //     }
+        //     return false;
+        // }
+        //
+        // /// <summary>
+        // /// 移除所有控件
+        // /// </summary>
+        // public void RemoveAllUIWidget()
+        // {
+        //     for (int i = 0, len = WidgetList.Count; i < len; i++)
+        //     {
+        //         var widget = WidgetList[i];
+        //         if (widget == null)
+        //             continue;
+        //         widget.OnClose();
+        //         widget.InternalDestroy();
+        //     }
+        //     WidgetList.Clear();
+        // }
 
         #endregion 控件
 
@@ -116,33 +116,26 @@ namespace Framework
 
         protected virtual void OnOpen()
         {
-            for (int i = 0, len = WidgetList.Count; i < len; i++)
+            Visible = true;
+            foreach (var widget in WidgetList)
             {
-                var widget = WidgetList[i];
-                if (widget == null)
-                    continue;
                 widget.OnOpen();
             }
         }
 
         protected virtual void OnRefresh()
         {
-            for (int i = 0, len = WidgetList.Count; i < len; i++)
+            foreach (var widget in WidgetList)
             {
-                var widget = WidgetList[i];
-                if (widget == null)
-                    continue;
                 widget.OnRefresh();
             }
         }
 
         protected virtual void OnUpdate()
         {
-            for (int i = 0, len = WidgetList.Count; i < len; i++)
+            WidgetList.CopyListNonAlloc(WidgetList_Temp);
+            foreach (var widget in WidgetList_Temp)
             {
-                var widget = WidgetList[i];
-                if (widget == null)
-                    continue;
                 widget.OnUpdate();
             }
         }
@@ -152,22 +145,17 @@ namespace Framework
         /// </summary>
         protected virtual void OnClose()
         {
-            for (int i = 0, len = WidgetList.Count; i < len; i++)
+            Visible = false;
+            foreach (var widget in WidgetList)
             {
-                var widget = WidgetList[i];
-                if (widget == null)
-                    continue;
                 widget.OnClose();
             }
         }
 
         protected virtual void OnDestroy()
         {
-            for (int i = 0, len = WidgetList.Count; i < len; i++)
+            foreach (var widget in WidgetList)
             {
-                var widget = WidgetList[i];
-                if (widget == null)
-                    continue;
                 widget.InternalDestroy();
             }
             WidgetList.Clear();

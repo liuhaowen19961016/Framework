@@ -44,14 +44,13 @@ namespace Framework
                 return false;
             }
             widgetGo.transform.SetParent(trans, false);
-            go = widgetGo;
+            GameObject = widgetGo;
             OnCreate();
             return true;
         }
 
         public void InternalOpen()
         {
-            Visible = true;
             OnOpen();
         }
 
@@ -63,7 +62,7 @@ namespace Framework
             }
             else
             {
-                Object.Destroy(go);
+                Object.Destroy(GameObject);
                 OnDestroy();
             }
         }
