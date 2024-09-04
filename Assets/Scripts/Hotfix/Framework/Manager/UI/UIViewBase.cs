@@ -62,86 +62,6 @@ namespace Framework
             }
         }
 
-        public void InternalInit(string viewName, UIViewConfig uiViewCfg, UILayer uiLayer, object viewData = null)
-        {
-            ViewData = viewData;
-            this.uiViewCfg = uiViewCfg;
-            UILayer = uiLayer;
-            ViewName = viewName;
-            UIViewHolder = this;
-            Parent = null;
-
-            OnInit(viewData);
-        }
-
-        public bool InternalCreate(Transform trans)
-        {
-            GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(ViewName)); //todo 通过资源管理器加载
-            if (viewGo == null)
-            {
-                Debug.LogError($"{ViewName}界面资源实例化失败");
-                return false;
-            }
-            viewGo.transform.SetParent(trans, false);
-
-            GO = viewGo;
-            viewRootRect = GO.transform.Find("Root")?.GetComponent<RectTransform>();
-            canvas = GO.GetComponent<Canvas>(true);
-            canvas.overrideSorting = true;
-            childCanvas = GO.GetComponentsInChildren<Canvas>(true);
-            childCanvasOriginSortingOrder = new int[childCanvas.Length];
-            for (int i = 0; i < childCanvasOriginSortingOrder.Length; i++)
-            {
-                childCanvasOriginSortingOrder[i] = childCanvas[i].sortingOrder;
-            }
-            GO.GetComponent<GraphicRaycaster>(true);
-
-            OnCreate();
-            return true;
-        }
-
-        public void InternalOpen()
-        {
-            openAniSeq?.Kill(true);
-            closeAniSeq?.Kill(true);
-
-            PlayAudio(true);
-            PlayAni(true, () => { OnOpenAniComplete(); });
-
-            OnOpen();
-        }
-
-        public void InternalRefresh()
-        {
-            OnShow();
-        }
-
-        public void InternalUpdate()
-        {
-            OnUpdate();
-        }
-
-        public void InternalClose(bool isDestroy = true, Action onComplete = null)
-        {
-            PlayAudio(false);
-            PlayAni(false, () =>
-            {
-                openAniSeq?.Kill(true);
-                closeAniSeq?.Kill(true);
-
-                OnCloseAniComplete();
-                OnClose();
-
-                if (isDestroy)
-                {
-                    Object.Destroy(GO);
-                    OnDestroy();
-                }
-
-                onComplete?.Invoke();
-            });
-        }
-
         #region Callback
 
         protected virtual void OnOpenAniComplete()
@@ -207,6 +127,86 @@ namespace Framework
 
         private void PlayAudio(bool isOpen)
         {
+        }
+
+        public void InternalInit(string viewName, UIViewConfig uiViewCfg, UILayer uiLayer, object viewData = null)
+        {
+            ViewData = viewData;
+            this.uiViewCfg = uiViewCfg;
+            UILayer = uiLayer;
+            ViewName = viewName;
+            UIViewHolder = this;
+            Parent = null;
+
+            OnInit(viewData);
+        }
+
+        public bool InternalCreate(Transform trans)
+        {
+            GameObject viewGo = Object.Instantiate(Resources.Load<GameObject>(ViewName)); //todo 通过资源管理器加载
+            if (viewGo == null)
+            {
+                Debug.LogError($"{ViewName}界面资源实例化失败");
+                return false;
+            }
+            viewGo.transform.SetParent(trans, false);
+
+            GO = viewGo;
+            viewRootRect = GO.transform.Find("Root")?.GetComponent<RectTransform>();
+            canvas = GO.GetComponent<Canvas>(true);
+            canvas.overrideSorting = true;
+            childCanvas = GO.GetComponentsInChildren<Canvas>(true);
+            childCanvasOriginSortingOrder = new int[childCanvas.Length];
+            for (int i = 0; i < childCanvasOriginSortingOrder.Length; i++)
+            {
+                childCanvasOriginSortingOrder[i] = childCanvas[i].sortingOrder;
+            }
+            GO.GetComponent<GraphicRaycaster>(true);
+
+            OnCreate();
+            return true;
+        }
+
+        public void InternalOpen()
+        {
+            openAniSeq?.Kill(true);
+            closeAniSeq?.Kill(true);
+
+            PlayAudio(true);
+            PlayAni(true, () => { OnOpenAniComplete(); });
+
+            OnOpen();
+        }
+
+        public void InternalShow()
+        {
+            OnShow();
+        }
+
+        public void InternalUpdate()
+        {
+            OnUpdate();
+        }
+
+        public void InternalClose(bool isDestroy = true, Action onComplete = null)
+        {
+            PlayAudio(false);
+            PlayAni(false, () =>
+            {
+                openAniSeq?.Kill(true);
+                closeAniSeq?.Kill(true);
+
+                OnCloseAniComplete();
+                OnClose();
+
+                if (isDestroy)
+                {
+                    Object.Destroy(GO);
+                    OnDestroy();
+                }
+
+                onComplete?.Invoke();
+            });
         }
     }
 }

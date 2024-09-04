@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Framework
 {
@@ -41,10 +40,10 @@ namespace Framework
         }
 
         /// <summary>
-        /// 添加控件
+        /// 打开一个控件
         /// </summary>
         /// reusable：为true则通过对象池管理
-        public T AddUIWidget<T>(Transform trans, bool reusable, object viewData = null)
+        public T OpenUIWidget<T>(Transform trans, bool reusable, object viewData = null)
             where T : UIWidgetBase
         {
             Type type = typeof(T);
@@ -64,18 +63,29 @@ namespace Framework
             return widget;
         }
 
+        public void ShowUIWidget(UIWidgetBase widget)
+        {
+            if (widget == null)
+                return;
+
+            widget.OnShow();
+        }
+
         /// <summary>
-        /// 移除控件
+        /// 关闭一个控件
         /// </summary>
-        public bool RemoveUIWidget(UIWidgetBase widget)
+        public bool CloseUIWidget(UIWidgetBase widget, bool isDestroy)
         {
             foreach (var temp in WidgetList)
             {
                 if (temp == widget)
                 {
                     widget.InternalClose();
-                    widget.InternalDestroy();
-                    WidgetList.Remove(widget);
+                    if (isDestroy)
+                    {
+                        widget.InternalDestroy();
+                        WidgetList.Remove(widget);
+                    }
                     return true;
                 }
             }
@@ -83,16 +93,22 @@ namespace Framework
         }
 
         /// <summary>
-        /// 移除所有控件
+        /// 关闭所有控件
         /// </summary>
-        public void RemoveAllUIWidget()
+        public void CloseAllUIWidget(bool isDestroy)
         {
             foreach (var widget in WidgetList)
             {
                 widget.InternalClose();
-                widget.InternalDestroy();
+                if (isDestroy)
+                {
+                    widget.InternalDestroy();
+                }
             }
-            WidgetList.Clear();
+            if (isDestroy)
+            {
+                WidgetList.Clear();
+            }
         }
 
         #endregion 控件

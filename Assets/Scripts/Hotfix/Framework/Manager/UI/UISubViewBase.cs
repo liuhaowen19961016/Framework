@@ -36,7 +36,7 @@ namespace Framework
 
         public void InternalCreateWithoutInstantiate(GameObject go)
         {
-            this.GO = go;
+            GO = go;
             OnCreate();
         }
 

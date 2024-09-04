@@ -33,7 +33,7 @@ public class UIContainer
             }
             else
             {
-                widget = holder.AddUIWidget<T>(go.transform, reusable, viewDatas[i]);
+                widget = holder.OpenUIWidget<T>(go.transform, reusable, viewDatas[i]);
                 widgets.Add(widget);
             }
             if (localPos != null && i >= localPos.Count - 1)
@@ -47,12 +47,12 @@ public class UIContainer
         }
     }
 
-    public void ClearAll()
-    {
-        foreach (var widget in widgets)
-        {
-            holder.RemoveUIWidget(widget);
-        }
-        widgets.Clear();
-    }
+    // public void ClearAll()
+    // {
+    //     foreach (var widget in widgets)
+    //     {
+    //         holder.CloseUIWidget(widget,false);
+    //     }
+    //     widgets.Clear();
+    // }
 }

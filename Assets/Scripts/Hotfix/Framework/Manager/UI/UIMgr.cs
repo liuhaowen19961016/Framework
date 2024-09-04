@@ -66,7 +66,7 @@ namespace Framework
                 }
                 else
                 {
-                    curView.InternalRefresh();
+                    curView.InternalShow();
                 }
                 return curView;
             }
