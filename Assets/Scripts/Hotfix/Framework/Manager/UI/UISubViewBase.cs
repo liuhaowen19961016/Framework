@@ -36,7 +36,7 @@ namespace Framework
 
         public void InternalCreateWithoutInstantiate(GameObject go)
         {
-            GO = go;
+            this.GO = go;
             OnCreate();
         }
 
@@ -54,5 +54,19 @@ namespace Framework
                 OnDestroy();
             }
         }
+
+        #region 外部接口
+
+        public void Show()
+        {
+        }
+
+        public void Close()
+        {
+            Visible = false;
+            OnClose();
+        }
+
+        #endregion 外部接口
     }
 }

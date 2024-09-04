@@ -35,6 +35,11 @@ public class UIViewConfig : ConfigBase
     public bool ClosePre { get; set; }
 
     /// <summary>
+    /// 能否显示多个
+    /// </summary>
+    public bool DisplayMultiple;
+    
+    /// <summary>
     /// 注释
     /// </summary>
     public string Comment { get; set; }

@@ -14,7 +14,7 @@ namespace Framework
 
         protected UIBase Parent; //父对象
 
-        public GameObject GO { get; protected set; } //自身GameObject
+        public GameObject GO { protected set; get; } //自身GameObject
 
         protected object ViewData;
 
@@ -30,8 +30,8 @@ namespace Framework
             }
         }
 
-        public List<UIWidgetBase> WidgetList_Temp = new List<UIWidgetBase>();
-        public List<UIWidgetBase> WidgetList = new List<UIWidgetBase>(); //所有控件
+        private List<UIWidgetBase> WidgetList = new List<UIWidgetBase>(); //所有控件
+        private List<UIWidgetBase> WidgetList_Temp = new List<UIWidgetBase>();
 
         #region 控件
 
@@ -81,7 +81,7 @@ namespace Framework
             }
             return false;
         }
-        
+
         /// <summary>
         /// 移除所有控件
         /// </summary>
@@ -114,7 +114,8 @@ namespace Framework
         protected virtual void OnOpen()
         {
             Visible = true;
-            foreach (var widget in WidgetList)
+            WidgetList.CopyListNonAlloc(WidgetList_Temp);
+            foreach (var widget in WidgetList_Temp)
             {
                 widget.OnOpen();
             }
@@ -122,7 +123,8 @@ namespace Framework
 
         protected virtual void OnRefresh()
         {
-            foreach (var widget in WidgetList)
+            WidgetList.CopyListNonAlloc(WidgetList_Temp);
+            foreach (var widget in WidgetList_Temp)
             {
                 widget.OnRefresh();
             }
@@ -143,7 +145,8 @@ namespace Framework
         protected virtual void OnClose()
         {
             Visible = false;
-            foreach (var widget in WidgetList)
+            WidgetList.CopyListNonAlloc(WidgetList_Temp);
+            foreach (var widget in WidgetList_Temp)
             {
                 widget.OnClose();
             }
@@ -151,7 +154,8 @@ namespace Framework
 
         protected virtual void OnDestroy()
         {
-            foreach (var widget in WidgetList)
+            WidgetList.CopyListNonAlloc(WidgetList_Temp);
+            foreach (var widget in WidgetList_Temp)
             {
                 widget.InternalDestroy();
             }

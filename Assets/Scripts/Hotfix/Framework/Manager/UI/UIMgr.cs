@@ -105,12 +105,12 @@ namespace Framework
             }
         }
 
-        public bool Close(int viewId, bool isDestroy = true)
+        public bool Close(int viewId, bool isDestroy = true, Action onComplete = null)
         {
             var curView = FindView(viewId);
             if (curView == null)
                 return false;
-            curView.InternalClose(isDestroy);
+            curView.InternalClose(isDestroy, onComplete);
             if (isDestroy)
             {
                 Pop(curView);
@@ -157,10 +157,12 @@ namespace Framework
             return null;
         }
 
+        #region private
+
         /// <summary>
         /// 查找层级
         /// </summary>
-        public UILayer FindLayer(EUILayerType layerType)
+        private UILayer FindLayer(EUILayerType layerType)
         {
             if (!layerType2Layer.TryGetValue(layerType, out var layer))
             {
@@ -169,8 +171,6 @@ namespace Framework
             }
             return layer;
         }
-
-        #region private
 
         private void Push(UIViewBase view)
         {

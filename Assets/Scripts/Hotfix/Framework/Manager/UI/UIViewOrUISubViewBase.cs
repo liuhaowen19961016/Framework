@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class UIViewOrUISubViewBase : UIBase
 {
-    private List<UISubViewBase> SubViewList_Temp = new List<UISubViewBase>();
     private List<UISubViewBase> SubViewList = new List<UISubViewBase>(); //所有子界面
+    private List<UISubViewBase> SubViewList_Temp = new List<UISubViewBase>();
 
     #region 子界面
 
@@ -69,7 +69,8 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnOpen()
     {
         base.OnOpen();
-        foreach (var subView in SubViewList)
+        SubViewList.CopyListNonAlloc(SubViewList_Temp);
+        foreach (var subView in SubViewList_Temp)
         {
             subView.OnOpen();
         }
@@ -78,7 +79,8 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnRefresh()
     {
         base.OnRefresh();
-        foreach (var subView in SubViewList)
+        SubViewList.CopyListNonAlloc(SubViewList_Temp);
+        foreach (var subView in SubViewList_Temp)
         {
             subView.OnRefresh();
         }
@@ -97,7 +99,8 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnClose()
     {
         base.OnClose();
-        foreach (var subView in SubViewList)
+        SubViewList.CopyListNonAlloc(SubViewList_Temp);
+        foreach (var subView in SubViewList_Temp)
         {
             subView.OnClose();
         }
@@ -106,7 +109,8 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        foreach (var subView in SubViewList)
+        SubViewList.CopyListNonAlloc(SubViewList_Temp);
+        foreach (var subView in SubViewList_Temp)
         {
             subView.OnDestroy();
         }

@@ -121,7 +121,7 @@ namespace Framework
             OnUpdate();
         }
 
-        public void InternalClose(bool isDestroy = true)
+        public void InternalClose(bool isDestroy = true, Action onComplete = null)
         {
             PlayAudio(false);
             PlayAni(false, () =>
@@ -137,6 +137,8 @@ namespace Framework
                     Object.Destroy(GO);
                     OnDestroy();
                 }
+
+                onComplete?.Invoke();
             });
         }
 
@@ -152,9 +154,9 @@ namespace Framework
 
         #endregion Callback
 
-        protected void Close(bool isDestroy = true)
+        protected void Close(bool isDestroy = true, Action onComplete = null)
         {
-            GameGlobal.UIMgr.Close(ViewId, isDestroy);
+            GameGlobal.UIMgr.Close(ViewId, isDestroy, onComplete);
         }
 
         private Sequence openAniSeq;

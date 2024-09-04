@@ -32,7 +32,7 @@ public class UIView_Activity : UIView_ActivityBase
 
         if (pageDict.TryGetValue(lastActivityId, out var lastSubView))
         {
-            lastSubView.GO.SetActive(false);
+            //lastSubView.GO.SetActive(false);
         }
         curActivityId = activityId;
         lastActivityId = curActivityId;
@@ -68,7 +68,7 @@ public class UIView_Activity : UIView_ActivityBase
             {
                 subViewPage = subView as UISubview_Activity3;
             }
-            subViewPage.GO.SetActive(true);
+            //subViewPage.GO.SetActive(true);
         }
     }
 
