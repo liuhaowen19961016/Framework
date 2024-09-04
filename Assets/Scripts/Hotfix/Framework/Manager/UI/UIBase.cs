@@ -121,12 +121,13 @@ namespace Framework
             }
         }
 
-        protected virtual void OnRefresh()
+        protected virtual void OnShow()
         {
+            Visible = true;
             WidgetList.CopyListNonAlloc(WidgetList_Temp);
             foreach (var widget in WidgetList_Temp)
             {
-                widget.OnRefresh();
+                widget.OnShow();
             }
         }
 

@@ -19,9 +19,9 @@ public class UIView_Main : UIView_MainBase
         UIBtn_Activity.onClick.AddListener(() => { GameGlobal.UIMgr.OpenSync(2, "2024"); });
     }
 
-    protected override void OnRefresh()
+    protected override void OnShow()
     {
-        base.OnRefresh();
+        base.OnShow();
         Debug.LogError("UIView_Main OnRefresh --" + ViewData);
     }
 

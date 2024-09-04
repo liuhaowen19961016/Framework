@@ -32,7 +32,7 @@ public class UIView_Activity : UIView_ActivityBase
 
         if (pageDict.TryGetValue(lastActivityId, out var lastSubView))
         {
-            //lastSubView.GO.SetActive(false);
+            CloseUISubView(lastSubView, false);
         }
         curActivityId = activityId;
         lastActivityId = curActivityId;
@@ -41,15 +41,15 @@ public class UIView_Activity : UIView_ActivityBase
             UISubViewBase subViewPage = null;
             if (activityId == 1)
             {
-                subViewPage = AddUISubView<UISubview_Activity1>(UINode_ActivityPage, "1");
+                subViewPage = OpenUISubView<UISubview_Activity1>(UINode_ActivityPage, "1");
             }
             else if (activityId == 2)
             {
-                subViewPage = AddUISubView<UISubview_Activity2>(UINode_ActivityPage, "2");
+                subViewPage = OpenUISubView<UISubview_Activity2>(UINode_ActivityPage, "2");
             }
             else if (activityId == 3)
             {
-                subViewPage = AddUISubView<UISubview_Activity3>(UINode_ActivityPage, "3");
+                subViewPage = OpenUISubView<UISubview_Activity3>(UINode_ActivityPage, "3");
             }
             pageDict.Add(curActivityId, subViewPage);
         }
@@ -68,25 +68,25 @@ public class UIView_Activity : UIView_ActivityBase
             {
                 subViewPage = subView as UISubview_Activity3;
             }
-            //subViewPage.GO.SetActive(true);
+            ShowUISubView(subViewPage);
         }
     }
 
     public void ClosePage(int activityId)
     {
-        RemoveUISubView(pageDict[activityId]);
+        CloseUISubView(pageDict[activityId], false);
         pageDict.Remove(activityId);
     }
 
-    protected override void OnRefresh()
+    protected override void OnShow()
     {
-        base.OnRefresh();
-        Debug.LogError("UIView_Activity OnRefresh --" + ViewData);
+        base.OnShow();
+        Debug.LogError("UIView_Activity OnShow --" + ViewData);
     }
 
     protected override void OnOpen()
     {
         base.OnOpen();
-        Debug.LogError("UIView_Activity OnShow --" + ViewData);
+        Debug.LogError("UIView_Activity OnOpen --" + ViewData);
     }
 }

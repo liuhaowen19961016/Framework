@@ -113,7 +113,7 @@ namespace Framework
 
         public void InternalRefresh()
         {
-            OnRefresh();
+            OnShow();
         }
 
         public void InternalUpdate()

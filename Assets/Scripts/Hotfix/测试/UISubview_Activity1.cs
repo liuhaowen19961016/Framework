@@ -16,6 +16,18 @@ public class UISubview_Activity1 : UISubview_Activity1Base
         Debug.LogError("OnDestroy UISubview_Activity1 " + ViewData);
     }
 
+    protected override void OnShow()
+    {
+        base.OnShow();
+        Debug.LogError("OnShow UISubview_Activity1 " + ViewData);
+    }
+
+    protected override void OnOpen()
+    {
+        base.OnOpen();
+        Debug.LogError("OnOpen UISubview_Activity1 " + ViewData);
+    }
+
     protected override void OnUpdate()
     {
         base.OnUpdate();

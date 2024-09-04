@@ -54,19 +54,5 @@ namespace Framework
                 OnDestroy();
             }
         }
-
-        #region 外部接口
-
-        public void Show()
-        {
-        }
-
-        public void Close()
-        {
-            Visible = false;
-            OnClose();
-        }
-
-        #endregion 外部接口
     }
 }

@@ -16,9 +16,9 @@ public class UIViewOrUISubViewBase : UIBase
     }
 
     /// <summary>
-    /// 添加子界面
+    /// 打开一个子界面
     /// </summary>
-    public T AddUISubView<T>(Transform trans, object viewData = null)
+    public T OpenUISubView<T>(Transform trans, object viewData = null)
         where T : UISubViewBase
     {
         Type classType = typeof(T);
@@ -36,16 +36,30 @@ public class UIViewOrUISubViewBase : UIBase
     }
 
     /// <summary>
-    /// 移除子界面
+    /// 显示一个子界面
     /// </summary>
-    public bool RemoveUISubView(UISubViewBase subView)
+    public void ShowUISubView(UISubViewBase subView)
+    {
+        if (subView == null)
+            return;
+
+        subView.OnShow();
+    }
+
+    /// <summary>
+    /// 关闭一个子界面
+    /// </summary>
+    public bool CloseUISubView(UISubViewBase subView, bool isDestroy)
     {
         foreach (var temp in SubViewList)
         {
             if (temp == subView)
             {
-                subView.InternalClose(true);
-                SubViewList.Remove(subView);
+                subView.InternalClose(isDestroy);
+                if (isDestroy)
+                {
+                    SubViewList.Remove(subView);
+                }
                 return true;
             }
         }
@@ -53,15 +67,18 @@ public class UIViewOrUISubViewBase : UIBase
     }
 
     /// <summary>
-    /// 移除所有子界面
+    /// 关闭所有子界面
     /// </summary>
-    public void RemoveAllUISubView()
+    public void CloseAllUISubView(bool isDestroy)
     {
         foreach (var subView in SubViewList)
         {
             subView.InternalClose(true);
         }
-        SubViewList.Clear();
+        if (isDestroy)
+        {
+            SubViewList.Clear();
+        }
     }
 
     #endregion 子界面
@@ -76,13 +93,13 @@ public class UIViewOrUISubViewBase : UIBase
         }
     }
 
-    protected override void OnRefresh()
+    protected override void OnShow()
     {
-        base.OnRefresh();
+        base.OnShow();
         SubViewList.CopyListNonAlloc(SubViewList_Temp);
         foreach (var subView in SubViewList_Temp)
         {
-            subView.OnRefresh();
+            subView.OnShow();
         }
     }
 
