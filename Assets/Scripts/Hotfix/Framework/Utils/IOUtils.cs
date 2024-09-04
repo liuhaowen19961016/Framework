@@ -47,7 +47,7 @@ public static class IOUtils
             && (DirectoryExist(locationPath) || FileExist(locationPath)))
         {
 #if UNITY_STANDALONE_WIN
-            argument = "/select, \"" + locationPath + "\"";
+            argument = "/select ,\"" + locationPath + "\"";
 #elif UNITY_STANDALONE_OSX
             argument = "-R \"" + locationPath + "\"";
 #else

@@ -71,29 +71,32 @@ public class UIEditorTool
         return true;
     }
 
+    private const string UIVIEWNAME_TEMPLATE_PATH = "Assets/Scripts/Editor/UI/GenerateUI/Template/UIViewNameTemplate.txt"; //UIViewName模板路径
+    private const string UIVIEWNAME_GENCODE_PATH = "Assets/Scripts/Hotfix/Logic/UI/UIViewName"; //自动生成UIViewName的文件夹
+    private const string UIVIEWNAME_DEFINE_TEMPLATE = "\tpublic const int #VIEWNAME# = #VIEWID#;\n"; //界面名称定义模板
     /// <summary>
     /// 生成UIViewName
     /// </summary>
     [MenuItem(EditorConst.GenUIViewName, false, 210)]
     private static void GenUIViewName()
     {
-        if (!IOUtils.FileExist(EditorConst.UIVIEWNAME_TEMPLATE_PATH))
+        if (!IOUtils.FileExist(UIVIEWNAME_TEMPLATE_PATH))
         {
-            EditorUtils.ShowDialogWindow("生成失败", $"{EditorConst.UIVIEWNAME_TEMPLATE_PATH}中不存在UIViewName模板", "确定");
+            EditorUtils.ShowDialogWindow("生成失败", $"{UIVIEWNAME_TEMPLATE_PATH}中不存在UIViewName模板", "确定");
             return;
         }
         StringBuilder str = new StringBuilder();
         foreach (var uiViewCfg in UIViewTemp.UIViewConfigs.Values) //todo test
         {
-            string uiViewNameDefineStr = EditorConst.UIVIEWNAME_DEFINE_TEMPLATE;
+            string uiViewNameDefineStr = UIVIEWNAME_DEFINE_TEMPLATE;
             uiViewNameDefineStr = uiViewNameDefineStr.Replace("#VIEWNAME#", uiViewCfg.Path);
             uiViewNameDefineStr = uiViewNameDefineStr.Replace("#VIEWID#", uiViewCfg.Id.ToString());
             str.Append(uiViewNameDefineStr + "\n");
         }
-        string uiViewNmaeCode = File.ReadAllText(EditorConst.UIVIEWNAME_TEMPLATE_PATH);
+        string uiViewNmaeCode = File.ReadAllText(UIVIEWNAME_TEMPLATE_PATH);
         uiViewNmaeCode = uiViewNmaeCode.Replace("#GENDATETIME#", EditorUtils.GenCurDateTimeStr());
         uiViewNmaeCode = uiViewNmaeCode.Replace("#UIVIEWNAMEDEFINE#", str.ToString());
-        string filePath = $"{EditorConst.UIVIEWNAME_GENCODE_PATH}{EditorConst.SUFFIX_CS}";
+        string filePath = $"{UIVIEWNAME_GENCODE_PATH}{EditorConst.SUFFIX_CS}";
         IOUtils.WirteToFile(filePath, uiViewNmaeCode);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -106,6 +109,6 @@ public class UIEditorTool
     [MenuItem(EditorConst.OpenGenUIInfoDir, false, 200)]
     public static void OpenGenUIInfoDir()
     {
-        IOUtils.OpenFolder(Application.dataPath, EditorConst.UIGENINFOARCHIVEPATH);
+        IOUtils.OpenFolder(Application.dataPath + "/../", GenerateUIEditor.UIGENINFOARCHIVEPATH);
     }
 }
