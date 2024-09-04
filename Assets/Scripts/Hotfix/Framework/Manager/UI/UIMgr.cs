@@ -56,7 +56,7 @@ namespace Framework
         public UIViewBase OpenSync(int viewId, object viewData = null)
         {
             var curView = FindView(viewId);
-            if (curView != null)
+            if (curView != null && !curView.UIViewCfg.DisplayMultiple)
             {
                 Pop(curView);
                 Push(curView);

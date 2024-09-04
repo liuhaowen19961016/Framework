@@ -22,12 +22,12 @@ namespace Framework
     /// </summary>
     public abstract class UIViewBase : UIViewOrUISubViewBase
     {
-        private UIViewConfig uiViewCfg; //UIView表
+        public UIViewConfig UIViewCfg { get; private set; } //UIView表
         public string ViewName { get; private set; } //界面名字
         public UILayer UILayer { get; private set; } //UILayer
-        public int ViewId => uiViewCfg.Id; //界面id
-        public EUILayerType LayerType => (EUILayerType)uiViewCfg.LayerType; //层级类型
-        public EUIType Type => (EUIType)uiViewCfg.Type; //界面类型
+        public int ViewId => UIViewCfg.Id; //界面id
+        public EUILayerType LayerType => (EUILayerType)UIViewCfg.LayerType; //层级类型
+        public EUIType Type => (EUIType)UIViewCfg.Type; //界面类型
 
         private Canvas canvas; //当前界面的Canvas
         private Canvas[] childCanvas; //当前界面下的所有子Canvas
@@ -132,7 +132,7 @@ namespace Framework
         public void InternalInit(string viewName, UIViewConfig uiViewCfg, UILayer uiLayer, object viewData = null)
         {
             ViewData = viewData;
-            this.uiViewCfg = uiViewCfg;
+            UIViewCfg = uiViewCfg;
             UILayer = uiLayer;
             ViewName = viewName;
             UIViewHolder = this;

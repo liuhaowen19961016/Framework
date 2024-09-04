@@ -32,7 +32,7 @@ public class UIView_Activity : UIView_ActivityBase
 
         if (pageDict.TryGetValue(lastActivityId, out var lastSubView))
         {
-            CloseUISubView(lastSubView, false);
+            ClosePage(lastActivityId);
         }
         curActivityId = activityId;
         lastActivityId = curActivityId;
