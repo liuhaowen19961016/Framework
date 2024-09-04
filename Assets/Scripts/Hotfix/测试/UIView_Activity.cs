@@ -74,7 +74,7 @@ public class UIView_Activity : UIView_ActivityBase
 
     public void ClosePage(int activityId)
     {
-        CloseUISubView(pageDict[activityId], false);
+        CloseUISubView(pageDict[activityId], true);
         pageDict.Remove(activityId);
     }
 
