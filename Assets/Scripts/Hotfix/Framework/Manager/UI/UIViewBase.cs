@@ -76,7 +76,7 @@ namespace Framework
 
         protected void Close(bool isDestroy = true, Action onComplete = null)
         {
-            GameGlobal.UIMgr.Close(ViewId, isDestroy, onComplete);
+            GameGlobal.UIMgr.Close(this, isDestroy, onComplete);
         }
 
         private Sequence openAniSeq;

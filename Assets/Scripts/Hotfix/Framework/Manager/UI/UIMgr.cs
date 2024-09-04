@@ -48,6 +48,7 @@ namespace Framework
         public RectTransform UIRect => UICanvas.GetComponent<RectTransform>(); //UIRect
 
         private List<UIViewBase> viewStack = new List<UIViewBase>();
+        private List<UIViewBase> viewStack_Temp = new List<UIViewBase>();
         private Dictionary<EUILayerType, UILayer> layerType2Layer = new Dictionary<EUILayerType, UILayer>();
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace Framework
         /// </summary>
         public UIViewBase OpenSync(int viewId, object viewData = null)
         {
-            var curView = FindView(viewId);
+            var curView = FindViewFirst(viewId);
             if (curView != null && !curView.UIViewCfg.DisplayMultiple)
             {
                 Pop(curView);
@@ -105,23 +106,45 @@ namespace Framework
             }
         }
 
-        public bool Close(int viewId, bool isDestroy = true, Action onComplete = null)
+        public void Close(int viewId, bool isDestroy = true, Action onComplete = null)
         {
-            var curView = FindView(viewId);
-            if (curView == null)
+            var viewList = FindView(viewId);
+            foreach (var view in viewList)
+            {
+                Close(view, isDestroy, onComplete);
+            }
+        }
+
+        public bool Close(UIViewBase view, bool isDestroy = true, Action onComplete = null)
+        {
+            if (view == null)
                 return false;
-            curView.InternalClose(isDestroy, onComplete);
+            view.InternalClose(isDestroy, onComplete);
             if (isDestroy)
             {
-                Pop(curView);
+                Pop(view);
             }
             return true;
         }
 
         /// <summary>
-        /// 查找界面
+        /// 查找界面（同一个id的界面可以打开多个，所以返回值是一个列表）
         /// </summary>
-        public UIViewBase FindView(int viewId)
+        public List<UIViewBase> FindView(int viewId)
+        {
+            List<UIViewBase> viewList = new List<UIViewBase>();
+            foreach (var uiView in viewStack)
+            {
+                if (uiView.ViewId == viewId)
+                    viewList.Add(uiView);
+            }
+            return viewList;
+        }
+
+        /// <summary>
+        /// 查找界面（最先打开的）
+        /// </summary>
+        public UIViewBase FindViewFirst(int viewId)
         {
             foreach (var uiView in viewStack)
             {
@@ -251,11 +274,9 @@ namespace Framework
 
         public void Update()
         {
-            for (int i = 0, len = viewStack.Count; i < len; i++)
+            viewStack.CopyListNonAlloc(viewStack_Temp);
+            foreach (var view in viewStack_Temp)
             {
-                var view = viewStack[i];
-                if (view == null)
-                    continue;
                 view.InternalUpdate();
             }
         }

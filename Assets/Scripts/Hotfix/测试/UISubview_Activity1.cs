@@ -41,5 +41,10 @@ public class UISubview_Activity1 : UISubview_Activity1Base
         {
             GameGlobal.UIMgr.OpenSync(2,"hh");
         }
+        
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            GameGlobal.UIMgr.Close(2);
+        }
     }
 }
