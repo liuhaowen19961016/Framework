@@ -130,8 +130,7 @@ namespace Framework
         protected virtual void OnOpen()
         {
             Visible = true;
-            WidgetList.CopyListNonAlloc(WidgetList_Temp);
-            foreach (var widget in WidgetList_Temp)
+            foreach (var widget in WidgetList)
             {
                 widget.OnOpen();
             }
@@ -140,8 +139,7 @@ namespace Framework
         protected virtual void OnShow()
         {
             Visible = true;
-            WidgetList.CopyListNonAlloc(WidgetList_Temp);
-            foreach (var widget in WidgetList_Temp)
+            foreach (var widget in WidgetList)
             {
                 widget.OnShow();
             }
@@ -162,8 +160,7 @@ namespace Framework
         protected virtual void OnClose()
         {
             Visible = false;
-            WidgetList.CopyListNonAlloc(WidgetList_Temp);
-            foreach (var widget in WidgetList_Temp)
+            foreach (var widget in WidgetList)
             {
                 widget.OnClose();
             }
@@ -171,8 +168,7 @@ namespace Framework
 
         protected virtual void OnDestroy()
         {
-            WidgetList.CopyListNonAlloc(WidgetList_Temp);
-            foreach (var widget in WidgetList_Temp)
+            foreach (var widget in WidgetList)
             {
                 widget.InternalDestroy();
             }

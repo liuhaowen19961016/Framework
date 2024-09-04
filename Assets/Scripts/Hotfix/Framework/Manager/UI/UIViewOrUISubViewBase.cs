@@ -86,8 +86,7 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnOpen()
     {
         base.OnOpen();
-        SubViewList.CopyListNonAlloc(SubViewList_Temp);
-        foreach (var subView in SubViewList_Temp)
+        foreach (var subView in SubViewList)
         {
             subView.OnOpen();
         }
@@ -96,8 +95,7 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnShow()
     {
         base.OnShow();
-        SubViewList.CopyListNonAlloc(SubViewList_Temp);
-        foreach (var subView in SubViewList_Temp)
+        foreach (var subView in SubViewList)
         {
             subView.OnShow();
         }
@@ -116,8 +114,7 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnClose()
     {
         base.OnClose();
-        SubViewList.CopyListNonAlloc(SubViewList_Temp);
-        foreach (var subView in SubViewList_Temp)
+        foreach (var subView in SubViewList)
         {
             subView.OnClose();
         }
@@ -126,8 +123,7 @@ public class UIViewOrUISubViewBase : UIBase
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        SubViewList.CopyListNonAlloc(SubViewList_Temp);
-        foreach (var subView in SubViewList_Temp)
+        foreach (var subView in SubViewList)
         {
             subView.OnDestroy();
         }

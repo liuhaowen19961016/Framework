@@ -1,4 +1,5 @@
 using Framework;
+using Hotfix;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,6 +35,11 @@ public class UISubview_Activity1 : UISubview_Activity1Base
         if (Input.GetKeyDown(KeyCode.D))
         {
             (Parent as UIView_Activity)?.ClosePage(1);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            GameGlobal.UIMgr.OpenSync(2,"hh");
         }
     }
 }
