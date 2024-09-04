@@ -76,6 +76,7 @@ public class UIView_Activity : UIView_ActivityBase
     {
         CloseUISubView(pageDict[activityId], true);
         pageDict.Remove(activityId);
+        lastActivityId = -1;
     }
 
     protected override void OnShow()
