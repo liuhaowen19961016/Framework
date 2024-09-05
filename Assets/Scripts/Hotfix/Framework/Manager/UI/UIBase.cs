@@ -68,7 +68,7 @@ namespace Framework
             if (widget == null)
                 return;
 
-            widget.OnShow();
+            widget.InternalShow();
         }
 
         /// <summary>
