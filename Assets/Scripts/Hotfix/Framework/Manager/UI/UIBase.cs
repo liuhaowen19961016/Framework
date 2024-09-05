@@ -131,6 +131,8 @@ namespace Framework
         {
             foreach (var widget in WidgetList)
             {
+                if (!widget.Visible)
+                    continue;
                 widget.OnOpen();
             }
         }
@@ -139,6 +141,8 @@ namespace Framework
         {
             foreach (var widget in WidgetList)
             {
+                if (!widget.Visible)
+                    continue;
                 widget.OnShow();
             }
         }
@@ -148,6 +152,8 @@ namespace Framework
             WidgetList.CopyListNonAlloc(WidgetList_Temp);
             foreach (var widget in WidgetList_Temp)
             {
+                if (!widget.Visible)
+                    continue;
                 widget.OnUpdate();
             }
         }
@@ -159,6 +165,8 @@ namespace Framework
         {
             foreach (var widget in WidgetList)
             {
+                if (!widget.Visible)
+                    continue;
                 widget.OnClose();
             }
         }

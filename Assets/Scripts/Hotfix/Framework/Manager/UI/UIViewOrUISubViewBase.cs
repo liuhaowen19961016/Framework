@@ -88,6 +88,8 @@ public class UIViewOrUISubViewBase : UIBase
         base.OnOpen();
         foreach (var subView in SubViewList)
         {
+            if (!subView.Visible)
+                continue;
             subView.OnOpen();
         }
     }
@@ -97,6 +99,8 @@ public class UIViewOrUISubViewBase : UIBase
         base.OnShow();
         foreach (var subView in SubViewList)
         {
+            if (!subView.Visible)
+                continue;
             subView.OnShow();
         }
     }
@@ -107,6 +111,8 @@ public class UIViewOrUISubViewBase : UIBase
         SubViewList.CopyListNonAlloc(SubViewList_Temp);
         foreach (var subView in SubViewList_Temp)
         {
+            if (!subView.Visible)
+                continue;
             subView.OnUpdate();
         }
     }
@@ -116,6 +122,8 @@ public class UIViewOrUISubViewBase : UIBase
         base.OnClose();
         foreach (var subView in SubViewList)
         {
+            if (!subView.Visible)
+                continue;
             subView.OnClose();
         }
     }

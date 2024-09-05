@@ -28,6 +28,6 @@ public class UIView_Main : UIView_MainBase
     protected override void OnOpen()
     {
         base.OnOpen();
-        Debug.LogError("UIView_Main OnShow --" + ViewData);
+        Debug.LogError("UIView_Main OnOpen --" + ViewData);
     }
 }
