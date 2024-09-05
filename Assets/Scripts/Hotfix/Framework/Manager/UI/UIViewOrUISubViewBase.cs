@@ -43,7 +43,7 @@ public class UIViewOrUISubViewBase : UIBase
         if (subView == null)
             return;
 
-        subView.OnShow();
+        subView.InternalShow();
     }
 
     /// <summary>

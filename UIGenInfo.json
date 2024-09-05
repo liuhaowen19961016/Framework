@@ -23,5 +23,10 @@
     "className": "UISubview_Activity3",
     "genUITypeStr": "SubView",
     "filePath": "E:/WorkSpace/LHW/Framework/Assets/Scripts/Hotfix/测试/UISubview_Activity3.cs"
+  },
+  {
+    "className": "UISubView_Test",
+    "genUITypeStr": "SubView",
+    "filePath": "E:/WorkSpace/LHW/Framework/Assets/Scripts/Hotfix/测试/UI/UISubView_Test.cs"
   }
 ]

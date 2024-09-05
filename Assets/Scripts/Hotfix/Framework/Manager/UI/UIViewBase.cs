@@ -171,6 +171,8 @@ namespace Framework
         {
             openAniSeq?.Kill(true);
             closeAniSeq?.Kill(true);
+            
+            Visible = true;
 
             PlayAudio(true);
             PlayAni(true, () => { OnOpenAniComplete(); });
@@ -180,6 +182,8 @@ namespace Framework
 
         public void InternalShow()
         {
+            Visible = true;
+
             OnShow();
         }
 
@@ -195,7 +199,9 @@ namespace Framework
             {
                 openAniSeq?.Kill(true);
                 closeAniSeq?.Kill(true);
-
+                
+                Visible = false;
+                
                 OnCloseAniComplete();
                 OnClose();
 

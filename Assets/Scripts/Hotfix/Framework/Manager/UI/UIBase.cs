@@ -129,7 +129,6 @@ namespace Framework
 
         protected virtual void OnOpen()
         {
-            Visible = true;
             foreach (var widget in WidgetList)
             {
                 widget.OnOpen();
@@ -138,7 +137,6 @@ namespace Framework
 
         protected virtual void OnShow()
         {
-            Visible = true;
             foreach (var widget in WidgetList)
             {
                 widget.OnShow();
@@ -159,7 +157,6 @@ namespace Framework
         /// </summary>
         protected virtual void OnClose()
         {
-            Visible = false;
             foreach (var widget in WidgetList)
             {
                 widget.OnClose();

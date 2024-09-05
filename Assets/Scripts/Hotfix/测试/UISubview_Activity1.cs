@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Framework;
 using Hotfix;
 using UnityEngine;
@@ -36,15 +37,10 @@ public class UISubview_Activity1 : UISubview_Activity1Base
         {
             (Parent as UIView_Activity)?.ClosePage(1);
         }
-        
+
         if (Input.GetKeyDown(KeyCode.S))
         {
-            GameGlobal.UIMgr.OpenSync(2,"hh");
-        }
-        
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            GameGlobal.UIMgr.Close(2);
+            GameGlobal.UIMgr.CloseAll(true, new List<int> { 1 });
         }
     }
 }

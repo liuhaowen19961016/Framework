@@ -128,6 +128,21 @@ namespace Framework
         }
 
         /// <summary>
+        /// 关闭所有界面
+        /// </summary>
+        public void CloseAll(bool isDestroy, List<int> ignoreViewList = null)
+        {
+            List<UIViewBase> copyList = new List<UIViewBase>();
+            viewStack.CopyListNonAlloc(copyList);
+            foreach (var view in copyList)
+            {
+                if (ignoreViewList != null && ignoreViewList.Contains(view.ViewId))
+                    continue;
+                Close(view, isDestroy);
+            }
+        }
+
+        /// <summary>
         /// 查找界面（同一个id的界面可以打开多个，所以返回值是一个列表）
         /// </summary>
         public List<UIViewBase> FindView(int viewId)

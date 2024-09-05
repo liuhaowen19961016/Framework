@@ -42,11 +42,19 @@ namespace Framework
 
         public void InternalOpen()
         {
+            Visible = true;
             OnOpen();
+        }
+
+        public void InternalShow()
+        {
+            Visible = true;
+            OnShow();
         }
 
         public void InternalClose(bool isDestroy)
         {
+            Visible = false;
             OnClose();
             if (isDestroy)
             {
