@@ -33,7 +33,7 @@ namespace Framework
         System, //系统
     }
 
-    public class UIMgr
+    public class UIMgr : ManagerBase
     {
         //根据项目进行调整
         public static Vector2 ReferenceResolution = new Vector2(768, 1366);
@@ -277,17 +277,13 @@ namespace Framework
 
         #region 生命周期
 
-        public void Init()
+        public override void Init()
         {
             //创建UI结构
             CreateUIStructure();
         }
 
-        public void Start()
-        {
-        }
-
-        public void Update()
+        public override void Update()
         {
             viewStack.CopyListNonAlloc(viewStack_Temp);
             foreach (var view in viewStack_Temp)
@@ -296,8 +292,10 @@ namespace Framework
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            viewStack.Clear();
+            layerType2Layer.Clear();
         }
 
         #endregion 生命周期

@@ -11,6 +11,8 @@ namespace Framework
         public static Action FixedUpdate;
         public static Action Update;
         public static Action LateUpdate;
+        public static Action<bool> OnApplicationPause;
+        public static Action<bool> OnApplicationFocus;
         public static Action OnApplicationQuit;
 
         public static void StartLoader()

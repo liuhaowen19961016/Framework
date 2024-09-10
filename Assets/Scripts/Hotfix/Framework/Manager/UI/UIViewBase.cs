@@ -76,7 +76,7 @@ namespace Framework
 
         protected void Close(bool isDestroy = true, Action onComplete = null)
         {
-            GameGlobal.UIMgr.Close(this, isDestroy, onComplete);
+            GameGlobal.GetMgr<UIMgr>().Close(this, isDestroy, onComplete);
         }
 
         private Sequence openAniSeq;
@@ -171,7 +171,7 @@ namespace Framework
         {
             openAniSeq?.Kill(true);
             closeAniSeq?.Kill(true);
-            
+
             Visible = true;
 
             PlayAudio(true);
@@ -199,9 +199,9 @@ namespace Framework
             {
                 openAniSeq?.Kill(true);
                 closeAniSeq?.Kill(true);
-                
+
                 Visible = false;
-                
+
                 OnCloseAniComplete();
                 OnClose();
 

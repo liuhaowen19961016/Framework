@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Framework
@@ -51,6 +52,16 @@ namespace Framework
         private void OnApplicationQuit()
         {
             Loader.OnApplicationQuit?.Invoke();
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            Loader.OnApplicationFocus?.Invoke(hasFocus);
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            Loader.OnApplicationPause?.Invoke(pauseStatus);
         }
     }
 }

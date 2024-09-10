@@ -40,7 +40,7 @@ public class UISubview_Activity1 : UISubview_Activity1Base
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            GameGlobal.UIMgr.CloseAll(true, new List<int> { 1 });
+            GameGlobal.GetMgr<UIMgr>().CloseAll(true, new List<int> { 1 });
         }
     }
 }
