@@ -49,11 +49,6 @@ namespace Framework
             Loader.LateUpdate?.Invoke();
         }
 
-        private void OnApplicationQuit()
-        {
-            Loader.OnApplicationQuit?.Invoke();
-        }
-
         private void OnApplicationFocus(bool hasFocus)
         {
             Loader.OnApplicationFocus?.Invoke(hasFocus);
@@ -62,6 +57,11 @@ namespace Framework
         private void OnApplicationPause(bool pauseStatus)
         {
             Loader.OnApplicationPause?.Invoke(pauseStatus);
+        }
+
+        private void OnApplicationQuit()
+        {
+            Loader.OnApplicationQuit?.Invoke();
         }
     }
 }
