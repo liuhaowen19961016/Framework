@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 /// <summary>
 /// Manager基类（职责重的称为Manager）
 /// </summary>
@@ -24,6 +20,14 @@ public class ManagerBase
     }
 
     public virtual void LateUpdate()
+    {
+    }
+
+    public virtual void OnApplicationPause(bool pauseStatus)
+    {
+    }
+
+    public virtual void OnApplicationFocus(bool hasFocus)
     {
     }
 

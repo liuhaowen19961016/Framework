@@ -27,35 +27,14 @@ namespace Hotfix
             InitManager();
             InitModule();
 
-            // 开启Mono生命周期
-            Loader.FixedUpdate += FixedUpdate;
-            Loader.Update += Update;
-            Loader.LateUpdate += LateUpdate;
-            Loader.OnApplicationQuit += OnApplicationQuit;
+            // 注册MonoBehaviour生命周期
+            RegisterMonoBehaviourEvent();
 
             // 游戏启动逻辑执行完成
 
             // test
             GetMgr<UIMgr>().OpenSync(1, 1231);
         }
-
-        #region 游戏基础游戏物体
-
-        private static void CreateEventSystem()
-        {
-            GameObject eventSystemGo = GameUtils.CreateGameObject("EventSystem", null, false,
-                typeof(EventSystem), typeof(StandaloneInputModule));
-            EventSystem = eventSystemGo.GetComponent<EventSystem>();
-            Object.DontDestroyOnLoad(eventSystemGo);
-        }
-
-        private static void CreateDontDestroyOnLoadRoot()
-        {
-            DontDestroyOnLoadRoot = GameUtils.CreateGameObject("DontDestroyOnLoadRoot", null);
-            Object.DontDestroyOnLoad(DontDestroyOnLoadRoot);
-        }
-
-        #endregion 游戏基础游戏物体
 
         #region Manager
 
@@ -66,7 +45,7 @@ namespace Hotfix
             where T : ManagerBase
         {
             var type = typeof(T);
-            if (managerDict.TryGetValue(type, out var manager))
+            if (!managerDict.TryGetValue(type, out var manager))
             {
                 Debug.LogError($"请先注册Manager [{type}]");
                 return null;
@@ -111,7 +90,7 @@ namespace Hotfix
             where T : ModuleBase
         {
             var type = typeof(T);
-            if (moduleDict.TryGetValue(type, out var module))
+            if (!moduleDict.TryGetValue(type, out var module))
             {
                 Debug.LogError($"请先注册Module [{type}]");
                 return null;
@@ -146,6 +125,16 @@ namespace Hotfix
         #endregion Module
 
         #region MonoBehaviour生命周期
+
+        private static void RegisterMonoBehaviourEvent()
+        {
+            Loader.FixedUpdate += FixedUpdate;
+            Loader.Update += Update;
+            Loader.LateUpdate += LateUpdate;
+            Loader.OnApplicationPause += OnApplicationPause;
+            Loader.OnApplicationFocus += OnApplicationFocus;
+            Loader.OnApplicationQuit += OnApplicationQuit;
+        }
 
         public static void FixedUpdate()
         {
@@ -185,10 +174,26 @@ namespace Hotfix
 
         public static void OnApplicationPause(bool pauseStatus)
         {
+            foreach (var manager in managerDict.Values)
+            {
+                manager?.OnApplicationPause(pauseStatus);
+            }
+            foreach (var module in moduleDict.Values)
+            {
+                module?.OnApplicationPause(pauseStatus);
+            }
         }
 
         private static void OnApplicationFocus(bool hasFocus)
         {
+            foreach (var manager in managerDict.Values)
+            {
+                manager?.OnApplicationFocus(hasFocus);
+            }
+            foreach (var module in moduleDict.Values)
+            {
+                module?.OnApplicationFocus(hasFocus);
+            }
         }
 
         public static void OnApplicationQuit()
@@ -208,5 +213,23 @@ namespace Hotfix
         }
 
         #endregion MonoBehaviour生命周期
+
+        #region 游戏基础游戏物体
+
+        private static void CreateEventSystem()
+        {
+            GameObject eventSystemGo = GameUtils.CreateGameObject("EventSystem", null, false,
+                typeof(EventSystem), typeof(StandaloneInputModule));
+            EventSystem = eventSystemGo.GetComponent<EventSystem>();
+            Object.DontDestroyOnLoad(eventSystemGo);
+        }
+
+        private static void CreateDontDestroyOnLoadRoot()
+        {
+            DontDestroyOnLoadRoot = GameUtils.CreateGameObject("DontDestroyOnLoadRoot", null);
+            Object.DontDestroyOnLoad(DontDestroyOnLoadRoot);
+        }
+
+        #endregion 游戏基础游戏物体
     }
 }

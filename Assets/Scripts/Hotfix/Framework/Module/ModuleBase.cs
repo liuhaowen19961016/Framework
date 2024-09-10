@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 /// <summary>
 /// 模块基类
 /// </summary>
@@ -24,6 +20,14 @@ public class ModuleBase
     }
 
     public virtual void LateUpdate()
+    {
+    }
+
+    public virtual void OnApplicationPause(bool pauseStatus)
+    {
+    }
+
+    public virtual void OnApplicationFocus(bool hasFocus)
     {
     }
 
