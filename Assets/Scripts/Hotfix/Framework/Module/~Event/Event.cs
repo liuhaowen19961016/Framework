@@ -5,7 +5,7 @@ namespace Framework
 {
     public class Event
     {
-        private Dictionary<EEventType, EventData> eventDatas = new Dictionary<EEventType, EventData>();
+        private Dictionary<EEventType, Eventsssss> eventDatas = new Dictionary<EEventType, Eventsssss>();
 
         public void AddListener<T>(EEventType eventType, Action<T> handler, int subId = -1)
             where T : EventBase
@@ -13,9 +13,9 @@ namespace Framework
             if (handler == null)
                 return;
 
-            if (!eventDatas.TryGetValue(eventType, out EventData eventData))
+            if (!eventDatas.TryGetValue(eventType, out Eventsssss eventData))
             {
-                eventData = new EventData(eventType);
+                eventData = new Eventsssss(eventType);
                 eventDatas.Add(eventType, eventData);
             }
             eventData.AddListener(handler, subId);
@@ -26,7 +26,7 @@ namespace Framework
         {
             if (handler == null)
                 return;
-            if (!eventDatas.TryGetValue(eventType, out EventData eventData))
+            if (!eventDatas.TryGetValue(eventType, out Eventsssss eventData))
                 return;
 
             eventData.RemoveListener(handler, subId);
@@ -40,7 +40,7 @@ namespace Framework
         public void Dispatch<T>(T data, int subId = -1)
             where T : EventBase, new()
         {
-            if (!eventDatas.TryGetValue(data.EventType, out EventData eventData))
+            if (!eventDatas.TryGetValue(data.EventType, out Eventsssss eventData))
                 return;
 
             eventData.Dispatch<T>(data, subId);
