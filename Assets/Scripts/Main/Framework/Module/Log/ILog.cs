@@ -4,6 +4,6 @@ namespace Framework
     {
         void Init();
 
-        void Wirte(string message, ELogLevel logLevel, ELogColor logColor = ELogColor.Default);
+        void Dispose();
     }
 }

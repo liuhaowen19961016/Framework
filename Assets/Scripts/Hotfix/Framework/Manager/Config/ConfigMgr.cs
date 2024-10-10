@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 public class ConfigMgr : ManagerBase
 {
+    private ConfigMgr()
+    {
+    }
+
     private const string CONFIG_JSON_DIR = "Assets/Res/Configs/";
     private Dictionary<Type, Dictionary<int, ConfigBase>> configCache = new Dictionary<Type, Dictionary<int, ConfigBase>>(); //缓存
 

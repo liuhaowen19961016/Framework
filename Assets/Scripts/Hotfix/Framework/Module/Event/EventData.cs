@@ -6,38 +6,40 @@ using System.Collections.Generic;
 /// </summary>
 public class EventData
 {
-    private Dictionary<int, List<Delegate>> handleDict = new Dictionary<int, List<Delegate>>();
+    private Dictionary<int, List<Delegate>> eventDict = new Dictionary<int, List<Delegate>>();
+    private List<Delegate> eventList_Temp = new List<Delegate>();
 
-    public bool AddEvent<T>(Action<T> callback, int subId = -1)
+    public bool Add<T>(Action<T> callback, int subId = -1)
         where T : IEvent
     {
-        if (!handleDict.TryGetValue(subId, out var handleList))
+        if (!eventDict.TryGetValue(subId, out var _eventList))
         {
-            handleList = new List<Delegate>();
-            handleDict.Add(subId, handleList);
+            _eventList = new List<Delegate>();
+            eventDict.Add(subId, _eventList);
         }
-        handleList.Add(callback);
+        _eventList.Add(callback);
         return true;
     }
 
-    public bool RemoveEvent<T>(Action<T> callback, int subId = -1)
+    public bool Remove<T>(Action<T> callback, int subId = -1)
         where T : IEvent
     {
-        if (!handleDict.TryGetValue(subId, out var handleList))
+        if (!eventDict.TryGetValue(subId, out var _eventList))
             return false;
 
-        bool ret = handleList.Remove(callback);
+        bool ret = _eventList.Remove(callback);
         return ret;
     }
 
     public void Dispatch<T>(T evt, int subId = -1)
     {
-        if (!handleDict.TryGetValue(subId, out var handleList))
+        if (!eventDict.TryGetValue(subId, out var _eventList))
             return;
 
-        foreach (var handle in handleList)
+        _eventList.CopyListNonAlloc(eventList_Temp);
+        foreach (var e in eventList_Temp)
         {
-            var callback = handle as Action<T>;
+            var callback = e as Action<T>;
             callback?.Invoke(evt);
         }
     }

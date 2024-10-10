@@ -1,86 +1,49 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Framework
 {
-    /// <summary>
-    /// log等级
-    /// </summary>
-    /// 可自定义添加
-    public enum ELogLevel
-    {
-        None = 0,
-
-        Error = 100,
-        Warning = 200,
-        Exception = 300,
-        Info = 400,
-        Debug = 500,
-
-        Net = 501,
-        UI = 502,
-
-        LHW = 600,
-
-        All = 11111,
-    }
-
-    public enum ELogColor
-    {
-        Default,
-
-        Red,
-        Green,
-        Blue,
-        Cyan,
-        Yellow,
-    }
-
     public class LogService
     {
         private LogService()
         {
         }
 
-        private static ELogLevel mCurLogLevel;
-        private static bool mEnable;
+        private static List<ILog> logList = new List<ILog>();
 
-        private static List<ILog> logs = new List<ILog>();
+        public static bool Enable { get; private set; }
+        public static ELogType LogTypeMask { get; private set; }
+        public static ELogTag LogTagMask { get; private set; }
 
-        public static void Init(bool enable, ELogLevel logLevel)
+        public static void Init(bool enable, ELogType logTypeMask, ELogTag logTagMask)
         {
-            mCurLogLevel = logLevel;
-            mEnable = enable;
-        }
-
-        public static void SetLogLevel(ELogLevel logLevel)
-        {
-            mCurLogLevel = logLevel;
+            Enable = enable;
+            LogTypeMask = logTypeMask;
+            LogTagMask = logTagMask;
         }
 
         public static void SetEnable(bool enable)
         {
-            mEnable = enable;
+            Enable = enable;
         }
 
         public static void Add(ILog log)
         {
-            logs.Add(log);
+            logList.Add(log);
             log.Init();
         }
 
         public static void Remove(ILog log)
         {
-            logs.Remove(log);
+            logList.Remove(log);
+            log.Dispose();
         }
 
-        public static void Wirte(string message, ELogLevel logLevel, ELogColor logColor)
+        public static void Dispose()
         {
-            if (!mEnable || mCurLogLevel < logLevel)
-                return;
-
-            foreach (var log in logs)
+            foreach (var fileLog in logList)
             {
-                log.Wirte($"[{logLevel}] {message}", logLevel, logColor);
+                fileLog?.Dispose();
             }
         }
     }

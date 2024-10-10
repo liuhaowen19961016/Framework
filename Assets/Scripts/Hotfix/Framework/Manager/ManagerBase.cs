@@ -1,7 +1,7 @@
 /// <summary>
 /// Manager基类（职责重的称为Manager）
 /// </summary>
-public class ManagerBase
+public abstract class ManagerBase
 {
     public virtual void Init()
     {

@@ -2,46 +2,78 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
+/// 事件归属类型
+/// </summary>
+/// 可以统一在某一时刻清空某一归属类型的所有事件
+public enum EEventBelongType
+{
+    Global = 1,
+}
+
+/// <summary>
 /// 事件模块
 /// </summary>
 public class ModEvent : ModuleBase
 {
-    public Dictionary<Type, EventData> eventDict; //所有事件
+    private ModEvent()
+    {
+    }
+
+    public Dictionary<EEventBelongType, Dictionary<Type, EventData>> eventDataDict; //所有事件
 
     public override void Init()
     {
         base.Init();
-        eventDict = new Dictionary<Type, EventData>();
+        eventDataDict = new Dictionary<EEventBelongType, Dictionary<Type, EventData>>();
     }
 
-    public void RegisterEvent<T>(Action<T> callback, int subId = -1)
+    public void Register<T>(Action<T> callback, int subId = -1, EEventBelongType belongType = EEventBelongType.Global)
         where T : IEvent
     {
-        var type = typeof(T);
-        if (!eventDict.TryGetValue(type, out var eventData))
+        if (!eventDataDict.TryGetValue(belongType, out var _eventDataDict))
         {
-            eventData = new EventData();
-            eventDict.Add(type, eventData);
+            _eventDataDict = new Dictionary<Type, EventData>();
+            eventDataDict.Add(belongType, _eventDataDict);
         }
-        eventData.AddEvent<T>(callback, subId);
+        var type = typeof(T);
+        if (!_eventDataDict.TryGetValue(type, out var _eventData))
+        {
+            _eventData = new EventData();
+            _eventDataDict.Add(type, _eventData);
+        }
+        _eventData.Add<T>(callback, subId);
     }
 
-    public bool UnRegisterEvent<T>(Action<T> callback, int subId = -1)
+    public bool UnRegister<T>(Action<T> callback, int subId = -1, EEventBelongType belongType = EEventBelongType.Global)
         where T : IEvent
     {
-        var type = typeof(T);
-        if (!eventDict.TryGetValue(type, out var eventData))
+        if (!eventDataDict.TryGetValue(belongType, out var _eventDataDict))
             return false;
-        bool ret = eventData.RemoveEvent<T>(callback, subId);
+        var type = typeof(T);
+        if (!_eventDataDict.TryGetValue(type, out var _eventData))
+            return false;
+        bool ret = _eventData.Remove<T>(callback, subId);
         return ret;
     }
 
-    public void Disptch<T>(T evt, int subId = -1)
+    public void Dispatch<T>(T evt, int subId = -1, EEventBelongType belongType = EEventBelongType.Global)
         where T : IEvent
     {
+        if (!eventDataDict.TryGetValue(belongType, out var _eventDataDict))
+            return;
         var type = typeof(T);
-        if (!eventDict.TryGetValue(type, out var eventData))
+        if (!_eventDataDict.TryGetValue(type, out var eventData))
             return;
         eventData.Dispatch(evt, subId);
+    }
+
+    public void UnRegister(EEventBelongType belongType = EEventBelongType.Global)
+    {
+        eventDataDict.Remove(belongType);
+    }
+
+    public void UnRegisterAll()
+    {
+        eventDataDict.Clear();
     }
 }

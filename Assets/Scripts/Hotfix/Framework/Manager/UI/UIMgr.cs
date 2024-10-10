@@ -35,6 +35,10 @@ namespace Framework
 
     public class UIMgr : ManagerBase
     {
+        private UIMgr()
+        {
+        }
+
         //根据项目进行调整
         public static Vector2 ReferenceResolution = new Vector2(768, 1366);
         public const float ScreenMatchValue = 0;

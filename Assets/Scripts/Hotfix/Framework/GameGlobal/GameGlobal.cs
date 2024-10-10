@@ -17,7 +17,7 @@ namespace Hotfix
 
         private static void Start()
         {
-            Log.Debug("Hotfix.GameInit Start", ELogColor.Cyan);
+            Log.Info("Hotfix.GameInit Start");
 
             // 创建游戏基础游戏物体
             CreateDontDestroyOnLoadRoot();
@@ -74,7 +74,7 @@ namespace Hotfix
                 Debug.LogError($"不能重复注册Manager [{type}]");
                 return;
             }
-            var manager = Activator.CreateInstance<T>();
+            var manager = Activator.CreateInstance(typeof(T), true) as T;
             manager.Init();
             managerDict.Add(type, manager);
         }
@@ -103,6 +103,8 @@ namespace Hotfix
         /// </summary>
         private static void InitModule()
         {
+            RegisterModule<ModEvent>();
+            RegisterModule<ModTimer>();
         }
 
         /// <summary>
@@ -117,7 +119,7 @@ namespace Hotfix
                 Debug.LogError($"不能重复注册Module [{type}]");
                 return;
             }
-            var module = Activator.CreateInstance<T>();
+            var module = Activator.CreateInstance(typeof(T), true) as T;
             module.Init();
             moduleDict.Add(type, module);
         }

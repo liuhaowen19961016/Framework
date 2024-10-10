@@ -1,7 +1,7 @@
 /// <summary>
 /// 模块基类
 /// </summary>
-public class ModuleBase
+public abstract class ModuleBase
 {
     public virtual void Init()
     {

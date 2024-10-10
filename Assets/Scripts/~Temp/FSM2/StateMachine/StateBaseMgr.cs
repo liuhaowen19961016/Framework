@@ -157,7 +157,7 @@ namespace Framework
                 CurrentState = existState;
                 CurrentState.FromState = fromStateType;
                 CurrentState.OnEnter();
-                Log.Debug($"CurrentState.OnEnter stateType={stateType}");
+                Log.Info($"CurrentState.OnEnter stateType={stateType}");
             }
             else
             {

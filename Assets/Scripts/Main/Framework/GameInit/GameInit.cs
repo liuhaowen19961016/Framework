@@ -3,20 +3,11 @@ using UnityEngine;
 
 namespace Framework
 {
-    [System.Serializable]
-    public class GameInitSetting
-    {
-        public bool logEnable;
-        public ELogLevel logLevel;
-    }
-
     /// <summary>
     /// 游戏入口（挂启动场景中）
     /// </summary>
     public class GameInit : MonoBehaviour
     {
-        public GameInitSetting gameInitSetting; //游戏启动设置
-
         private void Start()
         {
             Init();
@@ -27,11 +18,39 @@ namespace Framework
 
         private void Init()
         {
-            //初始化log
-            // LogService.Init(gameInitSetting.logEnable, gameInitSetting.logLevel);
-            // LogService.Add(new UnityLog());
-            // LogService.Add(new FileLog());
-            // Log.Info("log init success");
+            // 初始化log
+            InitLog();
+        }
+
+        /// <summary>
+        /// 初始化log
+        /// </summary>
+        private void InitLog()
+        {
+            bool logEnable;
+            ELogType logTypeMask;
+            ELogTag logTagMask;
+#if UNITY_EDITOR
+            logEnable = Configuration.Ins.logEnable;
+            logTypeMask = Configuration.Ins.logTypeMask;
+            logTagMask = Configuration.Ins.logTagMask;
+#else
+            if (Debug.isDebugBuild)
+            {
+                logEnable = true;
+                logTypeMask = (ELogType)~0;
+                logTagMask = (ELogTag)~0;
+            }
+            else
+            {
+                logEnable = true;
+                logTypeMask = (ELogType)0;
+                logTagMask = (ELogTag)0;
+            }
+#endif
+            LogService.Init(logEnable, logTypeMask, logTagMask);
+            LogService.Add(new FileLog());
+            Log.Info("log init success");
         }
 
         private void FixedUpdate()
@@ -62,6 +81,8 @@ namespace Framework
         private void OnApplicationQuit()
         {
             Loader.OnApplicationQuit?.Invoke();
+
+            LogService.Dispose();
         }
     }
 }

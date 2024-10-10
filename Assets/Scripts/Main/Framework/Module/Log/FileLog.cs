@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Framework
@@ -19,9 +21,9 @@ namespace Framework
     /// </summary>
     public class FileLog : ILog
     {
-        private const string LogFileDir = "GameLog";
-        private const string LogFileSuffix = "log";
-        private const int MaxLogFileCount = 11;
+        private const string LOG_FILE_DIR = "GameLog";
+        private const string LOG_FILE_SUFFIX = "log";
+        private const int MAX_LOG_FILE_COUNT = 11;
 
         private ELogPlatform logPlatform;
         private string logFileName;
@@ -29,9 +31,12 @@ namespace Framework
         private bool isInit;
 
         private StreamWriter sw;
+        private StringBuilder stringBuilder;
 
         public FileLog(string logFileName = "")
         {
+            stringBuilder = new StringBuilder();
+
             switch (Application.platform)
             {
                 case RuntimePlatform.WindowsEditor:
@@ -62,6 +67,8 @@ namespace Framework
                     break;
             }
             this.logFileName = logFileName;
+
+            Application.logMessageReceived += OnLogMessageReceived;
         }
 
         public void Init()
@@ -77,8 +84,9 @@ namespace Framework
                     Directory.CreateDirectory(logFileDir);
                 }
 
+                // 本地存的log文件数量有限制
                 string[] logFilePaths = GetLogFilePaths(logFileDir);
-                if (logFilePaths.Length > MaxLogFileCount)
+                if (logFilePaths.Length > MAX_LOG_FILE_COUNT)
                 {
                     foreach (var filePath in logFilePaths)
                     {
@@ -86,35 +94,56 @@ namespace Framework
                     }
                 }
 
+                string dateTimeStr = GetDateTimeStr();
                 string logFileName = $"{(string.IsNullOrEmpty(this.logFileName) ? "GameLog" : this.logFileName)}" +
-                                     $" {DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day} {DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.{LogFileSuffix}";
+                                     $"_{dateTimeStr.Replace(" ", "_").Replace("/", "_").Replace(":", "_")}.{LOG_FILE_SUFFIX}";
                 FileStream fs = new FileStream(Path.Combine(logFileDir, logFileName), FileMode.OpenOrCreate);
                 sw = new StreamWriter(fs);
                 sw.WriteLine($"LogFileName：{(string.IsNullOrEmpty(this.logFileName) ? "GameLog" : this.logFileName)}");
-                sw.WriteLine($"DateTime：{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day} {DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}");
+                sw.WriteLine($"DateTime：{dateTimeStr}");
                 sw.WriteLine();
                 sw.AutoFlush = true;
             }
-            catch
+            catch (Exception e)
             {
-                sw = null;
             }
             isInit = true;
         }
 
-        public void Wirte(string message, ELogLevel logLevel, ELogColor logColor = ELogColor.Default)
+        private void OnLogMessageReceived(string condition, string stackTrace, LogType logType)
         {
             if (sw == null)
                 return;
 
             try
             {
-                string dtStr = DateTime.Now.ToString();
-                sw.WriteLine($"{dtStr} {message}");
+                string dtStr = GetDateTimeStr();
+                string conditionStr = TrimRichText(condition);
+                if (logType == LogType.Error || logType == LogType.Exception)
+                {
+                    sw.WriteLine($"{dtStr} {conditionStr}\n{stackTrace}");
+                }
+                else
+                {
+                    sw.WriteLine($"{dtStr} {conditionStr}");
+                }
             }
             catch
             {
             }
+        }
+
+        /// <summary>
+        /// 去除富文本
+        /// </summary>
+        private string TrimRichText(string message)
+        {
+            string pattern = "<[^>]*>";
+            message = Regex.Replace(message, pattern, "");
+
+            stringBuilder.Clear();
+            stringBuilder.Append(message);
+            return stringBuilder.ToString();
         }
 
         private string GetFileDir()
@@ -123,23 +152,35 @@ namespace Framework
             {
                 case ELogPlatform.WinEditor:
                 case ELogPlatform.OSXEditor:
-                    return Application.dataPath + "/../" + LogFileDir;
+                    return Application.dataPath + "/../" + LOG_FILE_DIR;
 
                 case ELogPlatform.Android:
                 case ELogPlatform.IOS:
                 case ELogPlatform.WinPlayer:
                 case ELogPlatform.OSXPlayer:
-                    return Path.Combine(Application.persistentDataPath, LogFileDir);
+                    return Path.Combine(Application.persistentDataPath, LOG_FILE_DIR);
 
                 default:
-                    return Application.dataPath + "/../" + LogFileDir;
+                    return Application.dataPath + "/../" + LOG_FILE_DIR;
             }
         }
 
-        private static string[] GetLogFilePaths(string logFileDir)
+        private string[] GetLogFilePaths(string logFileDir)
         {
-            string[] logFilePaths = Directory.GetFiles(logFileDir, $"*.{LogFileSuffix}", SearchOption.TopDirectoryOnly);
+            string[] logFilePaths = Directory.GetFiles(logFileDir, $"*.{LOG_FILE_SUFFIX}", SearchOption.TopDirectoryOnly);
             return logFilePaths;
+        }
+
+        private string GetDateTimeStr()
+        {
+            var dateTimeStr = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
+            return dateTimeStr;
+        }
+
+        public void Dispose()
+        {
+            Application.logMessageReceived -= OnLogMessageReceived;
+            sw.Close();
         }
     }
 }
