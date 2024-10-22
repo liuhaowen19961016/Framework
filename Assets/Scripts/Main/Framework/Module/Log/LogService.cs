@@ -11,9 +11,9 @@ namespace Framework
 
         private static List<ILog> logList = new List<ILog>();
 
-        public static bool Enable { get; private set; }
-        public static ELogType LogTypeMask { get; private set; }
-        public static ELogTag LogTagMask { get; private set; }
+          public static bool Enable { get; private set; } = true;
+          public static ELogType LogTypeMask { get; private set; } = (ELogType)~0;
+          public static ELogTag LogTagMask { get; private set; } = (ELogTag)~0;
 
         public static void Init(bool enable, ELogType logTypeMask, ELogTag logTagMask)
         {
