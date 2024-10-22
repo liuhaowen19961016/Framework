@@ -214,9 +214,9 @@ public class ModTimer : ModuleBase
         }
     }
 
-    public override void Update()
+    public override void Update(float deltaTime)
     {
-        base.Update();
+        base.Update(deltaTime);
         UpdateAll();
     }
 }

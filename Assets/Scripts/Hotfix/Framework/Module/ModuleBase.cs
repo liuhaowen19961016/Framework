@@ -15,7 +15,7 @@ public abstract class ModuleBase
     {
     }
 
-    public virtual void Update()
+    public virtual void Update(float deltaTime)
     {
     }
 

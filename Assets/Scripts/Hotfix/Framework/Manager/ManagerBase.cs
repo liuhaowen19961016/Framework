@@ -15,7 +15,7 @@ public abstract class ManagerBase
     {
     }
 
-    public virtual void Update()
+    public virtual void Update(float deltaTime)
     {
     }
 

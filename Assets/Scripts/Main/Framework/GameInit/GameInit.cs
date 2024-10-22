@@ -60,7 +60,7 @@ namespace Framework
 
         private void Update()
         {
-            Loader.Update?.Invoke();
+            Loader.Update?.Invoke(Time.deltaTime);
         }
 
         private void LateUpdate()

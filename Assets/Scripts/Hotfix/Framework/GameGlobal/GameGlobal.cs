@@ -150,15 +150,15 @@ namespace Hotfix
             }
         }
 
-        public static void Update()
+        public static void Update(float deltaTime)
         {
             foreach (var manager in managerDict.Values)
             {
-                manager?.Update();
+                manager?.Update(deltaTime);
             }
             foreach (var module in moduleDict.Values)
             {
-                module?.Update();
+                module?.Update(deltaTime);
             }
         }
 

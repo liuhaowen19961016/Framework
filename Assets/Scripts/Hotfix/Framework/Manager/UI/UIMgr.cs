@@ -287,7 +287,7 @@ namespace Framework
             CreateUIStructure();
         }
 
-        public override void Update()
+        public override void Update(float deltaTime)
         {
             viewStack.CopyListNonAlloc(viewStack_Temp);
             foreach (var view in viewStack_Temp)

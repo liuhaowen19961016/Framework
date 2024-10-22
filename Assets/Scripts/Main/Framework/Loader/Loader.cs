@@ -9,7 +9,7 @@ namespace Framework
     public class Loader
     {
         public static Action FixedUpdate;
-        public static Action Update;
+        public static Action<float> Update;
         public static Action LateUpdate;
         public static Action<bool> OnApplicationPause;
         public static Action<bool> OnApplicationFocus;
