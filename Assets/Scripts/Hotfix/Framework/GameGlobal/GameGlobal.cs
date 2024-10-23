@@ -103,6 +103,7 @@ namespace Hotfix
         /// </summary>
         private static void InitModule()
         {
+            RegisterModule<ModFsm>();
             RegisterModule<ModEvent>();
             RegisterModule<ModTimer>();
         }
