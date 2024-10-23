@@ -1,8 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class FsmDataBase 
+public class FsmDataBase
 {
-  
+    public virtual void Dispose()
+    {
+    }
 }

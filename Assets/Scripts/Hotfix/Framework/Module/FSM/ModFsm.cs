@@ -35,15 +35,21 @@ public class ModFsm : ModuleBase
             Log.Error($"状态机不存在，先添加状态机，fsm：{type}");
             return null;
         }
-        return _fsm as T;
+        var fsm = _fsm as T;
+        return fsm;
     }
 
     public bool RemoveFsm<T>()
         where T : FsmBase
     {
         var type = typeof(T);
-        bool ret = fsmDict.Remove(type);
-        return ret;
+        if (fsmDict.TryGetValue(type, out var _fsm))
+        {
+            _fsm.Dispose();
+            fsmDict.Remove(type);
+            return true;
+        }
+        return false;
     }
 
     public override void Update(float deltaTime)
